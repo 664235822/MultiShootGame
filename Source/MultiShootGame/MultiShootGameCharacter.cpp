@@ -69,6 +69,16 @@ void AMultiShootGameCharacter::EndZoom()
 	bWantToZoom = false;
 }
 
+void AMultiShootGameCharacter::BeginAim()
+{
+	PlayAnimMontage(AimAnimMontage);
+}
+
+void AMultiShootGameCharacter::EndAim()
+{
+	StopAnimMontage(AimAnimMontage);
+}
+
 void AMultiShootGameCharacter::Jump()
 {
 	Super::Jump();
@@ -107,4 +117,9 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// Bind fastrun events
 	PlayerInputComponent->BindAction("FastRun", IE_Pressed, this, &AMultiShootGameCharacter::BeginFastRun);
 	PlayerInputComponent->BindAction("FastRun", IE_Released, this, &AMultiShootGameCharacter::EndFastRun);
+
+	// Bind aim events
+	PlayerInputComponent->BindAction("Aim",IE_Pressed,this,&AMultiShootGameCharacter::BeginAim);
+	PlayerInputComponent->BindAction("Aim",IE_Released,this,&AMultiShootGameCharacter::EndAim);
+	
 }
