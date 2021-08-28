@@ -69,6 +69,20 @@ void AMultiShootGameCharacter::EndZoom()
 	bWantToZoom = false;
 }
 
+void AMultiShootGameCharacter::Jump()
+{
+	Super::Jump();
+
+	PlayAnimMontage(JumpAnimMontage);
+}
+
+void AMultiShootGameCharacter::StopJumping()
+{
+	Super::StopJumping();
+
+	PlayAnimMontage(JumpAnimMontage, 1, FName("down"));
+}
+
 void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings

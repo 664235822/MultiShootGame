@@ -40,12 +40,19 @@ protected:
 	void BeginZoom();
 
 	void EndZoom();
+
+	virtual void Jump() override;
+
+	virtual void StopJumping() override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(EditDefaultsOnly,Category="Movement")
+	UAnimMontage* JumpAnimMontage;
 
 	bool bWantToZoom;
 
