@@ -1,16 +1,19 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MultiShootGameCharacter.h"
+#include "AIController.h"
 #include "MultiShootGameProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
+#include "Kismet/GameplayStatics.h"
 
 AMultiShootGameCharacter::AMultiShootGameCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bFindCameraComponentWhenViewTarget = true;
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SprintArmComponent"));
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -18,11 +21,40 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	FPSCameraSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("FPSCameraSceneComponent"));
+	FPSCameraSceneComponent->SetupAttachment(RootComponent);
 }
 
 void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	CurrentWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(WeaponClass, FVector::ZeroVector,
+	                                                              FRotator::ZeroRotator,
+	                                                              SpawnParameters);
+	CurrentFPSCamera = GetWorld()->SpawnActor<AMultiShootGameFPSCamera>(FPSCameraClass, FVector::ZeroVector,
+	                                                                    FRotator::ZeroRotator,
+	                                                                    SpawnParameters);
+
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->SetOwner(this);
+		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                 WeaponSocketName);
+	}
+
+	if (CurrentFPSCamera)
+	{
+		CurrentFPSCamera->SetOwner(this);
+		CurrentFPSCamera->AttachToComponent(FPSCameraSceneComponent,
+		                                    FAttachmentTransformRules::SnapToTargetIncludingScale);
+
+		CurrentFPSCamera->SetActorHiddenInGame(true);
+	}
 }
 
 void AMultiShootGameCharacter::OnFire()
@@ -37,6 +69,11 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 void AMultiShootGameCharacter::MoveRight(float Value)
 {
 	AddMovementInput(GetActorRightVector() * Value);
+}
+
+void AMultiShootGameCharacter::LookUp(float Value)
+{
+	CurrentFPSCamera->AddActorLocalRotation(FRotator(0, 0, Value * BaseLookUpRate * GetWorld()->GetDeltaSeconds()));
 }
 
 void AMultiShootGameCharacter::BeginFastRun()
@@ -72,11 +109,25 @@ void AMultiShootGameCharacter::EndZoom()
 void AMultiShootGameCharacter::BeginAim()
 {
 	PlayAnimMontage(AimAnimMontage);
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
+
+	CurrentFPSCamera->SetActorHiddenInGame(false);
+	CurrentWeapon->SetActorHiddenInGame(true);
+	GetMesh()->SetHiddenInGame(true);
 }
 
 void AMultiShootGameCharacter::EndAim()
 {
 	StopAnimMontage(AimAnimMontage);
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->SetViewTargetWithBlend(this, 0.1f);
+
+	CurrentFPSCamera->SetActorHiddenInGame(true);
+	CurrentWeapon->SetActorHiddenInGame(false);
+	GetMesh()->SetHiddenInGame(false);
 }
 
 void AMultiShootGameCharacter::Jump()
@@ -113,13 +164,13 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &AMultiShootGameCharacter::LookUp);
 
 	// Bind fastrun events
 	PlayerInputComponent->BindAction("FastRun", IE_Pressed, this, &AMultiShootGameCharacter::BeginFastRun);
 	PlayerInputComponent->BindAction("FastRun", IE_Released, this, &AMultiShootGameCharacter::EndFastRun);
 
 	// Bind aim events
-	PlayerInputComponent->BindAction("Aim",IE_Pressed,this,&AMultiShootGameCharacter::BeginAim);
-	PlayerInputComponent->BindAction("Aim",IE_Released,this,&AMultiShootGameCharacter::EndAim);
-	
+	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AMultiShootGameCharacter::BeginAim);
+	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AMultiShootGameCharacter::EndAim);
 }

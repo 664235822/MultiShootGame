@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MultiShootGameFPSCamera.h"
+#include "MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -27,6 +29,8 @@ protected:
 
 	void MoveRight(float Value);
 
+	void LookUp(float Value);
+
 	void BeginFastRun();
 
 	void EndFastRun();
@@ -47,11 +51,32 @@ protected:
 
 	virtual void StopJumping() override;
 
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	USceneComponent* FPSCameraSceneComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<AMultiShootGameWeapon> WeaponClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+	FName WeaponSocketName = "WeaponSocket";
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* JumpAnimMontage;
@@ -59,8 +84,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* AimAnimMontage;
 
-	bool bWantToZoom;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement")
+	float BaseLookUpRate = 45.f;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	bool bWantToZoom;
 };
