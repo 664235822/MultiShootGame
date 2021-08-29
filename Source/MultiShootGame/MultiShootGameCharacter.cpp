@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AMultiShootGameCharacter::AMultiShootGameCharacter()
 {
@@ -71,11 +72,6 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 	AddMovementInput(GetActorRightVector() * Value);
 }
 
-void AMultiShootGameCharacter::LookUp(float Value)
-{
-	CurrentFPSCamera->AddActorLocalRotation(FRotator(0, 0, Value * BaseLookUpRate * GetWorld()->GetDeltaSeconds()));
-}
-
 void AMultiShootGameCharacter::BeginFastRun()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
@@ -108,6 +104,8 @@ void AMultiShootGameCharacter::EndZoom()
 
 void AMultiShootGameCharacter::BeginAim()
 {
+	bAimed = true;
+
 	PlayAnimMontage(AimAnimMontage);
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -120,6 +118,8 @@ void AMultiShootGameCharacter::BeginAim()
 
 void AMultiShootGameCharacter::EndAim()
 {
+	bAimed = false;
+
 	StopAnimMontage(AimAnimMontage);
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -128,6 +128,21 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentFPSCamera->SetActorHiddenInGame(true);
 	CurrentWeapon->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
+}
+
+void AMultiShootGameCharacter::AimLookAround()
+{
+	const FVector StartLocation = FPSCameraSceneComponent->GetComponentLocation();
+
+	const FVector CameraLocation = CameraComponent->GetComponentLocation();
+	const FRotator CameraRotation = CameraComponent->GetComponentRotation();
+	const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 5000.f;
+
+	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+
+	const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
+
+	FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 }
 
 void AMultiShootGameCharacter::Jump()
@@ -142,6 +157,16 @@ void AMultiShootGameCharacter::StopJumping()
 	Super::StopJumping();
 
 	PlayAnimMontage(JumpAnimMontage, 1, FName("down"));
+}
+
+void AMultiShootGameCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bAimed)
+	{
+		AimLookAround();
+	}
 }
 
 void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -164,7 +189,6 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &AMultiShootGameCharacter::LookUp);
 
 	// Bind fastrun events
 	PlayerInputComponent->BindAction("FastRun", IE_Pressed, this, &AMultiShootGameCharacter::BeginFastRun);

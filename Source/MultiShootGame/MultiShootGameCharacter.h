@@ -29,8 +29,6 @@ protected:
 
 	void MoveRight(float Value);
 
-	void LookUp(float Value);
-
 	void BeginFastRun();
 
 	void EndFastRun();
@@ -50,9 +48,6 @@ protected:
 	virtual void Jump() override;
 
 	virtual void StopJumping() override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
@@ -88,4 +83,17 @@ protected:
 	float BaseLookUpRate = 45.f;
 
 	bool bWantToZoom;
+
+private:
+	
+	void AimLookAround();
+
+	bool bAimed = false;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };
