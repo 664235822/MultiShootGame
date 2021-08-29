@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameplayCameras/Public/MatineeCameraShake.h"
 #include "MultiShootGameCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -55,17 +56,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	USceneComponent* FPSCameraSceneComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameWeapon> WeaponClass;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+	FName WeaponSocketName = "WeaponSocket";
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* FPSCameraSceneComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
-	FName WeaponSocketName = "WeaponSocket";
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<UMatineeCameraShake> FPSCameraShakeClass;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
@@ -85,7 +89,6 @@ protected:
 	bool bWantToZoom;
 
 private:
-	
 	void AimLookAround();
 
 	bool bAimed = false;

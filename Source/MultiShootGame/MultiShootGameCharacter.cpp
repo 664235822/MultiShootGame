@@ -65,11 +65,21 @@ void AMultiShootGameCharacter::OnFire()
 void AMultiShootGameCharacter::MoveForward(float Value)
 {
 	AddMovementInput(GetActorForwardVector() * Value);
+
+	if (bAimed && Value != 0)
+	{
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(FPSCameraShakeClass);
+	}
 }
 
 void AMultiShootGameCharacter::MoveRight(float Value)
 {
 	AddMovementInput(GetActorRightVector() * Value);
+
+	if (bAimed && Value != 0)
+	{
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(FPSCameraShakeClass);
+	}
 }
 
 void AMultiShootGameCharacter::BeginFastRun()
