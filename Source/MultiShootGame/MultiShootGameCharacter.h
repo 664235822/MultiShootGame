@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayCameras/Public/MatineeCameraShake.h"
+#include "Sound/SoundCue.h"
 #include "MultiShootGameCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -80,6 +81,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* CrouchAimAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly,Category = "Movement")
+	USoundCue* FootstepCue;
+
 private:
 	void AimLookAround();
 
@@ -91,4 +95,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	void Footstep();
 };

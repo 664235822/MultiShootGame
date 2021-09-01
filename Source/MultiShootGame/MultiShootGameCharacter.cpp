@@ -128,7 +128,7 @@ void AMultiShootGameCharacter::BeginAim()
 void AMultiShootGameCharacter::EndAim()
 {
 	bAimed = false;
-	
+
 	if (!GetCharacterMovement()->IsCrouching())
 	{
 		StopAnimMontage(AimAnimMontage);
@@ -216,4 +216,10 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	// Bind crouch events
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMultiShootGameCharacter::ToggleCrouch);
+}
+
+void AMultiShootGameCharacter::Footstep()
+{
+	const float Multiplier = !GetCharacterMovement()->IsCrouching() ? 1.f : 0.5f;
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepCue, GetActorLocation(), Multiplier);
 }
