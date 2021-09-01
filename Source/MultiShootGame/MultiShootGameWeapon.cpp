@@ -2,6 +2,10 @@
 
 
 #include "MultiShootGameWeapon.h"
+#include "MultiShootGame.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 // Sets default values
 AMultiShootGameWeapon::AMultiShootGameWeapon()
@@ -11,23 +15,136 @@ AMultiShootGameWeapon::AMultiShootGameWeapon()
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponmeshComponent"));
 	WeaponMeshComponent->SetupAttachment(RootComponent);
-	
 }
 
 // Called when the game starts or when spawned
 void AMultiShootGameWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TimeBetweenShots = 60.0f / RateOfFire;
 }
 
-// Called every frame
-void AMultiShootGameWeapon::Tick(float DeltaTime)
+void AMultiShootGameWeapon::Fire()
 {
-	Super::Tick(DeltaTime);
+	AActor* MyOwner = GetOwner();
+	if (MyOwner)
+	{
+		FVector EyeLocation;
+		FRotator EyeRotation;
+		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+
+		FVector ShotDirection = EyeRotation.Vector();
+
+		const float HalfRad = FMath::DegreesToRadians(BulletSpread);
+		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
+
+		FVector TraceEnd = EyeLocation + (ShotDirection * 5000.f);
+
+		FCollisionQueryParams QueryOParams;
+		QueryOParams.AddIgnoredActor(MyOwner);
+		QueryOParams.AddIgnoredActor(this);
+		QueryOParams.bTraceComplex = true;
+		QueryOParams.bReturnPhysicalMaterial = true;
+
+		FVector TraceEndPoint = TraceEnd;
+
+		EPhysicalSurface SurfaceType = SurfaceType_Default;
+
+		FHitResult Hit;
+		if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd,COLLISION_WEAPON, QueryOParams))
+		{
+			AActor* HitActor = Hit.GetActor();
+
+			//SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+
+			float CurrentDamage = BaseDamage;
+
+			//if (SurfaceType == SURFACE_FLESHVULNERABLE)
+			//{
+			//	CurrentDamage *= 2.5f;
+			//}
+
+			UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit,
+			                                   MyOwner->GetInstigatorController(),
+			                                   MyOwner, DamageType);
+
+			PlayImpactEffect(SurfaceType, Hit.ImpactPoint);
+
+			TraceEndPoint = Hit.ImpactPoint;
+		}
+
+		PlayFireEffect(TraceEndPoint);
+
+		LastFireTime = GetWorld()->TimeSeconds;
+	}
 }
 
-// Called to bind functionality to input
-void AMultiShootGameWeapon::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	if (MuzzleEffect)
+	{
+		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
+	}
+
+	if (TracerEffect)
+	{
+		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+
+		UParticleSystemComponent* TracerComponent = UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(), TracerEffect, MuzzleLocation);
+		if (TracerComponent)
+		{
+			TracerComponent->SetVectorParameter(TracerTargetName, TraceEndPoint);
+		}
+	}
+
+	APawn* MyOwner = Cast<APawn>(GetOwner());
+	if (MyOwner)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
+		if (PlayerController)
+		{
+			PlayerController->ClientPlayCameraShake(FireCameraShake);
+		}
+	}
+}
+
+void AMultiShootGameWeapon::PlayImpactEffect(EPhysicalSurface SurfaceType, FVector ImpactPoint)
+{
+	UParticleSystem* SelectEffect = nullptr;
+	switch (SurfaceType)
+	{
+	case SURFACE_FLESHDEFAULT:
+	case SURFACE_FLESHVULNERABLE:
+		SelectEffect = FleshImpactEffect;
+		break;
+	default:
+		SelectEffect = DefaultImpactEffect;
+		break;
+	}
+
+	if (SelectEffect)
+	{
+		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+
+		FVector TraceDirection = ImpactPoint - MuzzleLocation;
+		TraceDirection.Normalize();
+
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectEffect, ImpactPoint,
+		                                         TraceDirection.Rotation());
+	}
+}
+
+void AMultiShootGameWeapon::StartFire()
+{
+	const float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
+
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameWeapon::Fire, TimeBetweenShots, true,
+	                                FirstDelay);
+}
+
+void AMultiShootGameWeapon::StopFire()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle);
 }

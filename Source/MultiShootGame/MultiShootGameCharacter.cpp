@@ -59,8 +59,20 @@ void AMultiShootGameCharacter::BeginPlay()
 	}
 }
 
-void AMultiShootGameCharacter::OnFire()
+void AMultiShootGameCharacter::StartFire()
 {
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StartFire();
+	}
+}
+
+void AMultiShootGameCharacter::StopFire()
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StopFire();
+	}
 }
 
 void AMultiShootGameCharacter::MoveForward(float Value)
@@ -239,7 +251,9 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	// Bind fire event
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMultiShootGameCharacter::OnFire);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMultiShootGameCharacter::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AMultiShootGameCharacter::StopFire);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMultiShootGameCharacter::MoveForward);

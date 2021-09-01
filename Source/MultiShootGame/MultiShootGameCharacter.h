@@ -8,7 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GameplayCameras/Public/MatineeCameraShake.h"
+#include "MatineeCameraShake.h"
 #include "Sound/SoundCue.h"
 #include "MultiShootGameCharacter.generated.h"
 
@@ -24,8 +24,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void OnFire();
+	
+	void StartFire();
+	
+	void StopFire();
 
 	void MoveForward(float Value);
 

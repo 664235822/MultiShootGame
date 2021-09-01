@@ -3,12 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/Pawn.h"
 #include "MultiShootGameFPSCamera.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class MULTISHOOTGAME_API AMultiShootGameFPSCamera : public APawn
+class MULTISHOOTGAME_API AMultiShootGameFPSCamera : public AMultiShootGameWeapon
 {
 	GENERATED_BODY()
 
@@ -17,19 +20,6 @@ public:
 	AMultiShootGameFPSCamera();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* WeaponMeshComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UCameraComponent* CameraComponent;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };
