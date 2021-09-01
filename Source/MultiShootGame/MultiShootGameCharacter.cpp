@@ -61,17 +61,35 @@ void AMultiShootGameCharacter::BeginPlay()
 
 void AMultiShootGameCharacter::StartFire()
 {
-	if (CurrentWeapon)
+	bFired = true;
+
+	if (!bAimed)
 	{
-		CurrentWeapon->StartFire();
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->StartFire();
+		}
+	}
+	else
+	{
+		if (CurrentFPSCamera)
+		{
+			CurrentFPSCamera->StartFire();
+		}
 	}
 }
 
 void AMultiShootGameCharacter::StopFire()
 {
+	bFired = false;
+
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->StopFire();
+	}
+	if (CurrentFPSCamera)
+	{
+		CurrentFPSCamera->StopFire();
 	}
 }
 
@@ -151,6 +169,13 @@ void AMultiShootGameCharacter::BeginAim()
 	CurrentFPSCamera->SetActorHiddenInGame(false);
 	CurrentWeapon->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
+
+	if (bFired)
+	{
+		CurrentFPSCamera->StartFire();
+	}
+
+	CurrentWeapon->StopFire();
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -172,6 +197,13 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentFPSCamera->SetActorHiddenInGame(true);
 	CurrentWeapon->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
+
+	if (bFired)
+	{
+		CurrentWeapon->StartFire();
+	}
+
+	CurrentFPSCamera->StopFire();
 }
 
 void AMultiShootGameCharacter::AimLookAround()
@@ -204,7 +236,7 @@ void AMultiShootGameCharacter::Jump()
 void AMultiShootGameCharacter::StopJumping()
 {
 	Super::StopJumping();
-	
+
 	if (bDied)
 	{
 		return;

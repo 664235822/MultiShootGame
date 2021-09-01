@@ -24,9 +24,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	void StartFire();
-	
+
 	void StopFire();
 
 	void MoveForward(float Value);
@@ -98,6 +98,8 @@ protected:
 
 private:
 	void AimLookAround();
+
+	bool bFired = false;
 
 	bool bAimed = false;
 
