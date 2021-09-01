@@ -92,6 +92,16 @@ void AMultiShootGameCharacter::EndFastRun()
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 }
 
+void AMultiShootGameCharacter::BeginCrouch()
+{
+	Crouch();
+}
+
+void AMultiShootGameCharacter::EndCrouch()
+{
+	UnCrouch();
+}
+
 void AMultiShootGameCharacter::ToggleCrouch()
 {
 	if (!GetCharacterMovement()->IsCrouching())
@@ -215,7 +225,9 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AMultiShootGameCharacter::EndAim);
 
 	// Bind crouch events
-	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMultiShootGameCharacter::ToggleCrouch);
+	PlayerInputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &AMultiShootGameCharacter::ToggleCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMultiShootGameCharacter::BeginCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMultiShootGameCharacter::EndCrouch);
 }
 
 void AMultiShootGameCharacter::Footstep()

@@ -35,6 +35,10 @@ protected:
 
 	void EndFastRun();
 
+	void BeginCrouch();
+
+	void EndCrouch();
+
 	void ToggleCrouch();
 	
 	void BeginAim();
