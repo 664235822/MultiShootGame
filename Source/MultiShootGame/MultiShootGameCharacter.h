@@ -34,14 +34,8 @@ protected:
 
 	void EndFastRun();
 
-	void BeginCrouch();
-
-	void EndCrouch();
-
-	void BeginZoom();
-
-	void EndZoom();
-
+	void ToggleCrouch();
+	
 	void BeginAim();
 
 	void EndAim();
@@ -83,10 +77,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* AimAnimMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement")
-	float BaseLookUpRate = 45.f;
-
-	bool bWantToZoom;
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UAnimMontage* CrouchAimAnimMontage;
 
 private:
 	void AimLookAround();

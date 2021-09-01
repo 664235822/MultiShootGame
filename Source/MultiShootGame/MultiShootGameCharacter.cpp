@@ -92,31 +92,30 @@ void AMultiShootGameCharacter::EndFastRun()
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 }
 
-void AMultiShootGameCharacter::BeginCrouch()
+void AMultiShootGameCharacter::ToggleCrouch()
 {
-	Crouch();
-}
-
-void AMultiShootGameCharacter::EndCrouch()
-{
-	UnCrouch();
-}
-
-void AMultiShootGameCharacter::BeginZoom()
-{
-	bWantToZoom = true;
-}
-
-void AMultiShootGameCharacter::EndZoom()
-{
-	bWantToZoom = false;
+	if (!GetCharacterMovement()->IsCrouching())
+	{
+		Crouch();
+	}
+	else
+	{
+		UnCrouch();
+	}
 }
 
 void AMultiShootGameCharacter::BeginAim()
 {
 	bAimed = true;
 
-	PlayAnimMontage(AimAnimMontage);
+	if (!GetCharacterMovement()->IsCrouching())
+	{
+		PlayAnimMontage(AimAnimMontage);
+	}
+	else
+	{
+		PlayAnimMontage(CrouchAimAnimMontage);
+	}
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
@@ -129,8 +128,15 @@ void AMultiShootGameCharacter::BeginAim()
 void AMultiShootGameCharacter::EndAim()
 {
 	bAimed = false;
-
-	StopAnimMontage(AimAnimMontage);
+	
+	if (!GetCharacterMovement()->IsCrouching())
+	{
+		StopAnimMontage(AimAnimMontage);
+	}
+	else
+	{
+		StopAnimMontage(CrouchAimAnimMontage);
+	}
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(this, 0.1f);
@@ -207,4 +213,7 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// Bind aim events
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AMultiShootGameCharacter::BeginAim);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AMultiShootGameCharacter::EndAim);
+
+	// Bind crouch events
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMultiShootGameCharacter::ToggleCrouch);
 }
