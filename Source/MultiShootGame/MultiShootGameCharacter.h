@@ -40,7 +40,7 @@ protected:
 	void EndCrouch();
 
 	void ToggleCrouch();
-	
+
 	void BeginAim();
 
 	void EndAim();
@@ -48,6 +48,12 @@ protected:
 	virtual void Jump() override;
 
 	virtual void StopJumping() override;
+
+	UFUNCTION(BlueprintCallable)
+	void Footstep();
+
+	UFUNCTION(BlueprintCallable)
+	void Death();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
@@ -85,7 +91,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* CrouchAimAnimMontage;
 
-	UPROPERTY(EditDefaultsOnly,Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	USoundCue* FootstepCue;
 
 private:
@@ -93,13 +99,12 @@ private:
 
 	bool bAimed = false;
 
+	bool bDied = false;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION(BlueprintCallable)
-	void Footstep();
 };

@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "MultiShootGameProjectile.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
@@ -116,6 +117,11 @@ void AMultiShootGameCharacter::ToggleCrouch()
 
 void AMultiShootGameCharacter::BeginAim()
 {
+	if (bDied)
+	{
+		return;
+	}
+
 	bAimed = true;
 
 	if (!GetCharacterMovement()->IsCrouching())
@@ -175,14 +181,42 @@ void AMultiShootGameCharacter::Jump()
 {
 	Super::Jump();
 
+	if (bDied)
+	{
+		return;
+	}
+
 	PlayAnimMontage(JumpAnimMontage);
 }
 
 void AMultiShootGameCharacter::StopJumping()
 {
 	Super::StopJumping();
+	
+	if (bDied)
+	{
+		return;
+	}
 
 	PlayAnimMontage(JumpAnimMontage, 1, FName("down"));
+}
+
+void AMultiShootGameCharacter::Death()
+{
+	bDied = true;
+
+	if (bAimed)
+	{
+		EndAim();
+	}
+
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMovementComponent()->SetActive(false);
+	GetMesh()->SetAllBodiesSimulatePhysics(true);
+	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->GetAnimInstance()->StopAllMontages(0);
 }
 
 void AMultiShootGameCharacter::Tick(float DeltaTime)
