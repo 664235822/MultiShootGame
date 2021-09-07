@@ -63,6 +63,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UAudioComponent* AudioComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameWeapon> WeaponClass;
 
@@ -93,7 +96,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* CrouchAimAnimMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Audio")
 	USoundCue* FootstepCue;
 
 private:

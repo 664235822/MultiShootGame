@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "MultiShootGameProjectile.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -26,6 +27,9 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 
 	FPSCameraSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("FPSCameraSceneComponent"));
 	FPSCameraSceneComponent->SetupAttachment(RootComponent);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
 }
 
 void AMultiShootGameCharacter::BeginPlay()
@@ -77,6 +81,8 @@ void AMultiShootGameCharacter::StartFire()
 			CurrentFPSCamera->StartFire();
 		}
 	}
+
+	AudioComponent->Play();
 }
 
 void AMultiShootGameCharacter::StopFire()
@@ -91,6 +97,8 @@ void AMultiShootGameCharacter::StopFire()
 	{
 		CurrentFPSCamera->StopFire();
 	}
+
+	AudioComponent->Stop();
 }
 
 void AMultiShootGameCharacter::MoveForward(float Value)
