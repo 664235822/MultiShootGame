@@ -52,13 +52,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
-	virtual void Jump() override;
-
-	virtual void StopJumping() override;
-
-	UFUNCTION(BlueprintCallable)
-	void Footstep();
-
 	UFUNCTION(BlueprintCallable)
 	void Death();
 
@@ -93,19 +86,13 @@ protected:
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	UAnimMontage* JumpAnimMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* AimAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* CrouchAimAnimMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* ReloadingAnimMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	USoundCue* FootstepCue;
 
 private:
 	void AimLookAround();

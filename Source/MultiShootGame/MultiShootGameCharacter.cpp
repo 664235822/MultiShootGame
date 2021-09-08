@@ -241,11 +241,6 @@ void AMultiShootGameCharacter::BeginReload()
 		return;
 	}
 
-	if (GetCharacterMovement()->IsFalling())
-	{
-		return;
-	}
-
 	bReloading = true;
 
 	if (bAimed)
@@ -279,40 +274,6 @@ void AMultiShootGameCharacter::AimLookAround()
 	const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
 
 	FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
-}
-
-void AMultiShootGameCharacter::Jump()
-{
-	if (bDied)
-	{
-		return;
-	}
-
-	if (bReloading)
-	{
-		return;
-	}
-
-	Super::Jump();
-
-	PlayAnimMontage(JumpAnimMontage);
-}
-
-void AMultiShootGameCharacter::StopJumping()
-{
-	if (bDied)
-	{
-		return;
-	}
-
-	if (bReloading)
-	{
-		return;
-	}
-
-	Super::StopJumping();
-
-	PlayAnimMontage(JumpAnimMontage, 1, FName("down"));
 }
 
 void AMultiShootGameCharacter::Death()
@@ -381,10 +342,4 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	// Bind reloading events
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AMultiShootGameCharacter::BeginReload);
-}
-
-void AMultiShootGameCharacter::Footstep()
-{
-	const float Multiplier = !GetCharacterMovement()->IsCrouching() ? 1.f : 0.5f;
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepCue, GetActorLocation(), Multiplier);
 }
