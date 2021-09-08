@@ -65,6 +65,16 @@ void AMultiShootGameCharacter::BeginPlay()
 
 void AMultiShootGameCharacter::StartFire()
 {
+	if (bDied)
+	{
+		return;
+	}
+
+	if (bReloading)
+	{
+		return;
+	}
+
 	bFired = true;
 
 	if (!bAimed)
@@ -160,6 +170,11 @@ void AMultiShootGameCharacter::BeginAim()
 		return;
 	}
 
+	if (bReloading)
+	{
+		return;
+	}
+
 	bAimed = true;
 
 	if (!GetCharacterMovement()->IsCrouching())
@@ -214,6 +229,43 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentFPSCamera->StopFire();
 }
 
+void AMultiShootGameCharacter::BeginReload()
+{
+	if (bDied)
+	{
+		return;
+	}
+
+	if (bReloading)
+	{
+		return;
+	}
+
+	if (GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	bReloading = true;
+
+	if (bAimed)
+	{
+		EndAim();
+	}
+
+	if (bFired)
+	{
+		StopFire();
+	}
+
+	PlayAnimMontage(ReloadingAnimMontage);
+}
+
+void AMultiShootGameCharacter::EndReload()
+{
+	bReloading = false;
+}
+
 void AMultiShootGameCharacter::AimLookAround()
 {
 	const FVector StartLocation = FPSCameraSceneComponent->GetComponentLocation();
@@ -231,24 +283,34 @@ void AMultiShootGameCharacter::AimLookAround()
 
 void AMultiShootGameCharacter::Jump()
 {
-	Super::Jump();
-
 	if (bDied)
 	{
 		return;
 	}
+
+	if (bReloading)
+	{
+		return;
+	}
+
+	Super::Jump();
 
 	PlayAnimMontage(JumpAnimMontage);
 }
 
 void AMultiShootGameCharacter::StopJumping()
 {
-	Super::StopJumping();
-
 	if (bDied)
 	{
 		return;
 	}
+
+	if (bReloading)
+	{
+		return;
+	}
+
+	Super::StopJumping();
 
 	PlayAnimMontage(JumpAnimMontage, 1, FName("down"));
 }
@@ -316,6 +378,9 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &AMultiShootGameCharacter::ToggleCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMultiShootGameCharacter::BeginCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMultiShootGameCharacter::EndCrouch);
+
+	// Bind reloading events
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AMultiShootGameCharacter::BeginReload);
 }
 
 void AMultiShootGameCharacter::Footstep()

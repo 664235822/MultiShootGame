@@ -47,6 +47,11 @@ protected:
 
 	void EndAim();
 
+	void BeginReload();
+
+	UFUNCTION(BlueprintCallable)
+	void EndReload();
+
 	virtual void Jump() override;
 
 	virtual void StopJumping() override;
@@ -96,6 +101,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	UAnimMontage* CrouchAimAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* ReloadingAnimMontage;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Audio")
 	USoundCue* FootstepCue;
 
@@ -107,6 +115,8 @@ private:
 	bool bAimed = false;
 
 	bool bDied = false;
+
+	bool bReloading = false;
 
 public:
 	// Called every frame
