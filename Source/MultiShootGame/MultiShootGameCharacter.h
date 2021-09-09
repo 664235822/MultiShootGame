@@ -9,7 +9,6 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MatineeCameraShake.h"
-#include "Sound/SoundCue.h"
 #include "MultiShootGameCharacter.generated.h"
 
 UCLASS(config=Game)

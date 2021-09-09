@@ -13,6 +13,15 @@ class AMultiShootGameGameMode : public AGameModeBase
 
 public:
 	AMultiShootGameGameMode();
+
+protected:
+	// Called when the game starts or when spawned
+    virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "GameMode")
+	TSubclassOf<UUserWidget> UserWidgetClass;
+
+	UUserWidget* CurrentUserWidget;
 };
 
 
