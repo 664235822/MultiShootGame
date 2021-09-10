@@ -9,6 +9,8 @@ public class MultiShootGame : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[]
-			{"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "GameplayCameras"});
+		{
+			"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "AnimGraph", "GameplayCameras"
+		});
 	}
 }

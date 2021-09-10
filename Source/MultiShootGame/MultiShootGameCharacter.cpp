@@ -3,6 +3,7 @@
 #include "MultiShootGameCharacter.h"
 #include "AIController.h"
 #include "MultiShootGameProjectile.h"
+#include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -21,6 +22,9 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SprintArmComponent"));
 	SpringArmComponent->bUsePawnControlRotation = true;
 	SpringArmComponent->SetupAttachment(RootComponent);
+
+	WeaponSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponComponent"));
+	WeaponSceneComponent->SetupAttachment(GetMesh(), BackWeaponSocketName);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
@@ -49,8 +53,7 @@ void AMultiShootGameCharacter::BeginPlay()
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->SetOwner(this);
-		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                 WeaponSocketName);
+		CurrentWeapon->AttachToComponent(WeaponSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentFPSCamera)
@@ -65,12 +68,7 @@ void AMultiShootGameCharacter::BeginPlay()
 
 void AMultiShootGameCharacter::StartFire()
 {
-	if (bDied)
-	{
-		return;
-	}
-
-	if (bReloading)
+	if (!CheckStatus())
 	{
 		return;
 	}
@@ -165,26 +163,12 @@ void AMultiShootGameCharacter::ToggleCrouch()
 
 void AMultiShootGameCharacter::BeginAim()
 {
-	if (bDied)
-	{
-		return;
-	}
-
-	if (bReloading)
+	if (!CheckStatus())
 	{
 		return;
 	}
 
 	bAimed = true;
-
-	if (!GetCharacterMovement()->IsCrouching())
-	{
-		PlayAnimMontage(AimAnimMontage);
-	}
-	else
-	{
-		PlayAnimMontage(CrouchAimAnimMontage);
-	}
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
@@ -205,15 +189,6 @@ void AMultiShootGameCharacter::EndAim()
 {
 	bAimed = false;
 
-	if (!GetCharacterMovement()->IsCrouching())
-	{
-		StopAnimMontage(AimAnimMontage);
-	}
-	else
-	{
-		StopAnimMontage(CrouchAimAnimMontage);
-	}
-
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(this, 0.1f);
 
@@ -231,6 +206,25 @@ void AMultiShootGameCharacter::EndAim()
 
 void AMultiShootGameCharacter::BeginReload()
 {
+	if (!CheckStatus())
+	{
+		return;
+	}
+
+	bReloading = true;
+
+	EndAction();
+
+	PlayAnimMontage(ReloadingAnimMontage);
+}
+
+void AMultiShootGameCharacter::EndReload()
+{
+	bReloading = false;
+}
+
+void AMultiShootGameCharacter::ToggleWeapon()
+{
 	if (bDied)
 	{
 		return;
@@ -241,25 +235,45 @@ void AMultiShootGameCharacter::BeginReload()
 		return;
 	}
 
-	bReloading = true;
-
-	if (bAimed)
+	if (bToggleWeapon)
 	{
-		EndAim();
+		return;
 	}
 
-	if (bFired)
-	{
-		StopFire();
-	}
+	bToggleWeapon = true;
 
-	PlayAnimMontage(ReloadingAnimMontage);
+	EndAction();
+
+	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
-void AMultiShootGameCharacter::EndReload()
+void AMultiShootGameCharacter::ToggleWeaponBegin()
 {
-	bReloading = false;
+	FLatentActionInfo LatentActionInfo;
+	LatentActionInfo.CallbackTarget = this;
+
+	if (!bWeapon)
+	{
+		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
+		                                        WeaponSocketName);
+		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
+		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+	}
+	else
+	{
+		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
+		                                        BackWeaponSocketName);
+		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
+		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+	}
 }
+
+void AMultiShootGameCharacter::ToggleWeaponEnd()
+{
+	bToggleWeapon = false;
+	bWeapon = !bWeapon;
+}
+
 
 void AMultiShootGameCharacter::AimLookAround()
 {
@@ -276,14 +290,49 @@ void AMultiShootGameCharacter::AimLookAround()
 	FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 }
 
-void AMultiShootGameCharacter::Death()
+bool AMultiShootGameCharacter::CheckStatus()
 {
-	bDied = true;
+	if (bDied)
+	{
+		return false;
+	}
 
+	if (bReloading)
+	{
+		return false;
+	}
+
+	if (bToggleWeapon)
+	{
+		return false;
+	}
+
+	if (!bWeapon)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void AMultiShootGameCharacter::EndAction()
+{
 	if (bAimed)
 	{
 		EndAim();
 	}
+
+	if (bFired)
+	{
+		StopFire();
+	}
+}
+
+void AMultiShootGameCharacter::Death()
+{
+	bDied = true;
+
+	EndAction();
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -342,4 +391,7 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	// Bind reloading events
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AMultiShootGameCharacter::BeginReload);
+
+	// Bind toggle weapon events
+	PlayerInputComponent->BindAction("ToggleWeapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeapon);
 }

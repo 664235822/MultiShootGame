@@ -51,6 +51,14 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
+	void ToggleWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleWeaponBegin();
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleWeaponEnd();
+
 	UFUNCTION(BlueprintCallable)
 	void Death();
 
@@ -61,6 +69,9 @@ protected:
 	USpringArmComponent* SpringArmComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* WeaponSceneComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAudioComponent* AudioComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -68,6 +79,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
 	FName WeaponSocketName = "WeaponSocket";
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+	FName BackWeaponSocketName = "BackWeaponSocket";
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* FPSCameraSceneComponent;
@@ -78,23 +92,24 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<UMatineeCameraShake> FPSCameraShakeClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* WeaponOutAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* ReloadingAnimMontage;
+
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	UAnimMontage* AimAnimMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	UAnimMontage* CrouchAimAnimMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	UAnimMontage* ReloadingAnimMontage;
-
 private:
 	void AimLookAround();
+
+	bool CheckStatus();
+
+	void EndAction();
 
 	bool bFired = false;
 
@@ -103,6 +118,10 @@ private:
 	bool bDied = false;
 
 	bool bReloading = false;
+
+	bool bWeapon = false;
+
+	bool bToggleWeapon = false;
 
 public:
 	// Called every frame
