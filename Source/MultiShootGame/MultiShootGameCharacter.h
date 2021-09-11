@@ -104,6 +104,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	bool bWeapon = false;
+
 private:
 	void AimLookAround();
 
@@ -118,9 +121,7 @@ private:
 	bool bDied = false;
 
 	bool bReloading = false;
-
-	bool bWeapon = false;
-
+	
 	bool bToggleWeapon = false;
 
 public:

@@ -141,6 +141,11 @@ void AMultiShootGameCharacter::EndFastRun()
 
 void AMultiShootGameCharacter::BeginCrouch()
 {
+	if (!bToggleWeapon)
+	{
+		return;
+	}
+
 	Crouch();
 }
 
@@ -151,6 +156,11 @@ void AMultiShootGameCharacter::EndCrouch()
 
 void AMultiShootGameCharacter::ToggleCrouch()
 {
+	if (!bToggleWeapon)
+	{
+		return;
+	}
+
 	if (!GetCharacterMovement()->IsCrouching())
 	{
 		Crouch();
@@ -243,6 +253,11 @@ void AMultiShootGameCharacter::ToggleWeapon()
 	bToggleWeapon = true;
 
 	EndAction();
+
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		UnCrouch();
+	}
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
