@@ -281,12 +281,13 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 	}
+
+	bWeapon = !bWeapon;
 }
 
 void AMultiShootGameCharacter::ToggleWeaponEnd()
 {
 	bToggleWeapon = false;
-	bWeapon = !bWeapon;
 }
 
 
