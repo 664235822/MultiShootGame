@@ -66,9 +66,6 @@ protected:
 	void Death();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UCameraComponent* CameraComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -125,11 +122,18 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentShotgun;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	bool bWeapon = true;
+
+public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* CameraComponent;
+
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	bool bWeapon = true;
+	bool bAimed = false;
 
 private:
 	void AimLookAround();
@@ -139,8 +143,6 @@ private:
 	void EndAction();
 
 	bool bFired = false;
-
-	bool bAimed = false;
 
 	bool bDied = false;
 

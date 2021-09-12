@@ -20,9 +20,6 @@ public:
 	AMultiShootGameFPSCamera();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	UCameraComponent* CameraComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMesh* WeaponMesh;
 
@@ -30,5 +27,8 @@ protected:
 	USkeletalMesh* ShotgunMesh;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UCameraComponent* CameraComponent;
+	
 	void ToggleWeapon(bool Weapon);
 };

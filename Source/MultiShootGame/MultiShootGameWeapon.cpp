@@ -3,6 +3,7 @@
 
 #include "MultiShootGameWeapon.h"
 #include "MultiShootGame.h"
+#include "MultiShootGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
@@ -27,19 +28,29 @@ void AMultiShootGameWeapon::BeginPlay()
 
 void AMultiShootGameWeapon::Fire()
 {
-	AActor* MyOwner = GetOwner();
+	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
 	if (MyOwner)
 	{
 		FVector EyeLocation;
 		FRotator EyeRotation;
-		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+
+		if (MyOwner->bAimed)
+		{
+			EyeLocation = MyOwner->CurrentFPSCamera->CameraComponent->GetComponentLocation();
+			EyeRotation = MyOwner->CurrentFPSCamera->CameraComponent->GetComponentRotation();
+		}
+		else
+		{
+			EyeLocation = MyOwner->CameraComponent->GetComponentLocation();
+			EyeRotation = MyOwner->CameraComponent->GetComponentRotation();
+		}
 
 		FVector ShotDirection = EyeRotation.Vector();
 
 		const float HalfRad = FMath::DegreesToRadians(BulletSpread);
 		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
-		FVector TraceEnd = EyeLocation + (ShotDirection * 5000.f);
+		FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
 
 		FCollisionQueryParams QueryOParams;
 		QueryOParams.AddIgnoredActor(MyOwner);
@@ -85,18 +96,6 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 	if (MuzzleEffect)
 	{
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
-	}
-
-	if (TracerEffect)
-	{
-		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
-
-		UParticleSystemComponent* TracerComponent = UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(), TracerEffect, MuzzleLocation);
-		if (TracerComponent)
-		{
-			TracerComponent->SetVectorParameter(TracerTargetName, TraceEndPoint);
-		}
 	}
 
 	APawn* MyOwner = Cast<APawn>(GetOwner());
