@@ -98,6 +98,18 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
 	}
 
+	if (TracerEffect)
+	{
+		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+
+		UParticleSystemComponent* TracerComponent = UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(), TracerEffect, MuzzleLocation);
+		if (TracerComponent)
+		{
+			TracerComponent->SetVectorParameter(TracerTargetName, TraceEndPoint);
+		}
+	}
+
 	APawn* MyOwner = Cast<APawn>(GetOwner());
 	if (MyOwner)
 	{
