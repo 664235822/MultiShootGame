@@ -23,8 +23,11 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	SpringArmComponent->bUsePawnControlRotation = true;
 	SpringArmComponent->SetupAttachment(RootComponent);
 
-	WeaponSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponComponent"));
-	WeaponSceneComponent->SetupAttachment(GetMesh(), BackWeaponSocketName);
+	WeaponSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponSceneComponent"));
+	WeaponSceneComponent->SetupAttachment(GetMesh(), WeaponSocketName);
+
+	ShotgunSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ShotgunSceneComponent"));
+	ShotgunSceneComponent->SetupAttachment(GetMesh(), BackShotgunSocketName);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
@@ -46,6 +49,9 @@ void AMultiShootGameCharacter::BeginPlay()
 	CurrentWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(WeaponClass, FVector::ZeroVector,
 	                                                              FRotator::ZeroRotator,
 	                                                              SpawnParameters);
+	CurrentShotgun = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ShotgunClass, FVector::ZeroVector,
+	                                                               FRotator::ZeroRotator,
+	                                                               SpawnParameters);
 	CurrentFPSCamera = GetWorld()->SpawnActor<AMultiShootGameFPSCamera>(FPSCameraClass, FVector::ZeroVector,
 	                                                                    FRotator::ZeroRotator,
 	                                                                    SpawnParameters);
@@ -54,6 +60,12 @@ void AMultiShootGameCharacter::BeginPlay()
 	{
 		CurrentWeapon->SetOwner(this);
 		CurrentWeapon->AttachToComponent(WeaponSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	}
+
+	if (CurrentShotgun)
+	{
+		CurrentShotgun->SetOwner(this);
+		CurrentShotgun->AttachToComponent(ShotgunSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentFPSCamera)
@@ -77,16 +89,33 @@ void AMultiShootGameCharacter::StartFire()
 
 	if (!bAimed)
 	{
-		if (CurrentWeapon)
+		if (bWeapon)
 		{
-			CurrentWeapon->StartFire();
+			if (CurrentWeapon)
+			{
+				CurrentWeapon->StartFire();
+			}
+		}
+		else
+		{
+			if (CurrentShotgun)
+			{
+				CurrentShotgun->Fire();
+			}
 		}
 	}
 	else
 	{
 		if (CurrentFPSCamera)
 		{
-			CurrentFPSCamera->StartFire();
+			if (bWeapon)
+			{
+				CurrentFPSCamera->StartFire();
+			}
+			else
+			{
+				CurrentFPSCamera->Fire();
+			}
 		}
 	}
 
@@ -101,12 +130,21 @@ void AMultiShootGameCharacter::StopFire()
 	{
 		CurrentWeapon->StopFire();
 	}
+
+	if (CurrentShotgun)
+	{
+		CurrentShotgun->StopFire();
+	}
+
 	if (CurrentFPSCamera)
 	{
 		CurrentFPSCamera->StopFire();
 	}
 
-	AudioComponent->Stop();
+	if (bWeapon)
+	{
+		AudioComponent->Stop();
+	}
 }
 
 void AMultiShootGameCharacter::MoveForward(float Value)
@@ -141,11 +179,6 @@ void AMultiShootGameCharacter::EndFastRun()
 
 void AMultiShootGameCharacter::BeginCrouch()
 {
-	if (!bToggleWeapon)
-	{
-		return;
-	}
-
 	Crouch();
 }
 
@@ -156,11 +189,6 @@ void AMultiShootGameCharacter::EndCrouch()
 
 void AMultiShootGameCharacter::ToggleCrouch()
 {
-	if (!bToggleWeapon)
-	{
-		return;
-	}
-
 	if (!GetCharacterMovement()->IsCrouching())
 	{
 		Crouch();
@@ -185,6 +213,7 @@ void AMultiShootGameCharacter::BeginAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(false);
 	CurrentWeapon->SetActorHiddenInGame(true);
+	CurrentShotgun->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
 
 	if (bFired)
@@ -193,6 +222,7 @@ void AMultiShootGameCharacter::BeginAim()
 	}
 
 	CurrentWeapon->StopFire();
+	CurrentShotgun->StopFire();
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -204,11 +234,19 @@ void AMultiShootGameCharacter::EndAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(true);
 	CurrentWeapon->SetActorHiddenInGame(false);
+	CurrentShotgun->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
 
 	if (bFired)
 	{
-		CurrentWeapon->StartFire();
+		if (bWeapon)
+		{
+			CurrentWeapon->StartFire();
+		}
+		else
+		{
+			CurrentShotgun->StartFire();
+		}
 	}
 
 	CurrentFPSCamera->StopFire();
@@ -235,17 +273,7 @@ void AMultiShootGameCharacter::EndReload()
 
 void AMultiShootGameCharacter::ToggleWeapon()
 {
-	if (bDied)
-	{
-		return;
-	}
-
-	if (bReloading)
-	{
-		return;
-	}
-
-	if (bToggleWeapon)
+	if (!CheckStatus())
 	{
 		return;
 	}
@@ -253,11 +281,6 @@ void AMultiShootGameCharacter::ToggleWeapon()
 	bToggleWeapon = true;
 
 	EndAction();
-
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		UnCrouch();
-	}
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
@@ -271,15 +294,31 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 	{
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
 		                                        WeaponSocketName);
+
+		ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                         BackShotgunSocketName);
+
 		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+
+		CurrentFPSCamera->ToggleWeapon(true);
+
+		AudioComponent->SetSound(WeaponFireCUe);
 	}
 	else
 	{
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
 		                                        BackWeaponSocketName);
+
+		ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                         ShotgunSocketName);
+
 		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+
+		CurrentFPSCamera->ToggleWeapon(false);
+
+		AudioComponent->SetSound(ShotgunFireCUe);
 	}
 
 	bWeapon = !bWeapon;
@@ -289,7 +328,6 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 {
 	bToggleWeapon = false;
 }
-
 
 void AMultiShootGameCharacter::AimLookAround()
 {
@@ -319,11 +357,6 @@ bool AMultiShootGameCharacter::CheckStatus()
 	}
 
 	if (bToggleWeapon)
-	{
-		return false;
-	}
-
-	if (!bWeapon)
 	{
 		return false;
 	}

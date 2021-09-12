@@ -19,8 +19,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	virtual void Fire();
 	
 	void PlayFireEffect(FVector TraceEndPoint);
 
@@ -69,6 +67,8 @@ protected:
 	float BulletSpread = 1.0f;
 	
 public:
+	
+	virtual void Fire();
 
 	void StartFire();
 

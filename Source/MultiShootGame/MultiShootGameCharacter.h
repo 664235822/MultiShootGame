@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MatineeCameraShake.h"
+#include "Sound/SoundCue.h"
 #include "MultiShootGameCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -72,16 +73,28 @@ protected:
 	USceneComponent* WeaponSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* ShotgunSceneComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAudioComponent* AudioComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameWeapon> WeaponClass;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<AMultiShootGameWeapon> ShotgunClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponSocketName = "WeaponSocket";
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName BackWeaponSocketName = "BackWeaponSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName ShotgunSocketName = "ShotgunSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName BackShotgunSocketName = "BackShotgunSocket";
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* FPSCameraSceneComponent;
@@ -98,14 +111,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* ReloadingAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	USoundCue* WeaponFireCUe;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	USoundCue* ShotgunFireCUe;
+
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentShotgun;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	bool bWeapon = false;
+	bool bWeapon = true;
 
 private:
 	void AimLookAround();
@@ -121,7 +143,7 @@ private:
 	bool bDied = false;
 
 	bool bReloading = false;
-	
+
 	bool bToggleWeapon = false;
 
 public:

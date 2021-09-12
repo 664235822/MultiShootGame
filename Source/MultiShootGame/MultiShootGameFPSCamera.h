@@ -22,4 +22,13 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMesh* WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	USkeletalMesh* ShotgunMesh;
+
+public:
+	void ToggleWeapon(bool Weapon);
 };
