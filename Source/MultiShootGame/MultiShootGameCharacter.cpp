@@ -278,6 +278,30 @@ void AMultiShootGameCharacter::ToggleWeapon()
 		return;
 	}
 
+	if (bWeapon)
+	{
+		return;
+	}
+
+	bToggleWeapon = true;
+
+	EndAction();
+
+	PlayAnimMontage(WeaponOutAnimMontage);
+}
+
+void AMultiShootGameCharacter::ToggleShotgun()
+{
+	if (!CheckStatus())
+	{
+		return;
+	}
+
+	if (!bWeapon)
+	{
+		return;
+	}
+
 	bToggleWeapon = true;
 
 	EndAction();
@@ -335,7 +359,7 @@ void AMultiShootGameCharacter::AimLookAround()
 
 	const FVector CameraLocation = CameraComponent->GetComponentLocation();
 	const FRotator CameraRotation = CameraComponent->GetComponentRotation();
-	const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 5000.f;
+	const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 3000.f;
 
 	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
@@ -442,5 +466,6 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AMultiShootGameCharacter::BeginReload);
 
 	// Bind toggle weapon events
-	PlayerInputComponent->BindAction("ToggleWeapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeapon);
+	PlayerInputComponent->BindAction("Weapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeapon);
+	PlayerInputComponent->BindAction("Shotgun", IE_Pressed, this, &AMultiShootGameCharacter::ToggleShotgun);
 }

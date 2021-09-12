@@ -54,6 +54,8 @@ protected:
 
 	void ToggleWeapon();
 
+	void ToggleShotgun();
+
 	UFUNCTION(BlueprintCallable)
 	void ToggleWeaponBegin();
 
