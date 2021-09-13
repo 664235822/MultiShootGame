@@ -5,6 +5,7 @@
 #include "MultiShootGame.h"
 #include "MultiShootGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 
@@ -98,16 +99,12 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
 	}
 
-	if (TracerEffect)
+	if (TracerEffectClass)
 	{
 		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+		const FRotator ShotDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEndPoint);
 
-		UParticleSystemComponent* TracerComponent = UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(), TracerEffect, MuzzleLocation);
-		if (TracerComponent)
-		{
-			TracerComponent->SetVectorParameter(TracerTargetName, TraceEndPoint);
-		}
+		GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation, ShotDirection);
 	}
 
 	APawn* MyOwner = Cast<APawn>(GetOwner());

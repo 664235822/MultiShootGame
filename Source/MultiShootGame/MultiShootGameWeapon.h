@@ -49,7 +49,7 @@ protected:
 	UParticleSystem* FleshImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	UParticleSystem* TracerEffect;
+	TSubclassOf<AActor> TracerEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
@@ -68,7 +68,7 @@ protected:
 	
 public:
 	
-	virtual void Fire();
+	void Fire();
 
 	void StartFire();
 
