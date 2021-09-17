@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EWeapon.h"
 #include "MultiShootGameFPSCamera.h"
 #include "MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
@@ -54,6 +55,8 @@ protected:
 
 	void ToggleWeapon();
 
+	void ToggleSniper();
+
 	void ToggleShotgun();
 
 	UFUNCTION(BlueprintCallable)
@@ -72,6 +75,9 @@ protected:
 	USceneComponent* WeaponSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* SniperSceneComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* ShotgunSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -81,6 +87,9 @@ protected:
 	TSubclassOf<AMultiShootGameWeapon> WeaponClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<AMultiShootGameWeapon> SniperClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameWeapon> ShotgunClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -88,6 +97,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName BackWeaponSocketName = "BackWeaponSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName SniperSocketName = "SniperSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName BackSniperSocketName = "BackSniperSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName ShotgunSocketName = "ShotgunSocket";
@@ -111,22 +126,27 @@ protected:
 	UAnimMontage* ReloadingAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	USoundCue* WeaponFireCUe;
+	USoundCue* WeaponFireCue;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	USoundCue* ShotgunFireCUe;
+	USoundCue* SniperFireCue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	USoundCue* ShotgunFireCue;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
 
 	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentSniper;
+
+	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentShotgun;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	bool bWeapon = true;
+	EWeaponMode WeaponMode = EWeaponMode::Weapon;
 
 public:
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 

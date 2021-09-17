@@ -2,6 +2,7 @@
 
 #include "MultiShootGameCharacter.h"
 #include "AIController.h"
+#include "MultiShootGameGameMode.h"
 #include "MultiShootGameProjectile.h"
 #include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
 #include "Camera/CameraComponent.h"
@@ -26,6 +27,9 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	WeaponSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponSceneComponent"));
 	WeaponSceneComponent->SetupAttachment(GetMesh(), WeaponSocketName);
 
+	SniperSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SniperSceneComponent"));
+	SniperSceneComponent->SetupAttachment(GetMesh(), BackSniperSocketName);
+
 	ShotgunSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ShotgunSceneComponent"));
 	ShotgunSceneComponent->SetupAttachment(GetMesh(), BackShotgunSocketName);
 
@@ -49,6 +53,9 @@ void AMultiShootGameCharacter::BeginPlay()
 	CurrentWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(WeaponClass, FVector::ZeroVector,
 	                                                              FRotator::ZeroRotator,
 	                                                              SpawnParameters);
+	CurrentSniper = GetWorld()->SpawnActor<AMultiShootGameWeapon>(SniperClass, FVector::ZeroVector,
+	                                                              FRotator::ZeroRotator,
+	                                                              SpawnParameters);
 	CurrentShotgun = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ShotgunClass, FVector::ZeroVector,
 	                                                               FRotator::ZeroRotator,
 	                                                               SpawnParameters);
@@ -60,6 +67,12 @@ void AMultiShootGameCharacter::BeginPlay()
 	{
 		CurrentWeapon->SetOwner(this);
 		CurrentWeapon->AttachToComponent(WeaponSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	}
+
+	if (CurrentSniper)
+	{
+		CurrentSniper->SetOwner(this);
+		CurrentSniper->AttachToComponent(SniperSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentShotgun)
@@ -89,32 +102,45 @@ void AMultiShootGameCharacter::StartFire()
 
 	if (!bAimed)
 	{
-		if (bWeapon)
+		switch (WeaponMode)
 		{
+		case EWeaponMode::Weapon:
 			if (CurrentWeapon)
 			{
 				CurrentWeapon->StartFire();
 			}
-		}
-		else
-		{
+			break;
+		case EWeaponMode::Sniper:
+			if (CurrentSniper)
+			{
+				CurrentSniper->Fire();
+				BeginReload();
+			}
+			break;
+		case EWeaponMode::Shotgun:
 			if (CurrentShotgun)
 			{
 				CurrentShotgun->Fire();
 			}
+			break;
 		}
 	}
 	else
 	{
 		if (CurrentFPSCamera)
 		{
-			if (bWeapon)
+			switch (WeaponMode)
 			{
+			case EWeaponMode::Weapon:
 				CurrentFPSCamera->StartFire();
-			}
-			else
-			{
+				break;
+			case EWeaponMode::Sniper:
 				CurrentFPSCamera->Fire();
+				BeginReload();
+				break;
+			case EWeaponMode::Shotgun:
+				CurrentFPSCamera->Fire();
+				break;
 			}
 		}
 	}
@@ -141,7 +167,7 @@ void AMultiShootGameCharacter::StopFire()
 		CurrentFPSCamera->StopFire();
 	}
 
-	if (bWeapon)
+	if (WeaponMode == EWeaponMode::Weapon)
 	{
 		AudioComponent->Stop();
 	}
@@ -213,8 +239,14 @@ void AMultiShootGameCharacter::BeginAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(false);
 	CurrentWeapon->SetActorHiddenInGame(true);
+	CurrentSniper->SetActorHiddenInGame(true);
 	CurrentShotgun->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
+
+	if (WeaponMode == EWeaponMode::Sniper)
+	{
+		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleAimWidget(true);
+	}
 
 	if (bFired)
 	{
@@ -222,6 +254,7 @@ void AMultiShootGameCharacter::BeginAim()
 	}
 
 	CurrentWeapon->StopFire();
+	CurrentSniper->StopFire();
 	CurrentShotgun->StopFire();
 }
 
@@ -234,18 +267,17 @@ void AMultiShootGameCharacter::EndAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(true);
 	CurrentWeapon->SetActorHiddenInGame(false);
+	CurrentSniper->SetActorHiddenInGame(false);
 	CurrentShotgun->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
 
+	Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleAimWidget(false);
+
 	if (bFired)
 	{
-		if (bWeapon)
+		if (WeaponMode == EWeaponMode::Weapon)
 		{
 			CurrentWeapon->StartFire();
-		}
-		else
-		{
-			CurrentShotgun->StartFire();
 		}
 	}
 
@@ -278,7 +310,7 @@ void AMultiShootGameCharacter::ToggleWeapon()
 		return;
 	}
 
-	if (bWeapon)
+	if (WeaponMode == EWeaponMode::Weapon)
 	{
 		return;
 	}
@@ -286,6 +318,29 @@ void AMultiShootGameCharacter::ToggleWeapon()
 	bToggleWeapon = true;
 
 	EndAction();
+
+	WeaponMode = EWeaponMode::Weapon;
+
+	PlayAnimMontage(WeaponOutAnimMontage);
+}
+
+void AMultiShootGameCharacter::ToggleSniper()
+{
+	if (!CheckStatus())
+	{
+		return;
+	}
+
+	if (WeaponMode == EWeaponMode::Sniper)
+	{
+		return;
+	}
+
+	bToggleWeapon = true;
+
+	EndAction();
+
+	WeaponMode = EWeaponMode::Sniper;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
@@ -297,7 +352,7 @@ void AMultiShootGameCharacter::ToggleShotgun()
 		return;
 	}
 
-	if (!bWeapon)
+	if (WeaponMode == EWeaponMode::Shotgun)
 	{
 		return;
 	}
@@ -305,6 +360,8 @@ void AMultiShootGameCharacter::ToggleShotgun()
 	bToggleWeapon = true;
 
 	EndAction();
+
+	WeaponMode = EWeaponMode::Shotgun;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
@@ -314,10 +371,14 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 	FLatentActionInfo LatentActionInfo;
 	LatentActionInfo.CallbackTarget = this;
 
-	if (!bWeapon)
+	switch (WeaponMode)
 	{
+	case EWeaponMode::Weapon:
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
 		                                        WeaponSocketName);
+
+		SniperSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                        BackSniperSocketName);
 
 		ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 		                                         BackShotgunSocketName);
@@ -325,27 +386,45 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
-		CurrentFPSCamera->ToggleWeapon(true);
+		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Weapon);
 
-		AudioComponent->SetSound(WeaponFireCUe);
-	}
-	else
-	{
-		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
+		AudioComponent->SetSound(WeaponFireCue);
+		break;
+	case EWeaponMode::Sniper:
+		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 		                                        BackWeaponSocketName);
 
-		ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                         ShotgunSocketName);
+		SniperSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
+		                                        SniperSocketName);
 
-		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
+		ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                         BackShotgunSocketName);
+
+		UKismetSystemLibrary::MoveComponentTo(SniperSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
-		CurrentFPSCamera->ToggleWeapon(false);
+		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Sniper);
 
-		AudioComponent->SetSound(ShotgunFireCUe);
+		AudioComponent->SetSound(SniperFireCue);
+		break;
+	case EWeaponMode::Shotgun:
+		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                        BackWeaponSocketName);
+
+		SniperSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                        BackWeaponSocketName);
+
+		ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
+		                                         ShotgunSocketName);
+
+		UKismetSystemLibrary::MoveComponentTo(ShotgunSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
+		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+
+		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Shotgun);
+
+		AudioComponent->SetSound(ShotgunFireCue);
+		break;
 	}
-
-	bWeapon = !bWeapon;
 }
 
 void AMultiShootGameCharacter::ToggleWeaponEnd()
@@ -390,9 +469,12 @@ bool AMultiShootGameCharacter::CheckStatus()
 
 void AMultiShootGameCharacter::EndAction()
 {
-	if (bAimed)
+	if (WeaponMode != EWeaponMode::Sniper)
 	{
-		EndAim();
+		if (bAimed)
+		{
+			EndAim();
+		}
 	}
 
 	if (bFired)
@@ -467,5 +549,6 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	// Bind toggle weapon events
 	PlayerInputComponent->BindAction("Weapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeapon);
+	PlayerInputComponent->BindAction("Sniper", IE_Pressed, this, &AMultiShootGameCharacter::ToggleSniper);
 	PlayerInputComponent->BindAction("Shotgun", IE_Pressed, this, &AMultiShootGameCharacter::ToggleShotgun);
 }

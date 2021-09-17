@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EWeapon.h"
 #include "MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
 #include "MultiShootGameFPSCamera.generated.h"
@@ -22,7 +23,7 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMesh* WeaponMesh;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMesh* ShotgunMesh;
 
@@ -30,5 +31,5 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	UCameraComponent* CameraComponent;
 	
-	void ToggleWeapon(bool Weapon);
+	void ToggleWeapon(EWeaponMode WeaponMode);
 };

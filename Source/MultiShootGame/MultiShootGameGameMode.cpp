@@ -22,8 +22,23 @@ void AMultiShootGameGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	check(UserWidgetClass);
-	
-	CurrentUserWidget = CreateWidget(GetWorld(), UserWidgetClass);
+	check(DefaultUserWidgetClass);
+
+	CurrentUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
 	CurrentUserWidget->AddToViewport();
+}
+
+void AMultiShootGameGameMode::ToggleAimWidget(bool SniperAimed)
+{
+	CurrentUserWidget->RemoveFromParent();
+	if (SniperAimed)
+	{
+		CurrentUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
+		CurrentUserWidget->AddToViewport();
+	}
+	else
+	{
+		CurrentUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
+		CurrentUserWidget->AddToViewport();
+	}
 }

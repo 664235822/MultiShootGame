@@ -19,9 +19,15 @@ protected:
     virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "GameMode")
-	TSubclassOf<UUserWidget> UserWidgetClass;
+	TSubclassOf<UUserWidget> DefaultUserWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GameMode")
+	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
 	UUserWidget* CurrentUserWidget;
+
+public:
+	void ToggleAimWidget(bool SniperAimed);
 };
 
 
