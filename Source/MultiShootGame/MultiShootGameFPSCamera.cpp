@@ -11,6 +11,22 @@ AMultiShootGameFPSCamera::AMultiShootGameFPSCamera()
 	CameraComponent->SetupAttachment(WeaponMeshComponent);
 }
 
+void AMultiShootGameFPSCamera::BeginPlay()
+{
+	Super::BeginPlay();
+
+	DefaultFOV = CameraComponent->FieldOfView;
+}
+
+void AMultiShootGameFPSCamera::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	const float TargetFOV = bWantToZoom ? ZoomedFOV : DefaultFOV;
+	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
+	CameraComponent->SetFieldOfView(CurrentFOV);
+}
+
 void AMultiShootGameFPSCamera::ToggleWeapon(EWeaponMode WeaponMode)
 {
 	switch (WeaponMode)
@@ -35,4 +51,9 @@ void AMultiShootGameFPSCamera::ToggleWeapon(EWeaponMode WeaponMode)
 		}
 		break;
 	}
+}
+
+void AMultiShootGameFPSCamera::SetZoomed(bool WantToZoom)
+{
+	bWantToZoom=WantToZoom;
 }

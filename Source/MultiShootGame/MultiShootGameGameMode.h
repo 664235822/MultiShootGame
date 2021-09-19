@@ -24,10 +24,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GameMode")
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
-	UUserWidget* CurrentUserWidget;
+	UUserWidget* CurrentDefaultUserWidget;
+
+	UUserWidget* CurrentSniperUserWidget;
 
 public:
-	void ToggleAimWidget(bool SniperAimed);
+	void ToggleDefaultAimWidget(bool Enabled);
+
+	void ToggleSniperAimWidget(bool Enabled);
 };
 
 

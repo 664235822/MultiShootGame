@@ -245,7 +245,8 @@ void AMultiShootGameCharacter::BeginAim()
 
 	if (WeaponMode == EWeaponMode::Sniper)
 	{
-		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleAimWidget(true);
+		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleSniperAimWidget(true);
+		CurrentFPSCamera->SetZoomed(true);
 	}
 
 	if (bFired)
@@ -271,7 +272,11 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentShotgun->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
 
-	Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleAimWidget(false);
+	if(WeaponMode==EWeaponMode::Sniper)
+	{
+		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleSniperAimWidget(false);
+		CurrentFPSCamera->SetZoomed(false);
+	}
 
 	if (bFired)
 	{
@@ -340,6 +345,8 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	EndAction();
 
+	Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleSniperAimWidget(false);
+
 	WeaponMode = EWeaponMode::Sniper;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
@@ -387,7 +394,9 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
 		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Weapon);
-
+		
+		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(true);
+		
 		AudioComponent->SetSound(WeaponFireCue);
 		break;
 	case EWeaponMode::Sniper:
@@ -405,6 +414,8 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Sniper);
 
+		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(false);
+		
 		AudioComponent->SetSound(SniperFireCue);
 		break;
 	case EWeaponMode::Shotgun:
@@ -421,7 +432,9 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
 		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Shotgun);
-
+		
+		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(true);
+		
 		AudioComponent->SetSound(ShotgunFireCue);
 		break;
 	}

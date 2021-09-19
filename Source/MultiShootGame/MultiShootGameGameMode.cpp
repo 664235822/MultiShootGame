@@ -24,21 +24,36 @@ void AMultiShootGameGameMode::BeginPlay()
 
 	check(DefaultUserWidgetClass);
 
-	CurrentUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
-	CurrentUserWidget->AddToViewport();
+	ToggleDefaultAimWidget(true);
 }
 
-void AMultiShootGameGameMode::ToggleAimWidget(bool SniperAimed)
+void AMultiShootGameGameMode::ToggleDefaultAimWidget(bool Enabled)
 {
-	CurrentUserWidget->RemoveFromParent();
-	if (SniperAimed)
+	if (Enabled)
 	{
-		CurrentUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
-		CurrentUserWidget->AddToViewport();
+		CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
+		CurrentDefaultUserWidget->AddToViewport();
+	}else
+	{
+		if(CurrentDefaultUserWidget)
+		{
+			CurrentDefaultUserWidget->RemoveFromParent();
+		}
+	}
+}
+
+void AMultiShootGameGameMode::ToggleSniperAimWidget(bool Enabled)
+{
+	if (Enabled)
+	{
+		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
+		CurrentSniperUserWidget->AddToViewport();
 	}
 	else
 	{
-		CurrentUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
-		CurrentUserWidget->AddToViewport();
+		if(CurrentSniperUserWidget)
+		{
+			CurrentSniperUserWidget->RemoveFromParent();
+		}
 	}
 }
