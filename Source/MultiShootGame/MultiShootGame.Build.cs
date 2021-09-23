@@ -10,7 +10,8 @@ public class MultiShootGame : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "AnimGraph", "GameplayCameras"
+			"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "AIModule", "AnimGraph",
+			"GameplayCameras"
 		});
 	}
 }

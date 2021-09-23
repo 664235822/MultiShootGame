@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EWeapon.h"
-#include "MultiShootGameFPSCamera.h"
-#include "MultiShootGameWeapon.h"
+#include "Weapon/EWeapon.h"
+#include "Weapon/MultiShootGameFPSCamera.h"
+#include "Weapon/MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
