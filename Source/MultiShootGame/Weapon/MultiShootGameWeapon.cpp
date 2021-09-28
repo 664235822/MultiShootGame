@@ -3,7 +3,7 @@
 
 #include "MultiShootGameWeapon.h"
 #include "../MultiShootGame.h"
-#include "../MultiShootGameCharacter.h"
+#include "../Character/MultiShootGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"

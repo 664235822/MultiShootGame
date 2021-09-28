@@ -2,7 +2,7 @@
 
 #include "MultiShootGameGameMode.h"
 #include "MultiShootGameHUD.h"
-#include "MultiShootGameCharacter.h"
+#include "Character/MultiShootGameCharacter.h"
 #include "Blueprint/UserWidget.h"
 #include "UObject/ConstructorHelpers.h"
 
