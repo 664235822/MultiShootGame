@@ -44,7 +44,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 	
 	void ToggleWeapon(EWeaponMode WeaponMode);

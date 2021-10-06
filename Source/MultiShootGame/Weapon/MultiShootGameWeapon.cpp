@@ -2,6 +2,8 @@
 
 
 #include "MultiShootGameWeapon.h"
+
+#include "MultiShootGameProjectile.h"
 #include "../MultiShootGame.h"
 #include "../Character/MultiShootGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -52,41 +54,8 @@ void AMultiShootGameWeapon::Fire()
 		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
 		FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
-
-		FCollisionQueryParams QueryOParams;
-		QueryOParams.AddIgnoredActor(MyOwner);
-		QueryOParams.AddIgnoredActor(this);
-		QueryOParams.bTraceComplex = true;
-		QueryOParams.bReturnPhysicalMaterial = true;
-
-		FVector TraceEndPoint = TraceEnd;
-
-		EPhysicalSurface SurfaceType = SurfaceType_Default;
-
-		FHitResult Hit;
-		if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd,COLLISION_WEAPON, QueryOParams))
-		{
-			AActor* HitActor = Hit.GetActor();
-
-			SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
-
-			float CurrentDamage = BaseDamage;
-
-			if (SurfaceType == SURFACE_HEAD)
-			{
-				CurrentDamage *= 2.5f;
-			}
-
-			UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit,
-			                                   MyOwner->GetInstigatorController(),
-			                                   MyOwner, DamageType);
-
-			PlayImpactEffect(SurfaceType, Hit.ImpactPoint);
-
-			TraceEndPoint = Hit.ImpactPoint;
-		}
-
-		PlayFireEffect(TraceEndPoint);
+		
+		PlayFireEffect(TraceEnd);
 
 		LastFireTime = GetWorld()->TimeSeconds;
 	}
@@ -104,7 +73,9 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 		const FRotator ShotDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEndPoint);
 
-		GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation, ShotDirection);
+		AMultiShootGameProjectile* Projectile = Cast<AMultiShootGameProjectile>(
+			GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation + ShotDirection.Vector() * 120, ShotDirection));
+		Projectile->SetOwner(this);
 	}
 
 	APawn* MyOwner = Cast<APawn>(GetOwner());
@@ -115,32 +86,6 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		{
 			PlayerController->ClientPlayCameraShake(FireCameraShake);
 		}
-	}
-}
-
-void AMultiShootGameWeapon::PlayImpactEffect(EPhysicalSurface SurfaceType, FVector ImpactPoint)
-{
-	UParticleSystem* SelectEffect = nullptr;
-	switch (SurfaceType)
-	{
-	case SURFACE_HEAD:
-	case SURFACE_BODY:
-		SelectEffect = FleshImpactEffect;
-		break;
-	default:
-		SelectEffect = DefaultImpactEffect;
-		break;
-	}
-
-	if (SelectEffect)
-	{
-		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
-
-		FVector TraceDirection = ImpactPoint - MuzzleLocation;
-		TraceDirection.Normalize();
-
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectEffect, ImpactPoint,
-		                                         TraceDirection.Rotation());
 	}
 }
 

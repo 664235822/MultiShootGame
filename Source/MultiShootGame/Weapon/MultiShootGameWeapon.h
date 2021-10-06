@@ -22,14 +22,6 @@ protected:
 	
 	void PlayFireEffect(FVector TraceEndPoint);
 
-	void PlayImpactEffect(EPhysicalSurface SurfaceType, FVector ImpactPoint);
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<UDamageType> DamageType;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float BaseDamage = 20.0f;;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName MuzzleSocketName = "Muzzle";
 
@@ -41,12 +33,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	UParticleSystem* MuzzleEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	UParticleSystem* DefaultImpactEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	UParticleSystem* FleshImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AActor> TracerEffectClass;
