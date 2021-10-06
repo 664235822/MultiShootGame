@@ -43,16 +43,16 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 {
 	EPhysicalSurface SurfaceType = SurfaceType_Default;
 
-	if (OtherActor != nullptr) {
+	if (Cast<ACharacter>(OtherActor)) {
 		
-		SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+		SurfaceType = SURFACE_CHARACTER;
 
 		float CurrentDamage = BaseDamage;
 
-		if (SurfaceType == SURFACE_HEAD)
-		{
-			CurrentDamage *= 2.5f;
-		}
+		//if (SurfaceType == SURFACE_HEAD)
+		//{
+		//	CurrentDamage *= 2.5f;
+		//}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, CurrentDamage, GetActorRotation().Vector(), Hit,
 										GetOwner()->GetInstigatorController(),
@@ -70,8 +70,7 @@ void AMultiShootGameProjectile::PlayImpactEffect(EPhysicalSurface SurfaceType, F
 	UParticleSystem* SelectEffect = nullptr;
 	switch (SurfaceType)
 	{
-	case SURFACE_HEAD:
-	case SURFACE_BODY:
+	case SURFACE_CHARACTER:
 		SelectEffect = FleshImpactEffect;
 		break;
 	default:
