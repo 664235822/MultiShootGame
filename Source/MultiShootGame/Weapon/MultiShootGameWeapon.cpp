@@ -68,14 +68,14 @@ void AMultiShootGameWeapon::Fire()
 		{
 			AActor* HitActor = Hit.GetActor();
 
-			//SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+			SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 
 			float CurrentDamage = BaseDamage;
 
-			//if (SurfaceType == SURFACE_FLESHVULNERABLE)
-			//{
-			//	CurrentDamage *= 2.5f;
-			//}
+			if (SurfaceType == SURFACE_HEAD)
+			{
+				CurrentDamage *= 2.5f;
+			}
 
 			UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit,
 			                                   MyOwner->GetInstigatorController(),
@@ -123,8 +123,8 @@ void AMultiShootGameWeapon::PlayImpactEffect(EPhysicalSurface SurfaceType, FVect
 	UParticleSystem* SelectEffect = nullptr;
 	switch (SurfaceType)
 	{
-	case SURFACE_FLESHDEFAULT:
-	case SURFACE_FLESHVULNERABLE:
+	case SURFACE_HEAD:
+	case SURFACE_BODY:
 		SelectEffect = FleshImpactEffect;
 		break;
 	default:

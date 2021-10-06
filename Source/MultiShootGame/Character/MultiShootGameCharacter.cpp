@@ -2,6 +2,7 @@
 
 #include "MultiShootGameCharacter.h"
 #include "AIController.h"
+#include "../MultiShootGame.h"
 #include "../MultiShootGameGameMode.h"
 #include "../Weapon/MultiShootGameProjectile.h"
 #include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
