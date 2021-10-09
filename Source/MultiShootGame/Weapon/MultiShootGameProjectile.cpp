@@ -8,13 +8,14 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 
-AMultiShootGameProjectile::AMultiShootGameProjectile() 
+AMultiShootGameProjectile::AMultiShootGameProjectile()
 {
 	// Use a sphere as a simple collision representation
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
-	CollisionComponent->InitBoxExtent(FVector(70.f,5.f,5.f));
+	CollisionComponent->InitBoxExtent(FVector(70.f, 5.f, 5.f));
 	CollisionComponent->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameProjectile::OnHit);		// set up a notification for when this component hits something blocking
+	CollisionComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameProjectile::OnHit);
+	// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
 	CollisionComponent->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
@@ -23,8 +24,9 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	// Set as root component
 	RootComponent = CollisionComponent;
 
-	ParticleSystemComponent=CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystem"));
+	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystem"));
 	ParticleSystemComponent->SetupAttachment(CollisionComponent);
+	ParticleSystemComponent->OnParticleCollide.AddDynamic(this, &AMultiShootGameProjectile::OnParticleCollide);
 
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComponent"));
@@ -39,12 +41,13 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	InitialLifeSpan = 3.0f;
 }
 
-void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                      FVector NormalImpulse, const FHitResult& Hit)
 {
 	EPhysicalSurface SurfaceType = SurfaceType_Default;
 
-	if (Cast<ACharacter>(OtherActor)) {
-		
+	if (Cast<ACharacter>(OtherActor))
+	{
 		SurfaceType = SURFACE_CHARACTER;
 
 		float CurrentDamage = BaseDamage;
@@ -55,9 +58,8 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		//}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, CurrentDamage, GetActorRotation().Vector(), Hit,
-										GetOwner()->GetInstigatorController(),
-										GetOwner(), DamageType);
-		
+		                                   GetOwner()->GetInstigatorController(),
+		                                   GetOwner(), DamageType);
 	}
 
 	PlayImpactEffect(SurfaceType, Hit.ImpactPoint);
@@ -80,7 +82,15 @@ void AMultiShootGameProjectile::PlayImpactEffect(EPhysicalSurface SurfaceType, F
 
 	if (SelectEffect)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectEffect, ImpactPoint,
-												GetActorRotation());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectEffect, ImpactPoint, GetActorRotation());
 	}
+}
+
+void AMultiShootGameProjectile::OnParticleCollide(FName EventName, float EmitterTime, int32 ParticleTime,
+                                                  FVector Location, FVector Velocity, FVector Direction,
+                                                  FVector Normal,
+                                                  FName BoneName, UPhysicalMaterial* PhysMat)
+{
+	UGameplayStatics::SpawnDecalAtLocation(GetWorld(), BloodDecalMaterial, FVector(80.f, 80.f, 80.f), Location,
+	                                       Direction.Rotation());
 }
