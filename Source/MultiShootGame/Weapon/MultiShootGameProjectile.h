@@ -29,25 +29,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float BaseDamage = 20.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
 	TSubclassOf<UDamageType> DamageType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	UParticleSystem* DefaultImpactEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	TSubclassOf<AActor> DefaultImpactEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	UParticleSystem* FleshImpactEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	UMaterial* BloodDecalMaterial;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	TSubclassOf<AActor> FleshImpactEffect;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);
 
 	void PlayImpactEffect(EPhysicalSurface SurfaceType, FVector ImpactPoint);
-
-	UFUNCTION()
-	void OnParticleCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity,
-	                       FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat);
 };

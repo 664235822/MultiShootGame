@@ -4,12 +4,10 @@
 #include "MultiShootGameWeapon.h"
 
 #include "MultiShootGameProjectile.h"
-#include "../MultiShootGame.h"
 #include "../Character/MultiShootGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
-#include "PhysicalMaterials/PhysicalMaterial.h"
 
 // Sets default values
 AMultiShootGameWeapon::AMultiShootGameWeapon()

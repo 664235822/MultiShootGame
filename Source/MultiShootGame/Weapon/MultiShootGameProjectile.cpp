@@ -26,7 +26,6 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 
 	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystem"));
 	ParticleSystemComponent->SetupAttachment(CollisionComponent);
-	ParticleSystemComponent->OnParticleCollide.AddDynamic(this, &AMultiShootGameProjectile::OnParticleCollide);
 
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComponent"));
@@ -38,7 +37,7 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	ProjectileMovement->ProjectileGravityScale = 0;
 
 	// Die after 3 seconds by default
-	InitialLifeSpan = 3.0f;
+	InitialLifeSpan = 8.0f;
 }
 
 void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -62,35 +61,23 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		                                   GetOwner(), DamageType);
 	}
 
-	PlayImpactEffect(SurfaceType, Hit.ImpactPoint);
+	PlayImpactEffect(SurfaceType, Hit.Location);
+
+	FLatentActionInfo LatentActionInfo;
+	UKismetSystemLibrary::Delay(GetWorld(), 3.f, LatentActionInfo);
 
 	Destroy();
 }
 
 void AMultiShootGameProjectile::PlayImpactEffect(EPhysicalSurface SurfaceType, FVector ImpactPoint)
 {
-	UParticleSystem* SelectEffect = nullptr;
 	switch (SurfaceType)
 	{
 	case SURFACE_CHARACTER:
-		SelectEffect = FleshImpactEffect;
+		GetWorld()->SpawnActor<AActor>(FleshImpactEffect,ImpactPoint,GetActorRotation());
 		break;
 	default:
-		SelectEffect = DefaultImpactEffect;
+		GetWorld()->SpawnActor<AActor>(DefaultImpactEffect,ImpactPoint,GetActorRotation());
 		break;
 	}
-
-	if (SelectEffect)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectEffect, ImpactPoint, GetActorRotation());
-	}
-}
-
-void AMultiShootGameProjectile::OnParticleCollide(FName EventName, float EmitterTime, int32 ParticleTime,
-                                                  FVector Location, FVector Velocity, FVector Direction,
-                                                  FVector Normal,
-                                                  FName BoneName, UPhysicalMaterial* PhysMat)
-{
-	UGameplayStatics::SpawnDecalAtLocation(GetWorld(), BloodDecalMaterial, FVector(80.f, 80.f, 80.f), Location,
-	                                       Direction.Rotation());
 }

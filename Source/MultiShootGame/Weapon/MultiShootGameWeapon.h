@@ -22,14 +22,14 @@ protected:
 	
 	void PlayFireEffect(FVector TraceEndPoint);
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Components")
+	USkeletalMeshComponent* WeaponMeshComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName MuzzleSocketName = "Muzzle";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName TracerTargetName = "Target";
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Components")
-	USkeletalMeshComponent* WeaponMeshComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	UParticleSystem* MuzzleEffect;
