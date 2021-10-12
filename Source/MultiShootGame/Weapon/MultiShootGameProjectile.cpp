@@ -20,6 +20,7 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	// Players can't walk on it
 	CollisionComponent->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
 	CollisionComponent->CanCharacterStepUpOn = ECB_No;
+	CollisionComponent->bReturnMaterialOnMove = true;
 
 	// Set as root component
 	RootComponent = CollisionComponent;
