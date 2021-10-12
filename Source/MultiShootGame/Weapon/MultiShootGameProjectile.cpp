@@ -43,18 +43,16 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                       FVector NormalImpulse, const FHitResult& Hit)
 {
-	EPhysicalSurface SurfaceType = SurfaceType_Default;
+	EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 
 	if (Cast<ACharacter>(OtherActor))
 	{
-		SurfaceType = SURFACE_CHARACTER;
-
 		float CurrentDamage = BaseDamage;
 
-		//if (SurfaceType == SURFACE_HEAD)
-		//{
-		//	CurrentDamage *= 2.5f;
-		//}
+		if (SurfaceType == SURFACE_HEAD)
+		{
+			CurrentDamage *= 2.5f;
+		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, CurrentDamage, GetActorRotation().Vector(), Hit,
 		                                   GetOwner()->GetInstigatorController(),
@@ -62,9 +60,6 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 	}
 
 	PlayImpactEffect(SurfaceType, Hit.Location);
-
-	FLatentActionInfo LatentActionInfo;
-	UKismetSystemLibrary::Delay(GetWorld(), 3.f, LatentActionInfo);
 
 	Destroy();
 }
@@ -74,10 +69,11 @@ void AMultiShootGameProjectile::PlayImpactEffect(EPhysicalSurface SurfaceType, F
 	switch (SurfaceType)
 	{
 	case SURFACE_CHARACTER:
-		GetWorld()->SpawnActor<AActor>(FleshImpactEffect,ImpactPoint,GetActorRotation());
+	case SURFACE_HEAD:
+		GetWorld()->SpawnActor<AActor>(FleshImpactEffect, ImpactPoint, GetActorRotation());
 		break;
 	default:
-		GetWorld()->SpawnActor<AActor>(DefaultImpactEffect,ImpactPoint,GetActorRotation());
+		GetWorld()->SpawnActor<AActor>(DefaultImpactEffect, ImpactPoint, GetActorRotation());
 		break;
 	}
 }
