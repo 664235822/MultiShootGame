@@ -38,7 +38,7 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	ProjectileMovement->ProjectileGravityScale = 0;
 
 	// Die after 3 seconds by default
-	InitialLifeSpan = 8.0f;
+	InitialLifeSpan = 4.0f;
 }
 
 void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
