@@ -72,7 +72,7 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		const FRotator ShotDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEndPoint);
 
 		AMultiShootGameProjectile* Projectile = Cast<AMultiShootGameProjectile>(
-			GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation + ShotDirection.Vector() * 120, ShotDirection));
+			GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation, ShotDirection));
 		Projectile->SetOwner(this);
 	}
 

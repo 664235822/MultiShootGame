@@ -53,5 +53,5 @@ void AMultiShootGameFPSCamera::ToggleWeapon(EWeaponMode WeaponMode)
 
 void AMultiShootGameFPSCamera::SetZoomed(bool WantToZoom)
 {
-	bWantToZoom=WantToZoom;
+	bWantToZoom = WantToZoom;
 }
