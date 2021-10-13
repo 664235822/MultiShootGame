@@ -6,3 +6,5 @@
 
 #define SURFACE_CHARACTER SurfaceType1
 #define SURFACE_HEAD SurfaceType2
+#define SURFACE_STONE SurfaceType3
+#define SURFACE_WOOD SurfaceType4

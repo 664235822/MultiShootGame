@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ImpactParticleSystem.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -33,11 +34,17 @@ protected:
 	TSubclassOf<UDamageType> DamageType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
-	TSubclassOf<AActor> DefaultImpactEffect;
+	TSubclassOf<AImpactParticleSystem> DefaultImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
-	TSubclassOf<AActor> FleshImpactEffect;
+	TSubclassOf<AImpactParticleSystem> FleshImpactEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	TSubclassOf<AImpactParticleSystem> StoneImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	TSubclassOf<AImpactParticleSystem> WoodImpactEffect;
+	
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);

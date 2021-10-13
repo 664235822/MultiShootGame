@@ -73,6 +73,12 @@ void AMultiShootGameProjectile::PlayImpactEffect(EPhysicalSurface SurfaceType, F
 	case SURFACE_HEAD:
 		GetWorld()->SpawnActor<AActor>(FleshImpactEffect, ImpactPoint, GetActorRotation());
 		break;
+	case SURFACE_STONE:
+		GetWorld()->SpawnActor<AActor>(StoneImpactEffect, ImpactPoint, GetActorRotation());
+		break;
+	case SURFACE_WOOD:
+		GetWorld()->SpawnActor<AActor>(WoodImpactEffect, ImpactPoint, GetActorRotation());
+		break;
 	default:
 		GetWorld()->SpawnActor<AActor>(DefaultImpactEffect, ImpactPoint, GetActorRotation());
 		break;
