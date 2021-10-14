@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 
@@ -62,25 +63,32 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 
 	PlayImpactEffect(SurfaceType, Hit.Location);
 
+	UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, FVector(10.f, 10.f, 10.f), Hit.GetComponent(), NAME_None,
+	                                     Hit.Location, Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition);
+
 	Destroy();
 }
 
 void AMultiShootGameProjectile::PlayImpactEffect(EPhysicalSurface SurfaceType, FVector ImpactPoint)
 {
+	TSubclassOf<AImpactParticleSystem> SelectEffect = nullptr;
+
 	switch (SurfaceType)
 	{
 	case SURFACE_CHARACTER:
 	case SURFACE_HEAD:
-		GetWorld()->SpawnActor<AActor>(FleshImpactEffect, ImpactPoint, GetActorRotation());
+		SelectEffect = FleshImpactEffect;
 		break;
 	case SURFACE_STONE:
-		GetWorld()->SpawnActor<AActor>(StoneImpactEffect, ImpactPoint, GetActorRotation());
+		SelectEffect = StoneImpactEffect;
 		break;
 	case SURFACE_WOOD:
-		GetWorld()->SpawnActor<AActor>(WoodImpactEffect, ImpactPoint, GetActorRotation());
+		SelectEffect = WoodImpactEffect;
 		break;
 	default:
-		GetWorld()->SpawnActor<AActor>(DefaultImpactEffect, ImpactPoint, GetActorRotation());
+		SelectEffect = DefaultImpactEffect;
 		break;
 	}
+
+	GetWorld()->SpawnActor<AActor>(SelectEffect, ImpactPoint, GetActorRotation());
 }

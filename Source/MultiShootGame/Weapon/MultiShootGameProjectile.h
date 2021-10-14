@@ -44,7 +44,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
 	TSubclassOf<AImpactParticleSystem> WoodImpactEffect;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UMaterial* BulletDecalMaterial;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);
