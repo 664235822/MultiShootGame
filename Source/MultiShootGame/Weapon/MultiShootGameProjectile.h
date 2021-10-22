@@ -46,10 +46,10 @@ protected:
 	TSubclassOf<AImpactParticleSystem> WoodImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
-	UMaterial* BulletDecalMaterial;
+	UMaterialInterface* BulletDecalMaterial;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
-	FVector BulletDecalSize = FVector(100.f, 5.f, 5.f);
+	FVector BulletDecalSize;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,

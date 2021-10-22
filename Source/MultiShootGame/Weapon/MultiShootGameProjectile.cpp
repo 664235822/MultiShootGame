@@ -57,14 +57,15 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, CurrentDamage, GetActorRotation().Vector(), Hit,
-		                                   GetOwner()->GetInstigatorController(),
-		                                   GetOwner(), DamageType);
+		                                   GetOwner()->GetInstigatorController(), GetOwner(), DamageType);
+	}
+	else
+	{
+		UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None, Hit.Location,
+		                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition);
 	}
 
 	PlayImpactEffect(SurfaceType, Hit.Location);
-
-	UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None, Hit.Location,
-	                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition);
 
 	Destroy();
 }
