@@ -20,7 +20,7 @@ protected:
 	UParticleSystemComponent* ParticleSystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Impact")
-	UMaterial* DecalMaterial;
+	UMaterialInterface* DecalMaterial;
 
 	UFUNCTION()
 	void OnParticleCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity,

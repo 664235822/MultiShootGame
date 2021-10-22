@@ -19,12 +19,12 @@ AImpactParticleSystem::AImpactParticleSystem()
 }
 
 void AImpactParticleSystem::OnParticleCollide(FName EventName, float EmitterTime, int32 ParticleTime,
-                                                   FVector Location, FVector Velocity, FVector Direction,
-                                                   FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat)
+                                              FVector Location, FVector Velocity, FVector Direction,
+                                              FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat)
 {
 	if (DecalMaterial)
 	{
 		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, FVector(80.f, 80.f, 80.f), Location,
-		                                       Direction.Rotation());
+		                                       Normal.Rotation());
 	}
 }
