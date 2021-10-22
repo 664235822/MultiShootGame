@@ -63,8 +63,8 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 
 	PlayImpactEffect(SurfaceType, Hit.Location);
 
-	UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, FVector(100.f, 5.f, 5.f), OtherComp, NAME_None,
-	                                     Hit.Location, Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition);
+	UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None, Hit.Location,
+	                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition);
 
 	Destroy();
 }

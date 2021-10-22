@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Impact")
 	UMaterialInterface* DecalMaterial;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Impact")
+	FVector DecalSize = FVector(80.f, 80.f, 80.f);
+
 	UFUNCTION()
 	void OnParticleCollide(FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity,
 	                       FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat);
