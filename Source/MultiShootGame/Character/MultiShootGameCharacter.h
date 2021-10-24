@@ -125,6 +125,9 @@ protected:
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<UMatineeCameraShake> MovementCameraShakeClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<UMatineeCameraShake> FPSCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")

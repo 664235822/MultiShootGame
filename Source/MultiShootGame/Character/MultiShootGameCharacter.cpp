@@ -184,7 +184,7 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 
 	if (bAimed && Value != 0)
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(FPSCameraShakeClass);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(MovementCameraShakeClass);
 	}
 }
 
@@ -194,7 +194,7 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 
 	if (bAimed && Value != 0)
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(FPSCameraShakeClass);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(MovementCameraShakeClass);
 	}
 }
 
@@ -248,6 +248,8 @@ void AMultiShootGameCharacter::BeginAim()
 	CurrentShotgun->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
 
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
+
 	if (WeaponMode == EWeaponMode::Sniper)
 	{
 		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleSniperAimWidget(true);
@@ -276,6 +278,8 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentSniper->SetActorHiddenInGame(false);
 	CurrentShotgun->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
 
 	if (WeaponMode == EWeaponMode::Sniper)
 	{
