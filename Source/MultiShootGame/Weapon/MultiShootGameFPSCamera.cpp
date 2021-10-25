@@ -55,3 +55,16 @@ void AMultiShootGameFPSCamera::SetZoomed(bool WantToZoom)
 {
 	bWantToZoom = WantToZoom;
 }
+
+void AMultiShootGameFPSCamera::PlaySniperCameraShake()
+{
+	APawn* MyOwner = Cast<APawn>(GetOwner());
+	if (MyOwner)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
+		if (PlayerController)
+		{
+			PlayerController->ClientPlayCameraShake(SniperCameraShake);
+		}
+	}
+}

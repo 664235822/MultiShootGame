@@ -40,6 +40,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<UMatineeCameraShake> SniperCameraShake;
+
 	FTimerHandle TimerHandle;
 
 	float LastFireTime;

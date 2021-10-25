@@ -52,7 +52,7 @@ void AMultiShootGameWeapon::Fire()
 		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
 		FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
-		
+
 		PlayFireEffect(TraceEnd);
 
 		LastFireTime = GetWorld()->TimeSeconds;
@@ -76,13 +76,23 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		Projectile->SetOwner(this);
 	}
 
-	APawn* MyOwner = Cast<APawn>(GetOwner());
+	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
 	if (MyOwner)
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
 		if (PlayerController)
 		{
-			PlayerController->ClientPlayCameraShake(FireCameraShake);
+			if (MyOwner->WeaponMode != EWeaponMode::Sniper)
+			{
+				PlayerController->ClientPlayCameraShake(FireCameraShake);
+			}
+			else
+			{
+				if (MyOwner->bAimed)
+				{
+					PlayerController->ClientPlayCameraShake(SniperCameraShake);
+				}
+			}
 		}
 	}
 }

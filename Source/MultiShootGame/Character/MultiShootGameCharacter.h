@@ -154,15 +154,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentShotgun;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	EWeaponMode WeaponMode = EWeaponMode::Weapon;
-
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	EWeaponMode WeaponMode = EWeaponMode::Weapon;
 
 	bool bAimed = false;
 

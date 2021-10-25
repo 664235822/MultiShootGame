@@ -23,15 +23,15 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMesh* WeaponMesh;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	USkeletalMesh* ShotgunMesh;
 
-	bool bWantToZoom=false;
-	
+	bool bWantToZoom = false;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	float ZoomedFOV = 65.0f;
 
@@ -43,11 +43,13 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
-	
+
 	void ToggleWeapon(EWeaponMode WeaponMode);
 
 	void SetZoomed(bool WantToZoom);
+
+	void PlaySniperCameraShake();
 };
