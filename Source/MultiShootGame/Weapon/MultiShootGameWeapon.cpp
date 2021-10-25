@@ -91,17 +91,7 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
 		if (PlayerController)
 		{
-			if (MyOwner->WeaponMode != EWeaponMode::Sniper)
-			{
-				PlayerController->ClientPlayCameraShake(FireCameraShake);
-			}
-			else
-			{
-				if (MyOwner->bAimed)
-				{
-					PlayerController->ClientPlayCameraShake(SniperCameraShake);
-				}
-			}
+			PlayerController->ClientPlayCameraShake(FireCameraShake);
 		}
 	}
 }

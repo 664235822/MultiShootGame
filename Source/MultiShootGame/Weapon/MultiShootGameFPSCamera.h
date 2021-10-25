@@ -50,6 +50,4 @@ public:
 	void ToggleWeapon(EWeaponMode WeaponMode);
 
 	void SetZoomed(bool WantToZoom);
-
-	void PlaySniperCameraShake();
 };

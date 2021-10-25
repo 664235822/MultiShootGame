@@ -33,9 +33,10 @@ void AMultiShootGameGameMode::ToggleDefaultAimWidget(bool Enabled)
 	{
 		CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
 		CurrentDefaultUserWidget->AddToViewport();
-	}else
+	}
+	else
 	{
-		if(CurrentDefaultUserWidget)
+		if (CurrentDefaultUserWidget)
 		{
 			CurrentDefaultUserWidget->RemoveFromParent();
 		}
@@ -51,7 +52,7 @@ void AMultiShootGameGameMode::ToggleSniperAimWidget(bool Enabled)
 	}
 	else
 	{
-		if(CurrentSniperUserWidget)
+		if (CurrentSniperUserWidget)
 		{
 			CurrentSniperUserWidget->RemoveFromParent();
 		}
