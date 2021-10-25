@@ -118,9 +118,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName BackShotgunSocketName = "BackShotgunSocket";
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USceneComponent* FPSCameraSceneComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
 
@@ -157,6 +154,9 @@ protected:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* FPSCameraSceneComponent;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;

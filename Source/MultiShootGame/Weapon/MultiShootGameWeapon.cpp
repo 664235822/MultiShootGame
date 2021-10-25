@@ -53,6 +53,15 @@ void AMultiShootGameWeapon::Fire()
 
 		FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
 
+		if (Cast<AMultiShootGameFPSCamera>(this))
+		{
+			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(EyeLocation, TraceEnd);
+
+			const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
+
+			Cast<AMultiShootGameCharacter>(GetOwner())->FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
+		}
+
 		PlayFireEffect(TraceEnd);
 
 		LastFireTime = GetWorld()->TimeSeconds;

@@ -37,9 +37,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AActor> TracerEffectClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<UMatineeCameraShake> SniperCameraShake;
 
@@ -53,7 +53,7 @@ protected:
 	float TimeBetweenShots;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
-	float BulletSpread = 1.0f;
+	float BulletSpread = 2.f;
 	
 public:
 	
