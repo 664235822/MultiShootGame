@@ -131,7 +131,7 @@ protected:
 	UAnimMontage* WeaponOutAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UAnimMontage* ReloadingAnimMontage;
+	UAnimMontage* SniperReloadAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	USoundCue* WeaponFireCue;

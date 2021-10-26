@@ -309,7 +309,9 @@ void AMultiShootGameCharacter::BeginReload()
 
 	EndAction();
 
-	PlayAnimMontage(ReloadingAnimMontage);
+	FLatentActionInfo LatentActionInfo;
+	UKismetSystemLibrary::Delay(GetWorld(), 0.5f, LatentActionInfo);
+	PlayAnimMontage(SniperReloadAnimMontage);
 }
 
 void AMultiShootGameCharacter::EndReload()

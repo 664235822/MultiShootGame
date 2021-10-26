@@ -50,7 +50,7 @@ protected:
 	float TimeBetweenShots;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
-	float BulletSpread = 2.f;
+	float BulletSpread = 1.f;
 	
 public:
 	
