@@ -11,7 +11,6 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MatineeCameraShake.h"
-#include "Sound/SoundCue.h"
 #include "MultiShootGameCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -51,6 +50,8 @@ protected:
 
 	void BeginReload();
 
+	void BeginSniperReload();
+
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
@@ -84,9 +85,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* ShotgunSceneComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UAudioComponent* AudioComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
@@ -130,17 +128,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* WeaponOutAnimMontage;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* ReloadAnimMontage;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* SniperReloadAnimMontage;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	USoundCue* WeaponFireCue;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	USoundCue* SniperFireCue;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	USoundCue* ShotgunFireCue;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;

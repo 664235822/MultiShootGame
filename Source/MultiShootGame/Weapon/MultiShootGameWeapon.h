@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MatineeCameraShake.h"
 #include "GameFramework/Pawn.h"
+#include "Sound/SoundCue.h"
 #include "MultiShootGameWeapon.generated.h"
 
 UCLASS()
@@ -24,7 +25,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Components")
 	USkeletalMeshComponent* WeaponMeshComponent;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName MuzzleSocketName = "Muzzle";
 
@@ -46,6 +47,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float RateOfFire = 600.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float DelayOfShotgun = 0.3f;
 	
 	float TimeBetweenShots;
 
@@ -53,11 +57,16 @@ protected:
 	float BulletSpread = 1.f;
 	
 public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UAudioComponent* AudioComponent;
 	
 	void Fire();
 
 	void StartFire();
 
 	void StopFire();
+
+	void ShotgunFire();
 	
 };

@@ -5,6 +5,7 @@
 
 #include "MultiShootGameProjectile.h"
 #include "../Character/MultiShootGameCharacter.h"
+#include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -17,6 +18,10 @@ AMultiShootGameWeapon::AMultiShootGameWeapon()
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponmeshComponent"));
 	WeaponMeshComponent->SetupAttachment(RootComponent);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
+	AudioComponent->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +69,8 @@ void AMultiShootGameWeapon::Fire()
 
 		PlayFireEffect(TraceEnd);
 
+		AudioComponent->Play();
+
 		LastFireTime = GetWorld()->TimeSeconds;
 	}
 }
@@ -107,4 +114,26 @@ void AMultiShootGameWeapon::StartFire()
 void AMultiShootGameWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle);
+
+	if (Cast<AMultiShootGameCharacter>(GetOwner())->WeaponMode == EWeaponMode::Weapon)
+	{
+		 AudioComponent->Stop();
+	}
+}
+
+void AMultiShootGameWeapon::ShotgunFire()
+{
+	if (LastFireTime == 0)
+	{
+		Fire();
+
+		return;
+	}
+
+	float CurrentFireTime = GetWorld()->GetTimeSeconds();
+
+	if (CurrentFireTime - LastFireTime > DelayOfShotgun)
+	{
+		Fire();
+	}
 }

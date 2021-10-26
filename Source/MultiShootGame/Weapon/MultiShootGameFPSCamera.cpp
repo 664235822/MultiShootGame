@@ -3,6 +3,8 @@
 
 #include "MultiShootGameFPSCamera.h"
 
+#include "Components/AudioComponent.h"
+
 AMultiShootGameFPSCamera::AMultiShootGameFPSCamera()
 {
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
@@ -35,10 +37,12 @@ void AMultiShootGameFPSCamera::ToggleWeapon(EWeaponMode WeaponMode)
 			WeaponMeshComponent->SetSkeletalMesh(WeaponMesh);
 			CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)), FVector(0, 5.f, 15.f),
 			                                                 FVector::OneVector));
+			AudioComponent->SetSound(WeaponFireCue);
 		}
 		break;
 	case EWeaponMode::Sniper:
 		WeaponMeshComponent->SetSkeletalMesh(nullptr);
+		AudioComponent->SetSound(SniperFireCue);
 		break;
 	case EWeaponMode::Shotgun:
 		if (ShotgunMesh)
@@ -46,6 +50,7 @@ void AMultiShootGameFPSCamera::ToggleWeapon(EWeaponMode WeaponMode)
 			WeaponMeshComponent->SetSkeletalMesh(ShotgunMesh);
 			CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)), FVector(0, -15.f, 15.f),
 			                                                 FVector::OneVector));
+			AudioComponent->SetSound(ShotgunFireCue);
 		}
 		break;
 	}

@@ -2,7 +2,6 @@
 
 #include "MultiShootGameCharacter.h"
 #include "AIController.h"
-#include "../MultiShootGame.h"
 #include "../MultiShootGameGameMode.h"
 #include "../Weapon/MultiShootGameProjectile.h"
 #include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
@@ -39,9 +38,6 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 
 	FPSCameraSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("FPSCameraSceneComponent"));
 	FPSCameraSceneComponent->SetupAttachment(RootComponent);
-
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AudioComponent->SetupAttachment(RootComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
@@ -119,13 +115,13 @@ void AMultiShootGameCharacter::StartFire()
 			if (CurrentSniper)
 			{
 				CurrentSniper->Fire();
-				BeginReload();
+				BeginSniperReload();
 			}
 			break;
 		case EWeaponMode::Shotgun:
 			if (CurrentShotgun)
 			{
-				CurrentShotgun->Fire();
+				CurrentShotgun->ShotgunFire();
 			}
 			break;
 		}
@@ -141,16 +137,14 @@ void AMultiShootGameCharacter::StartFire()
 				break;
 			case EWeaponMode::Sniper:
 				CurrentFPSCamera->Fire();
-				BeginReload();
+				BeginSniperReload();
 				break;
 			case EWeaponMode::Shotgun:
-				CurrentFPSCamera->Fire();
+				CurrentFPSCamera->ShotgunFire();
 				break;
 			}
 		}
 	}
-
-	AudioComponent->Play();
 }
 
 void AMultiShootGameCharacter::StopFire()
@@ -162,19 +156,9 @@ void AMultiShootGameCharacter::StopFire()
 		CurrentWeapon->StopFire();
 	}
 
-	if (CurrentShotgun)
-	{
-		CurrentShotgun->StopFire();
-	}
-
 	if (CurrentFPSCamera)
 	{
 		CurrentFPSCamera->StopFire();
-	}
-
-	if (WeaponMode == EWeaponMode::Weapon)
-	{
-		AudioComponent->Stop();
 	}
 }
 
@@ -262,8 +246,6 @@ void AMultiShootGameCharacter::BeginAim()
 	}
 
 	CurrentWeapon->StopFire();
-	CurrentSniper->StopFire();
-	CurrentShotgun->StopFire();
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -298,7 +280,22 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentFPSCamera->StopFire();
 }
 
+
 void AMultiShootGameCharacter::BeginReload()
+{
+	if (!CheckStatus())
+	{
+		return;
+	}
+
+	bReloading = true;
+
+	EndAction();
+
+	PlayAnimMontage(ReloadAnimMontage);
+}
+
+void AMultiShootGameCharacter::BeginSniperReload()
 {
 	if (!CheckStatus())
 	{
@@ -311,6 +308,7 @@ void AMultiShootGameCharacter::BeginReload()
 
 	FLatentActionInfo LatentActionInfo;
 	UKismetSystemLibrary::Delay(GetWorld(), 0.5f, LatentActionInfo);
+
 	PlayAnimMontage(SniperReloadAnimMontage);
 }
 
@@ -408,7 +406,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(true);
 
-		AudioComponent->SetSound(WeaponFireCue);
+
 		break;
 	case EWeaponMode::Sniper:
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -427,7 +425,6 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(false);
 
-		AudioComponent->SetSound(SniperFireCue);
 		break;
 	case EWeaponMode::Shotgun:
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -446,7 +443,6 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(true);
 
-		AudioComponent->SetSound(ShotgunFireCue);
 		break;
 	}
 }
