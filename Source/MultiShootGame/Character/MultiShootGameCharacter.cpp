@@ -94,7 +94,7 @@ void AMultiShootGameCharacter::BeginPlay()
 
 void AMultiShootGameCharacter::StartFire()
 {
-	if (!CheckStatus())
+	if (!CheckStatus(false))
 	{
 		return;
 	}
@@ -216,7 +216,7 @@ void AMultiShootGameCharacter::ToggleCrouch()
 
 void AMultiShootGameCharacter::BeginAim()
 {
-	if (!CheckStatus())
+	if (!CheckStatus(false))
 	{
 		return;
 	}
@@ -283,7 +283,7 @@ void AMultiShootGameCharacter::EndAim()
 
 void AMultiShootGameCharacter::BeginReload()
 {
-	if (!CheckStatus())
+	if (!CheckStatus(false))
 	{
 		return;
 	}
@@ -297,7 +297,7 @@ void AMultiShootGameCharacter::BeginReload()
 
 void AMultiShootGameCharacter::BeginSniperReload()
 {
-	if (!CheckStatus())
+	if (!CheckStatus(false))
 	{
 		return;
 	}
@@ -319,7 +319,7 @@ void AMultiShootGameCharacter::EndReload()
 
 void AMultiShootGameCharacter::ToggleWeapon()
 {
-	if (!CheckStatus())
+	if (!CheckStatus(true))
 	{
 		return;
 	}
@@ -340,7 +340,7 @@ void AMultiShootGameCharacter::ToggleWeapon()
 
 void AMultiShootGameCharacter::ToggleSniper()
 {
-	if (!CheckStatus())
+	if (!CheckStatus(true))
 	{
 		return;
 	}
@@ -363,7 +363,7 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 void AMultiShootGameCharacter::ToggleShotgun()
 {
-	if (!CheckStatus())
+	if (!CheckStatus(true))
 	{
 		return;
 	}
@@ -467,9 +467,14 @@ void AMultiShootGameCharacter::AimLookAround()
 	FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 }
 
-bool AMultiShootGameCharacter::CheckStatus()
+bool AMultiShootGameCharacter::CheckStatus(bool checkAimed)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon || bAimed)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon)
+	{
+		return false;
+	}
+
+	if (checkAimed && bAimed)
 	{
 		return false;
 	}

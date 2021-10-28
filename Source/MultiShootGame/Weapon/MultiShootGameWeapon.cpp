@@ -32,6 +32,19 @@ void AMultiShootGameWeapon::BeginPlay()
 	TimeBetweenShots = 60.0f / RateOfFire;
 }
 
+void AMultiShootGameWeapon::ShakeCamera()
+{
+	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+	if (MyOwner)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
+		if (PlayerController)
+		{
+			PlayerController->ClientPlayCameraShake(FireCameraShake);
+		}
+	}
+}
+
 void AMultiShootGameWeapon::Fire()
 {
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
@@ -42,8 +55,8 @@ void AMultiShootGameWeapon::Fire()
 
 		if (MyOwner->bAimed)
 		{
-			EyeLocation = MyOwner->CurrentFPSCamera->CameraComponent->GetComponentLocation();
-			EyeRotation = MyOwner->CurrentFPSCamera->CameraComponent->GetComponentRotation();
+			EyeLocation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentLocation();
+			EyeRotation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentRotation();
 		}
 		else
 		{
@@ -92,15 +105,7 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		Projectile->SetOwner(this);
 	}
 
-	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
-	if (MyOwner)
-	{
-		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
-		if (PlayerController)
-		{
-			PlayerController->ClientPlayCameraShake(FireCameraShake);
-		}
-	}
+	ShakeCamera();
 }
 
 void AMultiShootGameWeapon::StartFire()
@@ -117,7 +122,7 @@ void AMultiShootGameWeapon::StopFire()
 
 	if (Cast<AMultiShootGameCharacter>(GetOwner())->WeaponMode == EWeaponMode::Weapon)
 	{
-		 AudioComponent->Stop();
+		AudioComponent->Stop();
 	}
 }
 

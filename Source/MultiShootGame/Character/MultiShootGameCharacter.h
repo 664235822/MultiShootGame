@@ -161,7 +161,7 @@ public:
 private:
 	void AimLookAround();
 
-	bool CheckStatus();
+	bool CheckStatus(bool checkAimed);
 
 	void EndAction();
 

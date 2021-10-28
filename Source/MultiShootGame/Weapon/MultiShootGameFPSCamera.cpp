@@ -4,6 +4,7 @@
 #include "MultiShootGameFPSCamera.h"
 
 #include "Components/AudioComponent.h"
+#include "MultiShootGame/Character/MultiShootGameCharacter.h"
 
 AMultiShootGameFPSCamera::AMultiShootGameFPSCamera()
 {
@@ -16,6 +17,30 @@ void AMultiShootGameFPSCamera::BeginPlay()
 	Super::BeginPlay();
 
 	DefaultFOV = CameraComponent->FieldOfView;
+}
+
+void AMultiShootGameFPSCamera::ShakeCamera()
+{
+	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+	if (MyOwner)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
+		if (PlayerController)
+		{
+			switch (MyOwner->WeaponMode)
+			{
+			case EWeaponMode::Weapon:
+				PlayerController->ClientPlayCameraShake(FireCameraShake);
+				break;
+			case EWeaponMode::Sniper:
+				PlayerController->ClientPlayCameraShake(SniperCameraShake);
+				break;
+			case EWeaponMode::Shotgun:
+				PlayerController->ClientPlayCameraShake(ShotgunCameraShake);
+				break;
+			}
+		}
+	}
 }
 
 void AMultiShootGameFPSCamera::Tick(float DeltaTime)
@@ -59,4 +84,9 @@ void AMultiShootGameFPSCamera::ToggleWeapon(EWeaponMode WeaponMode)
 void AMultiShootGameFPSCamera::SetZoomed(bool WantToZoom)
 {
 	bWantToZoom = WantToZoom;
+}
+
+UCameraComponent* AMultiShootGameFPSCamera::GetCameraComponent() const
+{
+	return CameraComponent;
 }
