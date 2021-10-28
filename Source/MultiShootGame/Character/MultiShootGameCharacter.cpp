@@ -469,17 +469,7 @@ void AMultiShootGameCharacter::AimLookAround()
 
 bool AMultiShootGameCharacter::CheckStatus()
 {
-	if (HealthComponent->bDied)
-	{
-		return false;
-	}
-
-	if (bReloading)
-	{
-		return false;
-	}
-
-	if (bToggleWeapon)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon || bAimed)
 	{
 		return false;
 	}
