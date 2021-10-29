@@ -72,10 +72,16 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
-						const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-	
+	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* FPSCameraSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* WeaponSceneComponent;
@@ -128,7 +134,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* WeaponOutAnimMontage;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* ReloadAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -142,22 +148,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentShotgun;
-
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UCameraComponent* CameraComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USceneComponent* FPSCameraSceneComponent;
-
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameFPSCamera* CurrentFPSCamera;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	EWeaponMode WeaponMode = EWeaponMode::Weapon;
-
-	bool bAimed = false;
-
+	
 private:
 	void AimLookAround();
 
@@ -170,11 +161,23 @@ private:
 	bool bReloading = false;
 
 	bool bToggleWeapon = false;
-
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	USceneComponent* GetFPSCameraSceneComponent() const;
+
+	UCameraComponent* GetCameraComponent() const;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameFPSCamera* CurrentFPSCamera;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	EWeaponMode WeaponMode = EWeaponMode::Weapon;
+
+	bool bAimed = false;
 };

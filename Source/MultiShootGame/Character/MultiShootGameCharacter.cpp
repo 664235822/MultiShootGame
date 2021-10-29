@@ -577,3 +577,13 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Sniper", IE_Pressed, this, &AMultiShootGameCharacter::ToggleSniper);
 	PlayerInputComponent->BindAction("Shotgun", IE_Pressed, this, &AMultiShootGameCharacter::ToggleShotgun);
 }
+
+USceneComponent* AMultiShootGameCharacter::GetFPSCameraSceneComponent() const
+{
+	return FPSCameraSceneComponent;
+}
+
+UCameraComponent* AMultiShootGameCharacter::GetCameraComponent() const
+{
+	return CameraComponent;
+}

@@ -60,8 +60,8 @@ void AMultiShootGameWeapon::Fire()
 		}
 		else
 		{
-			EyeLocation = MyOwner->CameraComponent->GetComponentLocation();
-			EyeRotation = MyOwner->CameraComponent->GetComponentRotation();
+			EyeLocation = MyOwner->GetCameraComponent()->GetComponentLocation();
+			EyeRotation = MyOwner->GetCameraComponent()->GetComponentRotation();
 		}
 
 		FVector ShotDirection = EyeRotation.Vector();
@@ -77,7 +77,7 @@ void AMultiShootGameWeapon::Fire()
 
 			const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
 
-			Cast<AMultiShootGameCharacter>(GetOwner())->FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
+			Cast<AMultiShootGameCharacter>(GetOwner())->GetFPSCameraSceneComponent()->SetWorldRotation(TargetRotation);
 		}
 
 		PlayFireEffect(TraceEnd);
