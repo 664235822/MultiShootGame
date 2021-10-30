@@ -119,11 +119,8 @@ void AMultiShootGameWeapon::StartFire()
 void AMultiShootGameWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-
-	if (Cast<AMultiShootGameCharacter>(GetOwner())->WeaponMode == EWeaponMode::Weapon)
-	{
-		AudioComponent->Stop();
-	}
+	
+	AudioComponent->Stop();
 }
 
 void AMultiShootGameWeapon::ShotgunFire()

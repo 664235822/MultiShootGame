@@ -140,6 +140,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* SniperReloadAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "HUD")
+	TSubclassOf<UUserWidget> DefaultUserWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
+	TSubclassOf<UUserWidget> SniperUserWidgetClass;
+	
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
 
@@ -148,8 +154,16 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentShotgun;
-	
+
+	UUserWidget* CurrentDefaultUserWidget;
+
+	UUserWidget* CurrentSniperUserWidget;
+
 private:
+	void ToggleDefaultAimWidget(bool Enabled);
+
+	void ToggleSniperAimWidget(bool Enabled);
+	
 	void AimLookAround();
 
 	bool CheckStatus(bool checkAimed);

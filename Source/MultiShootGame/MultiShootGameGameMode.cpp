@@ -21,40 +21,5 @@ AMultiShootGameGameMode::AMultiShootGameGameMode()
 void AMultiShootGameGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	check(DefaultUserWidgetClass);
-
-	ToggleDefaultAimWidget(true);
 }
 
-void AMultiShootGameGameMode::ToggleDefaultAimWidget(bool Enabled)
-{
-	if (Enabled)
-	{
-		CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
-		CurrentDefaultUserWidget->AddToViewport();
-	}
-	else
-	{
-		if (CurrentDefaultUserWidget)
-		{
-			CurrentDefaultUserWidget->RemoveFromParent();
-		}
-	}
-}
-
-void AMultiShootGameGameMode::ToggleSniperAimWidget(bool Enabled)
-{
-	if (Enabled)
-	{
-		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
-		CurrentSniperUserWidget->AddToViewport();
-	}
-	else
-	{
-		if (CurrentSniperUserWidget)
-		{
-			CurrentSniperUserWidget->RemoveFromParent();
-		}
-	}
-}

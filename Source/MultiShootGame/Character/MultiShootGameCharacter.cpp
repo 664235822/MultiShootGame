@@ -5,6 +5,7 @@
 #include "../MultiShootGameGameMode.h"
 #include "../Weapon/MultiShootGameProjectile.h"
 #include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
+#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -45,6 +46,8 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ToggleDefaultAimWidget(true);
 
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
 
@@ -151,14 +154,17 @@ void AMultiShootGameCharacter::StopFire()
 {
 	bFired = false;
 
-	if (CurrentWeapon)
+	if (WeaponMode == EWeaponMode::Weapon)
 	{
-		CurrentWeapon->StopFire();
-	}
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->StopFire();
+		}
 
-	if (CurrentFPSCamera)
-	{
-		CurrentFPSCamera->StopFire();
+		if (CurrentFPSCamera)
+		{
+			CurrentFPSCamera->StopFire();
+		}
 	}
 }
 
@@ -236,7 +242,7 @@ void AMultiShootGameCharacter::BeginAim()
 
 	if (WeaponMode == EWeaponMode::Sniper)
 	{
-		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleSniperAimWidget(true);
+		ToggleSniperAimWidget(true);
 		CurrentFPSCamera->SetZoomed(true);
 	}
 
@@ -265,7 +271,7 @@ void AMultiShootGameCharacter::EndAim()
 
 	if (WeaponMode == EWeaponMode::Sniper)
 	{
-		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleSniperAimWidget(false);
+		ToggleSniperAimWidget(false);
 		CurrentFPSCamera->SetZoomed(false);
 	}
 
@@ -354,7 +360,7 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	EndAction();
 
-	Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleSniperAimWidget(false);
+	ToggleSniperAimWidget(false);
 
 	WeaponMode = EWeaponMode::Sniper;
 
@@ -404,7 +410,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Weapon);
 
-		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(true);
+		ToggleDefaultAimWidget(true);
 
 
 		break;
@@ -423,7 +429,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Sniper);
 
-		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(false);
+		ToggleDefaultAimWidget(false);
 
 		break;
 	case EWeaponMode::Shotgun:
@@ -441,7 +447,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Shotgun);
 
-		Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode())->ToggleDefaultAimWidget(true);
+		ToggleDefaultAimWidget(true);
 
 		break;
 	}
@@ -450,6 +456,38 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 void AMultiShootGameCharacter::ToggleWeaponEnd()
 {
 	bToggleWeapon = false;
+}
+
+void AMultiShootGameCharacter::ToggleDefaultAimWidget(bool Enabled)
+{
+	if (Enabled)
+	{
+		CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
+		CurrentDefaultUserWidget->AddToViewport();
+	}
+	else
+	{
+		if (CurrentDefaultUserWidget)
+		{
+			CurrentDefaultUserWidget->RemoveFromViewport();
+		}
+	}
+}
+
+void AMultiShootGameCharacter::ToggleSniperAimWidget(bool Enabled)
+{
+	if (Enabled)
+	{
+		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
+		CurrentSniperUserWidget->AddToViewport();
+	}
+	else
+	{
+		if (CurrentSniperUserWidget)
+		{
+			CurrentSniperUserWidget->RemoveFromViewport();
+		}
+	}
 }
 
 void AMultiShootGameCharacter::AimLookAround()
