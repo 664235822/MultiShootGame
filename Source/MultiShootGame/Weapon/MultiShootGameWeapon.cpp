@@ -119,7 +119,7 @@ void AMultiShootGameWeapon::StartFire()
 void AMultiShootGameWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-	
+
 	AudioComponent->Stop();
 }
 
@@ -138,4 +138,11 @@ void AMultiShootGameWeapon::ShotgunFire()
 	{
 		Fire();
 	}
+}
+
+void AMultiShootGameWeapon::EnablePhysicsSimulate()
+{
+	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	WeaponMeshComponent->SetCollisionProfileName("BlockAll");
+	WeaponMeshComponent->SetSimulatePhysics(true);
 }

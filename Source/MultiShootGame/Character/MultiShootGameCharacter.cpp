@@ -541,14 +541,19 @@ void AMultiShootGameCharacter::Death()
 	HealthComponent->bDied = true;
 
 	EndAction();
-	
+
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMovementComponent()->SetActive(false);
+	
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	GetMesh()->GetAnimInstance()->StopAllMontages(0);
+	
+	CurrentWeapon->EnablePhysicsSimulate();
+	CurrentSniper->EnablePhysicsSimulate();
+	CurrentShotgun->EnablePhysicsSimulate();
 }
 
 void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
