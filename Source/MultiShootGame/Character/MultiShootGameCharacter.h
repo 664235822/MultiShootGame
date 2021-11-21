@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MatineeCameraShake.h"
+#include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
 #include "MultiShootGameCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -58,6 +59,9 @@ protected:
 	void EndThrowGrenade();
 
 	void ThrowGrenade();
+	
+	UFUNCTION(BlueprintCallable)
+	void ThrowGrenadeOut();
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnGrenade();
@@ -118,7 +122,7 @@ protected:
 	TSubclassOf<AMultiShootGameWeapon> ShotgunClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<AActor> GrenadeClass;
+	TSubclassOf<AMultiShootGameGrenade> GrenadeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponSocketName = "WeaponSocket";
@@ -168,6 +172,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	EWeaponMode WeaponMode = EWeaponMode::Weapon;
+
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
 
@@ -178,7 +185,10 @@ protected:
 	AMultiShootGameWeapon* CurrentShotgun;
 
 	UPROPERTY(BlueprintReadOnly)
-	AActor* CurrentGrenade;
+	AMultiShootGameFPSCamera* CurrentFPSCamera;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameGrenade* CurrentGrenade;
 
 	UUserWidget* CurrentDefaultUserWidget;
 
@@ -197,13 +207,19 @@ private:
 
 	bool bFired = false;
 
+	bool bAimed = false;
+
 	bool bReloading = false;
 
 	bool bToggleWeapon = false;
 
-	bool bThrowGrenade = false;
+	bool bBeginThrowGrenade = false;
+
+	bool bThrowingGrenade = false;
 
 	bool bSpawnGrenade = false;
+
+	FVector SpawnActorLocation;
 
 public:
 	// Called every frame
@@ -216,11 +232,9 @@ public:
 
 	UCameraComponent* GetCameraComponent() const;
 
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameFPSCamera* CurrentFPSCamera;
+	AMultiShootGameFPSCamera* GetCurrentFPSCamera() const;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	EWeaponMode WeaponMode = EWeaponMode::Weapon;
+	bool GetAimed() const;
 
-	bool bAimed = false;
+	EWeaponMode GetWeaponMode() const;
 };

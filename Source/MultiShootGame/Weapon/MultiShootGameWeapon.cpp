@@ -53,10 +53,10 @@ void AMultiShootGameWeapon::Fire()
 		FVector EyeLocation;
 		FRotator EyeRotation;
 
-		if (MyOwner->bAimed)
+		if (MyOwner->GetAimed())
 		{
-			EyeLocation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentLocation();
-			EyeRotation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentRotation();
+			EyeLocation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentLocation();
+			EyeRotation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentRotation();
 		}
 		else
 		{

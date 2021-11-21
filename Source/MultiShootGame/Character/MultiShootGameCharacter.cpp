@@ -56,6 +56,8 @@ void AMultiShootGameCharacter::BeginPlay()
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
+	SpawnActorLocation = GetActorLocation();
+
 	CurrentWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(WeaponClass, FVector::ZeroVector,
 	                                                              FRotator::ZeroRotator,
 	                                                              SpawnParameters);
@@ -333,9 +335,14 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 		return;
 	}
 
+	if (bBeginThrowGrenade || bThrowingGrenade)
+	{
+		return;
+	}
+
 	EndAction();
 
-	bThrowGrenade = true;
+	bBeginThrowGrenade = true;
 
 	WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                                        BackWeaponSocketName);
@@ -351,16 +358,17 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 
 void AMultiShootGameCharacter::EndThrowGrenade()
 {
-	bThrowGrenade = false;
-
-	bSpawnGrenade = false;
-
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
 void AMultiShootGameCharacter::ThrowGrenade()
 {
-	if (!bThrowGrenade)
+	if (!CheckStatus(false))
+	{
+		return;
+	}
+
+	if (bThrowingGrenade)
 	{
 		return;
 	}
@@ -370,7 +378,23 @@ void AMultiShootGameCharacter::ThrowGrenade()
 		SpawnGrenade();
 	}
 
+	bThrowingGrenade = true;
+
 	PlayAnimMontage(ThrowGrenadeAnimMontage, 1, FName("Throw"));
+}
+
+void AMultiShootGameCharacter::ThrowGrenadeOut()
+{
+	const FVector StartLocation = GrenadeSceneComponent->GetComponentLocation();
+
+	const FVector CameraLocation = CameraComponent->GetComponentLocation();
+	const FRotator CameraRotation = CameraComponent->GetComponentRotation();
+	const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 3000.f;
+
+	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+
+	CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	CurrentGrenade->ThrowGrenade(LookAtRotation);
 }
 
 void AMultiShootGameCharacter::SpawnGrenade()
@@ -378,14 +402,13 @@ void AMultiShootGameCharacter::SpawnGrenade()
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	CurrentGrenade = GetWorld()->SpawnActor<AActor>(GrenadeClass, FVector::ZeroVector,
-	                                                FRotator::ZeroRotator,
-	                                                SpawnParameters);
+	CurrentGrenade = GetWorld()->SpawnActor<AMultiShootGameGrenade>(GrenadeClass, FVector::ZeroVector,
+	                                                                FRotator::ZeroRotator, SpawnParameters);
 
 	if (CurrentGrenade)
 	{
 		CurrentGrenade->SetOwner(this);
-		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	}
 
 	bSpawnGrenade = true;
@@ -529,6 +552,12 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 void AMultiShootGameCharacter::ToggleWeaponEnd()
 {
 	bToggleWeapon = false;
+
+	bBeginThrowGrenade = false;
+
+	bThrowingGrenade = false;
+
+	bSpawnGrenade = false;
 }
 
 void AMultiShootGameCharacter::ToggleDefaultAimWidget(bool Enabled)
@@ -580,7 +609,7 @@ void AMultiShootGameCharacter::AimLookAround()
 
 bool AMultiShootGameCharacter::CheckStatus(bool checkAimed)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon || bThrowGrenade)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon)
 	{
 		return false;
 	}
@@ -706,4 +735,19 @@ USceneComponent* AMultiShootGameCharacter::GetFPSCameraSceneComponent() const
 UCameraComponent* AMultiShootGameCharacter::GetCameraComponent() const
 {
 	return CameraComponent;
+}
+
+AMultiShootGameFPSCamera* AMultiShootGameCharacter::GetCurrentFPSCamera() const
+{
+	return CurrentFPSCamera;
+}
+
+bool AMultiShootGameCharacter::GetAimed() const
+{
+	return bAimed;
+}
+
+EWeaponMode AMultiShootGameCharacter::GetWeaponMode() const
+{
+	return WeaponMode;
 }

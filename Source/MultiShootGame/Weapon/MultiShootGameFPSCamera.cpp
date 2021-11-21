@@ -27,7 +27,7 @@ void AMultiShootGameFPSCamera::ShakeCamera()
 		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
 		if (PlayerController)
 		{
-			switch (MyOwner->WeaponMode)
+			switch (MyOwner->GetWeaponMode())
 			{
 			case EWeaponMode::Weapon:
 				PlayerController->ClientStartCameraShake(FireCameraShake);
