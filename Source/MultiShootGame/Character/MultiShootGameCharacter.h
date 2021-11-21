@@ -52,6 +52,16 @@ protected:
 
 	void BeginSniperReload();
 
+	void BeginThrowGrenade();
+
+	UFUNCTION(BlueprintCallable)
+	void EndThrowGrenade();
+
+	void ThrowGrenade();
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnGrenade();
+
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
@@ -93,6 +103,9 @@ protected:
 	USceneComponent* ShotgunSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* GrenadeSceneComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -103,6 +116,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameWeapon> ShotgunClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<AActor> GrenadeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponSocketName = "WeaponSocket";
@@ -122,6 +138,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName BackShotgunSocketName = "BackShotgunSocket";
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName GrenadeSocketName = "GrenadeSocket";
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
 
@@ -140,12 +159,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* SniperReloadAnimMontage;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category = "HUD")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* ThrowGrenadeAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> DefaultUserWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
 
@@ -155,6 +177,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentShotgun;
 
+	UPROPERTY(BlueprintReadOnly)
+	AActor* CurrentGrenade;
+
 	UUserWidget* CurrentDefaultUserWidget;
 
 	UUserWidget* CurrentSniperUserWidget;
@@ -163,7 +188,7 @@ private:
 	void ToggleDefaultAimWidget(bool Enabled);
 
 	void ToggleSniperAimWidget(bool Enabled);
-	
+
 	void AimLookAround();
 
 	bool CheckStatus(bool checkAimed);
@@ -175,7 +200,11 @@ private:
 	bool bReloading = false;
 
 	bool bToggleWeapon = false;
-	
+
+	bool bThrowGrenade = false;
+
+	bool bSpawnGrenade = false;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

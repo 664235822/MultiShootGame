@@ -30,13 +30,13 @@ void AMultiShootGameFPSCamera::ShakeCamera()
 			switch (MyOwner->WeaponMode)
 			{
 			case EWeaponMode::Weapon:
-				PlayerController->ClientPlayCameraShake(FireCameraShake);
+				PlayerController->ClientStartCameraShake(FireCameraShake);
 				break;
 			case EWeaponMode::Sniper:
-				PlayerController->ClientPlayCameraShake(SniperCameraShake);
+				PlayerController->ClientStartCameraShake(SniperCameraShake);
 				break;
 			case EWeaponMode::Shotgun:
-				PlayerController->ClientPlayCameraShake(ShotgunCameraShake);
+				PlayerController->ClientStartCameraShake(ShotgunCameraShake);
 				break;
 			}
 		}

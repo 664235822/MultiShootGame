@@ -2,7 +2,6 @@
 
 #include "MultiShootGameCharacter.h"
 #include "AIController.h"
-#include "../MultiShootGameGameMode.h"
 #include "../Weapon/MultiShootGameProjectile.h"
 #include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
 #include "Blueprint/UserWidget.h"
@@ -33,6 +32,9 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 
 	ShotgunSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ShotgunSceneComponent"));
 	ShotgunSceneComponent->SetupAttachment(GetMesh(), BackShotgunSocketName);
+
+	GrenadeSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("GrenadeSceneComponent"));
+	GrenadeSceneComponent->SetupAttachment(GetMesh(), GrenadeSocketName);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
@@ -92,6 +94,12 @@ void AMultiShootGameCharacter::BeginPlay()
 		                                    FAttachmentTransformRules::SnapToTargetIncludingScale);
 
 		CurrentFPSCamera->SetActorHiddenInGame(true);
+	}
+
+	if (CurrentGrenade)
+	{
+		CurrentGrenade->SetOwner(this);
+		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 }
 
@@ -174,7 +182,7 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 
 	if (bAimed && Value != 0)
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(MovementCameraShakeClass);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(MovementCameraShakeClass);
 	}
 }
 
@@ -184,7 +192,7 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 
 	if (bAimed && Value != 0)
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientPlayCameraShake(MovementCameraShakeClass);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(MovementCameraShakeClass);
 	}
 }
 
@@ -316,6 +324,71 @@ void AMultiShootGameCharacter::BeginSniperReload()
 	UKismetSystemLibrary::Delay(GetWorld(), 0.5f, LatentActionInfo);
 
 	PlayAnimMontage(SniperReloadAnimMontage);
+}
+
+void AMultiShootGameCharacter::BeginThrowGrenade()
+{
+	if (!CheckStatus(false))
+	{
+		return;
+	}
+
+	EndAction();
+
+	bThrowGrenade = true;
+
+	WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                        BackWeaponSocketName);
+
+	SniperSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                        BackSniperSocketName);
+
+	ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                         BackShotgunSocketName);
+
+	PlayAnimMontage(ThrowGrenadeAnimMontage);
+}
+
+void AMultiShootGameCharacter::EndThrowGrenade()
+{
+	bThrowGrenade = false;
+
+	bSpawnGrenade = false;
+
+	PlayAnimMontage(WeaponOutAnimMontage);
+}
+
+void AMultiShootGameCharacter::ThrowGrenade()
+{
+	if (!bThrowGrenade)
+	{
+		return;
+	}
+
+	if (!bSpawnGrenade)
+	{
+		SpawnGrenade();
+	}
+
+	PlayAnimMontage(ThrowGrenadeAnimMontage, 1, FName("Throw"));
+}
+
+void AMultiShootGameCharacter::SpawnGrenade()
+{
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	CurrentGrenade = GetWorld()->SpawnActor<AActor>(GrenadeClass, FVector::ZeroVector,
+	                                                FRotator::ZeroRotator,
+	                                                SpawnParameters);
+
+	if (CurrentGrenade)
+	{
+		CurrentGrenade->SetOwner(this);
+		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	}
+
+	bSpawnGrenade = true;
 }
 
 void AMultiShootGameCharacter::EndReload()
@@ -507,7 +580,7 @@ void AMultiShootGameCharacter::AimLookAround()
 
 bool AMultiShootGameCharacter::CheckStatus(bool checkAimed)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon || bThrowGrenade)
 	{
 		return false;
 	}
@@ -545,12 +618,12 @@ void AMultiShootGameCharacter::Death()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMovementComponent()->SetActive(false);
-	
+
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	GetMesh()->GetAnimInstance()->StopAllMontages(0);
-	
+
 	CurrentWeapon->EnablePhysicsSimulate();
 	CurrentSniper->EnablePhysicsSimulate();
 	CurrentShotgun->EnablePhysicsSimulate();
@@ -619,6 +692,10 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Weapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeapon);
 	PlayerInputComponent->BindAction("Sniper", IE_Pressed, this, &AMultiShootGameCharacter::ToggleSniper);
 	PlayerInputComponent->BindAction("Shotgun", IE_Pressed, this, &AMultiShootGameCharacter::ToggleShotgun);
+
+	//Bind throw grenade
+	PlayerInputComponent->BindAction("ThrowGrenade", IE_Pressed, this, &AMultiShootGameCharacter::BeginThrowGrenade);
+	PlayerInputComponent->BindAction("ThrowGrenade", IE_Released, this, &AMultiShootGameCharacter::ThrowGrenade);
 }
 
 USceneComponent* AMultiShootGameCharacter::GetFPSCameraSceneComponent() const
