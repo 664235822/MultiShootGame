@@ -14,6 +14,10 @@ AMultiShootGameGrenade::AMultiShootGameGrenade()
 	GrenadeComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrenadeComponnet"));
 	RootComponent = GrenadeComponent;
 
+	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystemComponent"));
+	ParticleSystemComponent->SetupAttachment(GrenadeComponent);
+	ParticleSystemComponent->bAutoActivate = false;
+
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(
 		TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->bAutoActivate = false;
@@ -43,6 +47,8 @@ void AMultiShootGameGrenade::ThrowGrenade(FRotator Direction)
 {
 	ProjectileMovementComponent->Velocity = Direction.Vector() * ProjectileMovementComponent->InitialSpeed;
 	ProjectileMovementComponent->Activate();
+
+	ParticleSystemComponent->Activate();
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameGrenade::Explode, ExplodedDelay);
 }

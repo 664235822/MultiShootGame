@@ -373,6 +373,18 @@ void AMultiShootGameCharacter::ThrowGrenade()
 		return;
 	}
 
+	if (!bBeginThrowGrenade)
+	{
+		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                        BackWeaponSocketName);
+
+		SniperSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                        BackSniperSocketName);
+
+		ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+		                                         BackShotgunSocketName);
+	}
+
 	if (!bSpawnGrenade)
 	{
 		SpawnGrenade();
@@ -411,7 +423,7 @@ void AMultiShootGameCharacter::SpawnGrenade()
 		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	}
 
-	bSpawnGrenade = true;
+	bBeginThrowGrenade = true;
 }
 
 void AMultiShootGameCharacter::EndReload()

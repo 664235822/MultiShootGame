@@ -22,11 +22,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleDefaultsOnly, Category="Grenade")
+	UPROPERTY(VisibleDefaultsOnly, Category="Components")
 	UStaticMeshComponent* GrenadeComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, Category="Grenade")
+	UPROPERTY(VisibleDefaultsOnly, Category="Components")
 	UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category="Components")
+	UParticleSystemComponent* ParticleSystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="Grenade")
 	UParticleSystem* ExplosionParticleSystem;
