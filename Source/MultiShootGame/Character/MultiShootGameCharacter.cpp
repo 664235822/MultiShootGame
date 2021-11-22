@@ -318,7 +318,7 @@ void AMultiShootGameCharacter::BeginSniperReload()
 		return;
 	}
 
-	bReloading = true;
+	bSniperReloading = true;
 
 	EndAction();
 
@@ -431,6 +431,8 @@ void AMultiShootGameCharacter::SpawnGrenade()
 void AMultiShootGameCharacter::EndReload()
 {
 	bReloading = false;
+
+	bSniperReloading = false;
 }
 
 void AMultiShootGameCharacter::ToggleWeapon()
@@ -623,7 +625,7 @@ void AMultiShootGameCharacter::AimLookAround()
 
 bool AMultiShootGameCharacter::CheckStatus(bool checkAimed)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSniperReloading)
 	{
 		return false;
 	}
@@ -638,21 +640,10 @@ bool AMultiShootGameCharacter::CheckStatus(bool checkAimed)
 
 void AMultiShootGameCharacter::EndAction()
 {
-	if (WeaponMode != EWeaponMode::Sniper)
+	if (bAimed && !bSniperReloading)
 	{
-		if (bAimed)
-		{
-			EndAim();
-		}
+		EndAim();
 	}
-	else
-	{
-		if (bAimed && !bReloading)
-		{
-			EndAim();
-		}
-	}
-
 
 	if (bFired)
 	{

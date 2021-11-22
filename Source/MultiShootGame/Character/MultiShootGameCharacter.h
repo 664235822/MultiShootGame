@@ -52,6 +52,9 @@ protected:
 	void BeginReload();
 
 	void BeginSniperReload();
+	
+	UFUNCTION(BlueprintCallable)
+	void EndReload();
 
 	void BeginThrowGrenade();
 
@@ -59,15 +62,12 @@ protected:
 	void EndThrowGrenade();
 
 	void ThrowGrenade();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void ThrowGrenadeOut();
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnGrenade();
-
-	UFUNCTION(BlueprintCallable)
-	void EndReload();
 
 	void ToggleWeapon();
 
@@ -210,6 +210,8 @@ private:
 	bool bAimed = false;
 
 	bool bReloading = false;
+
+	bool bSniperReloading = false;
 
 	bool bToggleWeapon = false;
 
