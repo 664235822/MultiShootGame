@@ -373,6 +373,10 @@ void AMultiShootGameCharacter::ThrowGrenade()
 		return;
 	}
 
+	EndAction();
+
+	bThrowingGrenade = true;
+
 	if (!bBeginThrowGrenade)
 	{
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -389,8 +393,6 @@ void AMultiShootGameCharacter::ThrowGrenade()
 	{
 		SpawnGrenade();
 	}
-
-	bThrowingGrenade = true;
 
 	PlayAnimMontage(ThrowGrenadeAnimMontage, 1, FName("Throw"));
 }
@@ -643,6 +645,14 @@ void AMultiShootGameCharacter::EndAction()
 			EndAim();
 		}
 	}
+	else
+	{
+		if (bAimed && !bReloading)
+		{
+			EndAim();
+		}
+	}
+
 
 	if (bFired)
 	{
