@@ -116,11 +116,14 @@ void AMultiShootGameWeapon::StartFire()
 	                                FirstDelay);
 }
 
-void AMultiShootGameWeapon::StopFire()
+void AMultiShootGameWeapon::StopFire(bool stopAudio)
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 
-	AudioComponent->Stop();
+	if(stopAudio)
+	{
+		AudioComponent->Stop();
+	}
 }
 
 void AMultiShootGameWeapon::ShotgunFire()

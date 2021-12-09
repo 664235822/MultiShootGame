@@ -19,6 +19,10 @@
 		{
 			"Name": "GamePlayCameras",
 			"Enabled": true
+		},
+		{
+			"Name": "HoudiniEngine",
+			"Enabled": true
 		}
 	]
 }

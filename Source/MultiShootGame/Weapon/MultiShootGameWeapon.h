@@ -67,7 +67,7 @@ public:
 
 	void StartFire();
 
-	void StopFire();
+	void StopFire(bool StopAudio);
 
 	void ShotgunFire();
 

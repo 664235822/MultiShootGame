@@ -168,12 +168,12 @@ void AMultiShootGameCharacter::StopFire()
 	{
 		if (CurrentWeapon)
 		{
-			CurrentWeapon->StopFire();
+			CurrentWeapon->StopFire(true);
 		}
 
 		if (CurrentFPSCamera)
 		{
-			CurrentFPSCamera->StopFire();
+			CurrentFPSCamera->StopFire(true);
 		}
 	}
 }
@@ -261,7 +261,14 @@ void AMultiShootGameCharacter::BeginAim()
 		CurrentFPSCamera->StartFire();
 	}
 
-	CurrentWeapon->StopFire();
+	if (WeaponMode == EWeaponMode::Weapon)
+	{
+		CurrentWeapon->StopFire(true);
+	}
+	else
+	{
+		CurrentWeapon->StopFire(false);
+	}
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -293,7 +300,14 @@ void AMultiShootGameCharacter::EndAim()
 		}
 	}
 
-	CurrentFPSCamera->StopFire();
+	if (WeaponMode == EWeaponMode::Weapon)
+	{
+		CurrentFPSCamera->StopFire(true);
+	}
+	else
+	{
+		CurrentFPSCamera->StopFire(false);
+	}
 }
 
 
