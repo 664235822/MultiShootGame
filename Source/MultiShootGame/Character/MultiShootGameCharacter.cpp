@@ -114,6 +114,8 @@ void AMultiShootGameCharacter::StartFire()
 
 	bFired = true;
 
+	ToggleUseControlRotation(true);
+
 	if (!bAimed)
 	{
 		switch (WeaponMode)
@@ -164,6 +166,8 @@ void AMultiShootGameCharacter::StopFire()
 {
 	bFired = false;
 
+	ToggleUseControlRotation(false);
+
 	if (WeaponMode == EWeaponMode::Weapon)
 	{
 		if (CurrentWeapon)
@@ -180,11 +184,6 @@ void AMultiShootGameCharacter::StopFire()
 
 void AMultiShootGameCharacter::MoveForward(float Value)
 {
-	if (!bUseControllerRotationYaw && Value != 0)
-	{
-		SetActorRotation(GetControlRotation());
-	}
-
 	AddMovementInput(GetActorForwardVector() * Value);
 
 	if (bAimed && Value != 0)
@@ -195,11 +194,6 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 
 void AMultiShootGameCharacter::MoveRight(float Value)
 {
-	if (!bUseControllerRotationYaw && Value != 0)
-	{
-		SetActorRotation(GetControlRotation());
-	}
-
 	AddMovementInput(GetActorRightVector() * Value);
 
 	if (bAimed && Value != 0)
@@ -221,11 +215,15 @@ void AMultiShootGameCharacter::EndFastRun()
 void AMultiShootGameCharacter::BeginCrouch()
 {
 	Crouch();
+
+	ToggleUseControlRotation(true);
 }
 
 void AMultiShootGameCharacter::EndCrouch()
 {
 	UnCrouch();
+
+	ToggleUseControlRotation(false);
 }
 
 void AMultiShootGameCharacter::ToggleCrouch()
@@ -248,6 +246,8 @@ void AMultiShootGameCharacter::BeginAim()
 	}
 
 	bAimed = true;
+
+	ToggleUseControlRotation(true);
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
@@ -284,6 +284,8 @@ void AMultiShootGameCharacter::BeginAim()
 void AMultiShootGameCharacter::EndAim()
 {
 	bAimed = false;
+
+	ToggleUseControlRotation(false);
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(this, 0.1f);
@@ -330,6 +332,8 @@ void AMultiShootGameCharacter::BeginReload()
 
 	bReloading = true;
 
+	ToggleUseControlRotation(true);
+
 	EndAction();
 
 	PlayAnimMontage(ReloadAnimMontage);
@@ -364,6 +368,8 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 		return;
 	}
 
+	ToggleUseControlRotation(true);
+
 	EndAction();
 
 	bBeginThrowGrenade = true;
@@ -383,6 +389,8 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 void AMultiShootGameCharacter::EndThrowGrenade()
 {
 	PlayAnimMontage(WeaponOutAnimMontage);
+
+	ToggleUseControlRotation(false);
 }
 
 void AMultiShootGameCharacter::ThrowGrenade()
@@ -457,6 +465,8 @@ void AMultiShootGameCharacter::EndReload()
 	bReloading = false;
 
 	bSniperReloading = false;
+
+	ToggleUseControlRotation(false);
 }
 
 void AMultiShootGameCharacter::ToggleWeapon()
@@ -502,7 +512,7 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	WeaponMode = EWeaponMode::Sniper;
 
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
@@ -681,6 +691,21 @@ void AMultiShootGameCharacter::EndAction()
 	}
 }
 
+void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)
+{
+	if (WeaponMode == EWeaponMode::Weapon)
+	{
+		if (Enabled)
+		{
+			bUseControlRotation = true;
+		}
+		else
+		{
+			bUseControlRotation = false;
+		}
+	}
+}
+
 void AMultiShootGameCharacter::Death()
 {
 	HealthComponent->bDied = true;
@@ -718,6 +743,14 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 	if (bAimed)
 	{
 		AimLookAround();
+	}
+
+	if (WeaponMode == EWeaponMode::Weapon && (bUseControlRotation ||
+		(!bUseControlRotation && GetMovementComponent()->Velocity.Size() != 0)))
+	{
+		const FRotator TargetRotation = FRotator(0, GetControlRotation().Yaw, 0);
+		const FRotator Rotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 15);
+		SetActorRotation(Rotation);
 	}
 }
 

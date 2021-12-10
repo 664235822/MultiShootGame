@@ -199,6 +199,8 @@ private:
 
 	void ToggleSniperAimWidget(bool Enabled);
 
+	void ToggleUseControlRotation(bool Enabled);
+
 	void AimLookAround();
 
 	bool CheckStatus(bool checkAimed);
@@ -220,6 +222,8 @@ private:
 	bool bThrowingGrenade = false;
 
 	bool bSpawnGrenade = false;
+
+	bool bUseControlRotation = false;
 
 	FVector SpawnActorLocation;
 
