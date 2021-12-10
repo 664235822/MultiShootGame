@@ -180,6 +180,11 @@ void AMultiShootGameCharacter::StopFire()
 
 void AMultiShootGameCharacter::MoveForward(float Value)
 {
+	if (!bUseControllerRotationYaw && Value != 0)
+	{
+		SetActorRotation(GetControlRotation());
+	}
+
 	AddMovementInput(GetActorForwardVector() * Value);
 
 	if (bAimed && Value != 0)
@@ -190,6 +195,11 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 
 void AMultiShootGameCharacter::MoveRight(float Value)
 {
+	if (!bUseControllerRotationYaw && Value != 0)
+	{
+		SetActorRotation(GetControlRotation());
+	}
+
 	AddMovementInput(GetActorRightVector() * Value);
 
 	if (bAimed && Value != 0)
@@ -467,6 +477,8 @@ void AMultiShootGameCharacter::ToggleWeapon()
 
 	WeaponMode = EWeaponMode::Weapon;
 
+	bUseControllerRotationYaw = false;
+
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
@@ -490,6 +502,8 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	WeaponMode = EWeaponMode::Sniper;
 
+	bUseControllerRotationYaw = false;
+
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
@@ -510,6 +524,8 @@ void AMultiShootGameCharacter::ToggleShotgun()
 	EndAction();
 
 	WeaponMode = EWeaponMode::Shotgun;
+
+	bUseControllerRotationYaw = true;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }

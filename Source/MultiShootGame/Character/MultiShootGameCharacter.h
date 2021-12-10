@@ -52,7 +52,7 @@ protected:
 	void BeginReload();
 
 	void BeginSniperReload();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
