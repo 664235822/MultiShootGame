@@ -36,6 +36,10 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	GrenadeSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("GrenadeSceneComponent"));
 	GrenadeSceneComponent->SetupAttachment(GetMesh(), GrenadeSocketName);
 
+	KnifeSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("KnifeSkeletalMeshComponent"));
+	KnifeSkeletalMeshComponent->SetupAttachment(GetMesh(), KnifeSocketName);
+	KnifeSkeletalMeshComponent->SetVisibility(false);
+
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
@@ -184,6 +188,11 @@ void AMultiShootGameCharacter::StopFire()
 
 void AMultiShootGameCharacter::MoveForward(float Value)
 {
+	if (!bEnableMovement)
+	{
+		return;
+	}
+
 	AddMovementInput(GetActorForwardVector() * Value);
 
 	if (bAimed && Value != 0)
@@ -194,6 +203,11 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 
 void AMultiShootGameCharacter::MoveRight(float Value)
 {
+	if (!bEnableMovement)
+	{
+		return;
+	}
+
 	AddMovementInput(GetActorRightVector() * Value);
 
 	if (bAimed && Value != 0)
@@ -460,6 +474,47 @@ void AMultiShootGameCharacter::SpawnGrenade()
 	bBeginThrowGrenade = true;
 }
 
+void AMultiShootGameCharacter::KnifeAttack()
+{
+	if (!CheckStatus(true))
+	{
+		return;
+	}
+
+	EndAction();
+
+	PlayAnimMontage(KnifeAttackAnimMontage, 1.5f);
+}
+
+void AMultiShootGameCharacter::BeginKnifeAttack()
+{
+	bEnableMovement = false;
+
+	bKnifeAttack = true;
+
+	WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                        BackWeaponSocketName);
+
+	SniperSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                        BackSniperSocketName);
+
+	ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                         BackShotgunSocketName);
+
+	KnifeSkeletalMeshComponent->SetVisibility(true);
+}
+
+void AMultiShootGameCharacter::EndKnifeAttack()
+{
+	bEnableMovement = true;
+
+	bKnifeAttack = false;
+
+	KnifeSkeletalMeshComponent->SetVisibility(false);
+
+	PlayAnimMontage(WeaponOutAnimMontage);
+}
+
 void AMultiShootGameCharacter::EndReload()
 {
 	bReloading = false;
@@ -665,7 +720,7 @@ void AMultiShootGameCharacter::AimLookAround()
 
 bool AMultiShootGameCharacter::CheckStatus(bool checkAimed)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSniperReloading)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSniperReloading || bKnifeAttack)
 	{
 		return false;
 	}
@@ -798,9 +853,12 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Sniper", IE_Pressed, this, &AMultiShootGameCharacter::ToggleSniper);
 	PlayerInputComponent->BindAction("Shotgun", IE_Pressed, this, &AMultiShootGameCharacter::ToggleShotgun);
 
-	//Bind throw grenade
+	// Bind throw grenade
 	PlayerInputComponent->BindAction("ThrowGrenade", IE_Pressed, this, &AMultiShootGameCharacter::BeginThrowGrenade);
 	PlayerInputComponent->BindAction("ThrowGrenade", IE_Released, this, &AMultiShootGameCharacter::ThrowGrenade);
+
+	// Bind knife attack
+	PlayerInputComponent->BindAction("KnifeAttack", IE_Pressed, this, &AMultiShootGameCharacter::KnifeAttack);
 }
 
 USceneComponent* AMultiShootGameCharacter::GetFPSCameraSceneComponent() const

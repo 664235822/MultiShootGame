@@ -69,6 +69,14 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SpawnGrenade();
 
+	void KnifeAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void BeginKnifeAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void EndKnifeAttack();
+
 	void ToggleWeapon();
 
 	void ToggleSniper();
@@ -110,6 +118,9 @@ protected:
 	USceneComponent* GrenadeSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* KnifeSkeletalMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -145,6 +156,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName GrenadeSocketName = "GrenadeSocket";
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName KnifeSocketName = "KnifeSocket";
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
 
@@ -165,6 +179,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* ThrowGrenadeAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* KnifeAttackAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> DefaultUserWidgetClass;
@@ -189,6 +206,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;
+
+	UPROPERTY(BlueprintReadOnly)
+	USkeletalMesh* CurrentKnife;
 
 	UUserWidget* CurrentDefaultUserWidget;
 
@@ -223,7 +243,11 @@ private:
 
 	bool bSpawnGrenade = false;
 
+	bool bKnifeAttack = false;
+
 	bool bUseControlRotation = false;
+
+	bool bEnableMovement = true;
 
 	FVector SpawnActorLocation;
 
