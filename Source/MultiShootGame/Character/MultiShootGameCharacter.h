@@ -77,6 +77,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void EndKnifeAttack();
 
+	UFUNCTION(BlueprintCallable)
+	void NextKnifeAttack();
+
 	void ToggleWeapon();
 
 	void ToggleSniper();
@@ -88,6 +91,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleWeaponEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void Hit();
 
 	UFUNCTION(BlueprintCallable)
 	void Death();
@@ -169,6 +175,9 @@ protected:
 	TSubclassOf<UMatineeCameraShake> FPSCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<UMatineeCameraShake> KnifeCameraShakeClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* WeaponOutAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -181,7 +190,7 @@ protected:
 	UAnimMontage* ThrowGrenadeAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UAnimMontage* KnifeAttackAnimMontage;
+	UAnimMontage* KnifeAttackAnimMontage[3];
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> DefaultUserWidgetClass;
@@ -223,7 +232,7 @@ private:
 
 	void AimLookAround();
 
-	bool CheckStatus(bool checkAimed);
+	bool CheckStatus(bool CheckAimed, bool CheckThrowGrenade);
 
 	void EndAction();
 
@@ -245,9 +254,13 @@ private:
 
 	bool bKnifeAttack = false;
 
+	bool bNextKnifeAttack = false;
+
 	bool bUseControlRotation = false;
 
 	bool bEnableMovement = true;
+
+	int KnifeComboIndex = 0;
 
 	FVector SpawnActorLocation;
 

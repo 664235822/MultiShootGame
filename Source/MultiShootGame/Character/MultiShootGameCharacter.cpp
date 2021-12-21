@@ -111,7 +111,7 @@ void AMultiShootGameCharacter::BeginPlay()
 
 void AMultiShootGameCharacter::StartFire()
 {
-	if (!CheckStatus(false))
+	if (!CheckStatus(false, true))
 	{
 		return;
 	}
@@ -254,7 +254,7 @@ void AMultiShootGameCharacter::ToggleCrouch()
 
 void AMultiShootGameCharacter::BeginAim()
 {
-	if (!CheckStatus(false))
+	if (!CheckStatus(false, true))
 	{
 		return;
 	}
@@ -339,7 +339,7 @@ void AMultiShootGameCharacter::EndAim()
 
 void AMultiShootGameCharacter::BeginReload()
 {
-	if (!CheckStatus(false))
+	if (!CheckStatus(false, true))
 	{
 		return;
 	}
@@ -355,7 +355,7 @@ void AMultiShootGameCharacter::BeginReload()
 
 void AMultiShootGameCharacter::BeginSniperReload()
 {
-	if (!CheckStatus(false))
+	if (!CheckStatus(false, true))
 	{
 		return;
 	}
@@ -372,7 +372,7 @@ void AMultiShootGameCharacter::BeginSniperReload()
 
 void AMultiShootGameCharacter::BeginThrowGrenade()
 {
-	if (!CheckStatus(false))
+	if (!CheckStatus(false, false))
 	{
 		return;
 	}
@@ -402,6 +402,8 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 
 void AMultiShootGameCharacter::EndThrowGrenade()
 {
+	bToggleWeapon = true;
+
 	PlayAnimMontage(WeaponOutAnimMontage);
 
 	ToggleUseControlRotation(false);
@@ -409,7 +411,7 @@ void AMultiShootGameCharacter::EndThrowGrenade()
 
 void AMultiShootGameCharacter::ThrowGrenade()
 {
-	if (!CheckStatus(false))
+	if (!CheckStatus(false, false))
 	{
 		return;
 	}
@@ -476,14 +478,24 @@ void AMultiShootGameCharacter::SpawnGrenade()
 
 void AMultiShootGameCharacter::KnifeAttack()
 {
-	if (!CheckStatus(true))
+	if (!CheckStatus(false, true))
 	{
 		return;
 	}
 
 	EndAction();
 
-	PlayAnimMontage(KnifeAttackAnimMontage, 1.5f);
+	if (!bNextKnifeAttack)
+	{
+		if (!bKnifeAttack)
+		{
+			PlayAnimMontage(KnifeAttackAnimMontage[0], 1.5f);
+		}
+	}
+	else
+	{
+		PlayAnimMontage(KnifeAttackAnimMontage[KnifeComboIndex], 1.5f);
+	}
 }
 
 void AMultiShootGameCharacter::BeginKnifeAttack()
@@ -491,6 +503,8 @@ void AMultiShootGameCharacter::BeginKnifeAttack()
 	bEnableMovement = false;
 
 	bKnifeAttack = true;
+
+	bNextKnifeAttack = false;
 
 	WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                                        BackWeaponSocketName);
@@ -510,9 +524,22 @@ void AMultiShootGameCharacter::EndKnifeAttack()
 
 	bKnifeAttack = false;
 
+	bNextKnifeAttack = false;
+
+	bToggleWeapon = true;
+
+	KnifeComboIndex = 0;
+
 	KnifeSkeletalMeshComponent->SetVisibility(false);
 
 	PlayAnimMontage(WeaponOutAnimMontage);
+}
+
+void AMultiShootGameCharacter::NextKnifeAttack()
+{
+	bNextKnifeAttack = true;
+
+	KnifeComboIndex++;
 }
 
 void AMultiShootGameCharacter::EndReload()
@@ -526,7 +553,7 @@ void AMultiShootGameCharacter::EndReload()
 
 void AMultiShootGameCharacter::ToggleWeapon()
 {
-	if (!CheckStatus(true))
+	if (!CheckStatus(true, true))
 	{
 		return;
 	}
@@ -549,7 +576,7 @@ void AMultiShootGameCharacter::ToggleWeapon()
 
 void AMultiShootGameCharacter::ToggleSniper()
 {
-	if (!CheckStatus(true))
+	if (!CheckStatus(true, true))
 	{
 		return;
 	}
@@ -574,7 +601,7 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 void AMultiShootGameCharacter::ToggleShotgun()
 {
-	if (!CheckStatus(true))
+	if (!CheckStatus(true, true))
 	{
 		return;
 	}
@@ -671,6 +698,11 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 	bSpawnGrenade = false;
 }
 
+void AMultiShootGameCharacter::Hit()
+{
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(KnifeCameraShakeClass);
+}
+
 void AMultiShootGameCharacter::ToggleDefaultAimWidget(bool Enabled)
 {
 	if (Enabled)
@@ -718,14 +750,19 @@ void AMultiShootGameCharacter::AimLookAround()
 	FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 }
 
-bool AMultiShootGameCharacter::CheckStatus(bool checkAimed)
+bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSniperReloading || bKnifeAttack)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSniperReloading || bThrowingGrenade || bKnifeAttack)
 	{
 		return false;
 	}
 
-	if (checkAimed && bAimed)
+	if (CheckAimed && bAimed)
+	{
+		return false;
+	}
+
+	if (CheckThrowGrenade && bBeginThrowGrenade)
 	{
 		return false;
 	}
