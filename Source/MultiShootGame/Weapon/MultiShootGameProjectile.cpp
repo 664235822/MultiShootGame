@@ -62,7 +62,7 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 	else
 	{
 		UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None, Hit.Location,
-		                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition);
+		                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition, 10.f);
 	}
 
 	PlayImpactEffect(SurfaceType, Hit.Location);

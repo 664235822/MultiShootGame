@@ -24,6 +24,6 @@ void AImpactParticleSystem::OnParticleCollide(FName EventName, float EmitterTime
 {
 	if (DecalMaterial)
 	{
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, Location, Normal.Rotation());
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, DecalSize, Location, Normal.Rotation(), 10.f);
 	}
 }

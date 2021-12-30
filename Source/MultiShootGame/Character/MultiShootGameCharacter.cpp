@@ -53,7 +53,13 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ToggleDefaultAimWidget(true);
+	CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
+	CurrentDefaultUserWidget->AddToViewport();
+	CurrentDefaultUserWidget->SetVisibility(ESlateVisibility::Visible);
+
+	CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
+	CurrentSniperUserWidget->AddToViewport();
+	CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
 
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
 
@@ -474,6 +480,8 @@ void AMultiShootGameCharacter::SpawnGrenade()
 	}
 
 	bBeginThrowGrenade = true;
+
+	bSpawnGrenade = true;
 }
 
 void AMultiShootGameCharacter::KnifeAttack()
@@ -590,8 +598,6 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	EndAction();
 
-	ToggleSniperAimWidget(false);
-
 	WeaponMode = EWeaponMode::Sniper;
 
 	bUseControllerRotationYaw = true;
@@ -645,7 +651,6 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		CurrentFPSCamera->ToggleWeapon(EWeaponMode::Weapon);
 
 		ToggleDefaultAimWidget(true);
-
 
 		break;
 	case EWeaponMode::Sniper:
@@ -705,34 +710,12 @@ void AMultiShootGameCharacter::Hit()
 
 void AMultiShootGameCharacter::ToggleDefaultAimWidget(bool Enabled)
 {
-	if (Enabled)
-	{
-		CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
-		CurrentDefaultUserWidget->AddToViewport();
-	}
-	else
-	{
-		if (CurrentDefaultUserWidget)
-		{
-			CurrentDefaultUserWidget->RemoveFromViewport();
-		}
-	}
+	CurrentDefaultUserWidget->SetVisibility(Enabled ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 void AMultiShootGameCharacter::ToggleSniperAimWidget(bool Enabled)
 {
-	if (Enabled)
-	{
-		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
-		CurrentSniperUserWidget->AddToViewport();
-	}
-	else
-	{
-		if (CurrentSniperUserWidget)
-		{
-			CurrentSniperUserWidget->RemoveFromViewport();
-		}
-	}
+	CurrentSniperUserWidget->SetVisibility(Enabled ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 void AMultiShootGameCharacter::AimLookAround()
