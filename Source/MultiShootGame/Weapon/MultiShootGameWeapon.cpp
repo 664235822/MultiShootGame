@@ -3,6 +3,7 @@
 
 #include "MultiShootGameWeapon.h"
 
+#include "BulletShell.h"
 #include "MultiShootGameProjectile.h"
 #include "../Character/MultiShootGameCharacter.h"
 #include "Components/AudioComponent.h"
@@ -105,6 +106,17 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		Projectile->SetOwner(this);
 	}
 
+	if (BulletShellClass)
+	{
+		const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
+		const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
+
+		ABulletShell* BulletShell = Cast<ABulletShell>(
+			GetWorld()->SpawnActor<AActor>(BulletShellClass, BulletShellLocation, BulletShellRotation));
+		BulletShell->SetOwner(this);
+		BulletShell->ThrowBulletShell();
+	}
+
 	ShakeCamera();
 }
 
@@ -120,7 +132,7 @@ void AMultiShootGameWeapon::StopFire(bool stopAudio)
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 
-	if(stopAudio)
+	if (stopAudio)
 	{
 		AudioComponent->Stop();
 	}

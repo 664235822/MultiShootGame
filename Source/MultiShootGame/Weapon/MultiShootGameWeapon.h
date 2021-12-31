@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BulletShell.h"
 #include "MatineeCameraShake.h"
 #include "GameFramework/Pawn.h"
 #include "Sound/SoundCue.h"
@@ -20,20 +21,23 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	void PlayFireEffect(FVector TraceEndPoint);
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* WeaponMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAudioComponent* AudioComponent;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName MuzzleSocketName = "Muzzle";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName TracerTargetName = "Target";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	FName BulletShellName = "BulletShell";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	UParticleSystem* MuzzleEffect;
@@ -41,28 +45,30 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	TSubclassOf<AActor> TracerEffectClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<ABulletShell> BulletShellClass;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CameraShake")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
 
 	FTimerHandle TimerHandle;
 
 	float LastFireTime;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float RateOfFire = 600.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float DelayOfShotgun = 0.3f;
-	
+
 	float TimeBetweenShots;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
 	float BulletSpread = 1.f;
 
 	virtual void ShakeCamera();
-	
+
 public:
-	
 	void Fire();
 
 	void StartFire();
@@ -72,5 +78,4 @@ public:
 	void ShotgunFire();
 
 	void EnablePhysicsSimulate();
-	
 };
