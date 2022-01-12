@@ -25,7 +25,7 @@ void ABulletShell::DestroyBulletShell()
 
 void ABulletShell::ThrowBulletShell()
 {
-	ProjectileMovementComponent->Velocity = (GetActorRotation() + FRotator(0, 180.f, 0)).Vector() *
+	ProjectileMovementComponent->Velocity = (GetActorRotation() + ThrowDirection).Vector() *
 		UKismetMathLibrary::RandomFloatInRange(MinInitialSpeed, MaxInitialSpeed);
 	ProjectileMovementComponent->Activate();
 

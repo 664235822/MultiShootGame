@@ -2,8 +2,7 @@
 
 
 #include "HealthComponent.h"
-
-#include "MultiShootGame/MultiShootGameGameMode.h"
+#include "GameFramework/Character.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -44,18 +43,7 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, DefaultHealth);
 
-	bDied = CurrentHealth <= 0.0f;
-
 	OnHealthChanged.Broadcast(this, CurrentHealth, Damage, DamageType, InstigatedBy, DamageCauser);
-
-	//if (bDied)
-	//{
-	//	AMultiShootGameGameMode* GameMode = Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode());
-	//	if (GameMode)
-	//	{
-	//		GameMode->OnActorKilled.Broadcast(GetOwner(), DamageCauser, InstigatedBy);
-	//	}
-	//}
 }
 
 // Called every frame

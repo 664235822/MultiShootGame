@@ -11,13 +11,12 @@ UCLASS()
 class MULTISHOOTGAME_API ABulletShell : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABulletShell();
 
 protected:
-
 	UPROPERTY(VisibleDefaultsOnly, Category="Components")
 	UStaticMeshComponent* BulletShellComponent;
 
@@ -25,20 +24,21 @@ protected:
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	FTimerHandle TimerHandle;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
-	float DestroyDelay = 4.0f;
+	float DestroyDelay = 2.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
 	float MinInitialSpeed = 100.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
 	float MaxInitialSpeed = 300.0f;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
+	FRotator ThrowDirection = FRotator(60.f, 180.f, 0);
+
 	void DestroyBulletShell();
-	
-public:	
 
+public:
 	void ThrowBulletShell();
-
 };
