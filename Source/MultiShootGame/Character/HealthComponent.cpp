@@ -36,10 +36,10 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 		return;
 	}
 
-	if (DamageCauser != DamagedActor && IsFriendly(DamageCauser, DamagedActor))
-	{
-		return;
-	}
+	//if (DamageCauser != DamagedActor && IsFriendly(DamageCauser, DamagedActor))
+	//{
+	//	return;
+	//}
 
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, DefaultHealth);
 

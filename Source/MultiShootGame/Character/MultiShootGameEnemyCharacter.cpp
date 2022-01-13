@@ -2,13 +2,16 @@
 
 
 #include "MultiShootGameEnemyCharacter.h"
+
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -18,17 +21,17 @@ AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
 void AMultiShootGameEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnHealthChanged);
 }
 
 void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health,
-	float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+                                                    float HealthDelta, const UDamageType* DamageType,
+                                                    AController* InstigatedBy, AActor* DamageCauser)
 {
+	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
-		if (Health <= 0.0f && !HealthComponent->bDied)
-		{
-			Death();
-		}
+		Death();
 	}
 }
 
@@ -44,19 +47,18 @@ void AMultiShootGameEnemyCharacter::Death()
 	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	GetMesh()->GetAnimInstance()->StopAllMontages(0);
+
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 }
 
 // Called every frame
 void AMultiShootGameEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void AMultiShootGameEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
-
