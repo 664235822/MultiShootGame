@@ -735,7 +735,7 @@ void AMultiShootGameCharacter::AimLookAround()
 
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSniperReloading || bThrowingGrenade || bKnifeAttack)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSniperReloading || bThrowingGrenade)
 	{
 		return false;
 	}
@@ -746,6 +746,11 @@ bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrena
 	}
 
 	if (CheckThrowGrenade && bBeginThrowGrenade)
+	{
+		return false;
+	}
+
+	if (bKnifeAttack && !bNextKnifeAttack)
 	{
 		return false;
 	}
