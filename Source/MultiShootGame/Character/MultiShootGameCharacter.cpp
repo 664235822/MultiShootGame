@@ -493,16 +493,43 @@ void AMultiShootGameCharacter::KnifeAttack()
 
 	EndAction();
 
-	if (!bNextKnifeAttack)
+	if (!bTakeDown)
 	{
-		if (!bKnifeAttack)
+		if (!bNextKnifeAttack)
 		{
-			PlayAnimMontage(KnifeAttackAnimMontage[0], 1.5f);
+			if (!bKnifeAttack)
+			{
+				PlayAnimMontage(KnifeAttackAnimMontage[0], 1.5f);
+			}
+		}
+		else
+		{
+			PlayAnimMontage(KnifeAttackAnimMontage[KnifeComboIndex], 1.5f);
 		}
 	}
 	else
 	{
-		PlayAnimMontage(KnifeAttackAnimMontage[KnifeComboIndex], 1.5f);
+		FVector ActorLocation = GetActorLocation();
+		FVector ForwardVector = GetActorForwardVector() * 250.0f;
+		FVector EndLocation = ActorLocation + ForwardVector;
+
+		FHitResult HitResult;
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, ActorLocation, EndLocation, ECC_Visibility))
+		{
+			AMultiShootGameCharacter* TargetCharacter = Cast<AMultiShootGameCharacter>(HitResult.GetActor());
+			SpringArmComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+			                                      FName("Spine1"));
+			GetCharacterMovement()->DisableMovement();
+			bTakeDown = false;
+
+			FTransform TargetTransform = TargetCharacter->GetActorTransform();
+			FVector TargetLocation = TargetTransform.GetLocation() + TargetCharacter->GetActorForwardVector() * -175.f;
+			FQuat TargetRotation = TargetTransform.GetRotation();
+			SetActorTransform(FTransform(TargetRotation, TargetLocation));
+
+			PlayAnimMontage(TakeDownAttackerAnimMontage);
+			//takedown
+		}
 	}
 }
 
@@ -528,17 +555,28 @@ void AMultiShootGameCharacter::BeginKnifeAttack()
 
 void AMultiShootGameCharacter::EndKnifeAttack()
 {
+	if (bTakeDown)
+	{
+		SetActorLocation(GetActorLocation() + GetActorForwardVector() * 175.f);
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		SpringArmComponent->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		SpringArmComponent->SetRelativeLocation(FVector(0, 0, 70.f));
+	}
+
 	bEnableMovement = true;
 
 	bKnifeAttack = false;
 
 	bNextKnifeAttack = false;
 
+	bTakeDown = false;
+
 	bToggleWeapon = true;
 
 	KnifeComboIndex = 0;
 
 	KnifeSkeletalMeshComponent->SetVisibility(false);
+
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }

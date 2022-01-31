@@ -192,6 +192,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* KnifeAttackAnimMontage[3];
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UAnimMontage* TakeDownAttackerAnimMontage;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> DefaultUserWidgetClass;
 
@@ -255,6 +258,8 @@ private:
 	bool bKnifeAttack = false;
 
 	bool bNextKnifeAttack = false;
+
+	bool bTakeDown = false;
 
 	bool bUseControlRotation = false;
 
