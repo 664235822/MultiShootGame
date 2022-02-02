@@ -13,9 +13,8 @@ class MULTISHOOTGAME_API UHealthComponent : public UActorComponent
 	GENERATED_BODY()
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangedSignature, UHealthComponent*, OwningHealthComponent,
-												float,
-												Health, float, HealthDelta, const class UDamageType*, DamageType,
-												class AController*, InstigatedBy, AActor*, DamageCauser);
+	                                             float, Health, float, HealthDelta, const class UDamageType*,
+	                                             DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
 
 public:
 	// Sets default values for this component's properties
@@ -36,8 +35,8 @@ protected:
 
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
-							class AController* InstigatedBy, AActor* DamageCauser);
-	
+	                         class AController* InstigatedBy, AActor* DamageCauser);
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HealthComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "MultiShootGameEnemyCharacter.generated.h"
 
@@ -21,20 +22,33 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UHealthComponent* HealthComponent;
+	UBoxComponent* BoxComponent;
 
-	UFUNCTION()
-	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
-					 const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UHealthComponent* HealthComponent;
 
 	UFUNCTION(BlueprintCallable)
 	void Death();
 
-public:	
+	UFUNCTION()
+	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
+	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+	UFUNCTION()
+	void OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                                const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnBoxComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void TakeDownReceive();
 };

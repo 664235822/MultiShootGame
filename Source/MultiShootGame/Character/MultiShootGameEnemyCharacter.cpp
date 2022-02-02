@@ -4,6 +4,8 @@
 #include "MultiShootGameEnemyCharacter.h"
 
 #include "AIController.h"
+#include "DiffUtils.h"
+#include "MultiShootGameCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -14,6 +16,10 @@ AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->SetupAttachment(RootComponent);
+
+
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
@@ -21,6 +27,9 @@ AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
 void AMultiShootGameEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnBoxComponentBeginOverlap);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnBoxComponentEndOverlap);
 
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnHealthChanged);
 }
@@ -51,6 +60,29 @@ void AMultiShootGameEnemyCharacter::Death()
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 }
 
+void AMultiShootGameEnemyCharacter::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+                                                               AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                                               int32 OtherBodyIndex, bool bFromSweep,
+                                                               const FHitResult& SweepResult)
+{
+	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(OtherActor);
+	if (Character)
+	{
+		Character->SetTakeDown(true);
+	}
+}
+
+void AMultiShootGameEnemyCharacter::OnBoxComponentEndOverlap(UPrimitiveComponent* OverlappedComponent,
+                                                             AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                                             int32 OtherBodyIndex)
+{
+	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(OtherActor);
+	if (Character)
+	{
+		Character->SetTakeDown(false);
+	}
+}
+
 // Called every frame
 void AMultiShootGameEnemyCharacter::Tick(float DeltaTime)
 {
@@ -61,4 +93,11 @@ void AMultiShootGameEnemyCharacter::Tick(float DeltaTime)
 void AMultiShootGameEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AMultiShootGameEnemyCharacter::TakeDownReceive()
+{
+	GetCharacterMovement()->DisableMovement();
+	SetActorEnableCollision(false);
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(FName("TakeDown"), true);
 }

@@ -98,10 +98,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void Death();
 
-	UFUNCTION()
-	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
-	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
 
@@ -222,9 +218,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	USkeletalMesh* CurrentKnife;
 
-	UUserWidget* CurrentDefaultUserWidget;
-
-	UUserWidget* CurrentSniperUserWidget;
+	UFUNCTION()
+	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
+						 const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 private:
 	void ToggleDefaultAimWidget(bool Enabled);
@@ -261,6 +257,8 @@ private:
 
 	bool bTakeDown = false;
 
+	bool bTakingDown = false;
+
 	bool bUseControlRotation = false;
 
 	bool bEnableMovement = true;
@@ -268,6 +266,12 @@ private:
 	int KnifeComboIndex = 0;
 
 	FVector SpawnActorLocation;
+
+	UUserWidget* CurrentDefaultUserWidget;
+
+	UUserWidget* CurrentSniperUserWidget;
+
+	AActor* TargetTakeDownActor;
 
 public:
 	// Called every frame
@@ -285,4 +289,6 @@ public:
 	bool GetAimed() const;
 
 	EWeaponMode GetWeaponMode() const;
+
+	void SetTakeDown(bool Value);
 };
