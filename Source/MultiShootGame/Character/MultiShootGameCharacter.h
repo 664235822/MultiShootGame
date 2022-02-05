@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MatineeCameraShake.h"
+#include "MultiShootGameEnemyCharacter.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
 #include "MultiShootGameCharacter.generated.h"
 
@@ -80,6 +81,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void NextKnifeAttack();
 
+	UFUNCTION(BlueprintCallable)
+	void TakeDownAttack();
+
 	void ToggleWeapon();
 
 	void ToggleSniper();
@@ -123,6 +127,9 @@ protected:
 	USkeletalMeshComponent* KnifeSkeletalMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* TakeDownKnifeSkeletalMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -160,6 +167,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName KnifeSocketName = "KnifeSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName TakeDownKnifeSocketName = "TakeDownKnifeSocket";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
@@ -215,9 +225,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;
 
-	UPROPERTY(BlueprintReadOnly)
-	USkeletalMesh* CurrentKnife;
-
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 						 const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -271,7 +278,7 @@ private:
 
 	UUserWidget* CurrentSniperUserWidget;
 
-	AActor* TargetTakeDownActor;
+	AMultiShootGameEnemyCharacter* TargetTakeDownCharacter;
 
 public:
 	// Called every frame

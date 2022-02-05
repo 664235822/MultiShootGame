@@ -41,6 +41,11 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	KnifeSkeletalMeshComponent->SetupAttachment(GetMesh(), KnifeSocketName);
 	KnifeSkeletalMeshComponent->SetVisibility(false);
 
+	TakeDownKnifeSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(
+		TEXT("TakeDownKnifeSkeletalMeshComponent"));
+	TakeDownKnifeSkeletalMeshComponent->SetupAttachment(GetMesh(), TakeDownKnifeSocketName);
+	TakeDownKnifeSkeletalMeshComponent->SetVisibility(false);
+
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
@@ -518,9 +523,9 @@ void AMultiShootGameCharacter::KnifeAttack()
 		GetWorld()->LineTraceMultiByChannel(HitResults, ActorLocation, EndLocation, ECC_Visibility);
 		for (auto HitResult : HitResults)
 		{
-			AMultiShootGameEnemyCharacter* TargetCharacter = Cast<AMultiShootGameEnemyCharacter>(
+			TargetTakeDownCharacter = Cast<AMultiShootGameEnemyCharacter>(
 				HitResult.GetActor());
-			if (TargetCharacter)
+			if (TargetTakeDownCharacter)
 			{
 				SpringArmComponent->AttachToComponent(
 					GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -529,14 +534,14 @@ void AMultiShootGameCharacter::KnifeAttack()
 				bTakeDown = false;
 				bTakingDown = true;
 
-				FTransform TargetTransform = TargetCharacter->GetActorTransform();
-				FVector TargetLocation = TargetTransform.GetLocation() + TargetCharacter->GetActorForwardVector() *
-					-175.f;
+				FTransform TargetTransform = TargetTakeDownCharacter->GetActorTransform();
+				FVector TargetLocation = TargetTransform.GetLocation() + TargetTakeDownCharacter->
+					GetActorForwardVector() *
+					-80.f;
 				FQuat TargetRotation = TargetTransform.GetRotation();
 				SetActorTransform(FTransform(TargetRotation, TargetLocation));
 
 				PlayAnimMontage(TakeDownAttackerAnimMontage);
-				TargetCharacter->TakeDownReceive();
 
 				return;
 			}
@@ -561,18 +566,25 @@ void AMultiShootGameCharacter::BeginKnifeAttack()
 	ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                                         BackShotgunSocketName);
 
-	KnifeSkeletalMeshComponent->SetVisibility(true);
+	if (!bTakingDown)
+	{
+		KnifeSkeletalMeshComponent->SetVisibility(true);
+	}
+	else
+	{
+		TakeDownKnifeSkeletalMeshComponent->SetVisibility(true);
+	}
 }
 
 void AMultiShootGameCharacter::EndKnifeAttack()
 {
 	if (bTakingDown)
 	{
-		SetActorLocation(GetActorLocation() + GetActorForwardVector() * 175.f);
 		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		SpringArmComponent->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		SpringArmComponent->SetRelativeLocation(FVector(0, 0, 70.f));
 
+		TargetTakeDownCharacter = nullptr;
 		bTakeDown = false;
 		bTakingDown = false;
 	}
@@ -589,6 +601,8 @@ void AMultiShootGameCharacter::EndKnifeAttack()
 
 	KnifeSkeletalMeshComponent->SetVisibility(false);
 
+	TakeDownKnifeSkeletalMeshComponent->SetVisibility(false);
+
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
@@ -597,6 +611,14 @@ void AMultiShootGameCharacter::NextKnifeAttack()
 	bNextKnifeAttack = true;
 
 	KnifeComboIndex++;
+}
+
+void AMultiShootGameCharacter::TakeDownAttack()
+{
+	if (TargetTakeDownCharacter)
+	{
+		TargetTakeDownCharacter->Death();
+	}
 }
 
 void AMultiShootGameCharacter::EndReload()

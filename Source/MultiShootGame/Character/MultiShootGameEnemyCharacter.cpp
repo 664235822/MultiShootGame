@@ -94,10 +94,3 @@ void AMultiShootGameEnemyCharacter::SetupPlayerInputComponent(UInputComponent* P
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
-void AMultiShootGameEnemyCharacter::TakeDownReceive()
-{
-	GetCharacterMovement()->DisableMovement();
-	SetActorEnableCollision(false);
-	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(FName("TakeDown"), true);
-}

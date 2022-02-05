@@ -27,9 +27,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
-	UFUNCTION(BlueprintCallable)
-	void Death();
-
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -50,5 +47,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void TakeDownReceive();
+	UFUNCTION(BlueprintCallable)
+	void Death();
 };
