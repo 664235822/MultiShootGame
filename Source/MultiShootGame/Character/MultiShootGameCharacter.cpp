@@ -10,8 +10,8 @@
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -91,6 +91,7 @@ void AMultiShootGameCharacter::BeginPlay()
 	{
 		CurrentWeapon->SetOwner(this);
 		CurrentWeapon->AttachToComponent(WeaponSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		CurrentWeapon->Initialize();
 	}
 
 	if (CurrentSniper)
@@ -628,6 +629,22 @@ void AMultiShootGameCharacter::EndReload()
 	bSniperReloading = false;
 
 	ToggleUseControlRotation(false);
+}
+
+void AMultiShootGameCharacter::ReloadAttachToPlayer()
+{
+	if (WeaponMode == EWeaponMode::Weapon)
+	{
+		CurrentWeapon->ReloadAttachToPlayer(GetMesh(), ClipPlayerSocketName);
+	}
+}
+
+void AMultiShootGameCharacter::ReloadAttachBack()
+{
+	if (WeaponMode == EWeaponMode::Weapon)
+	{
+		CurrentWeapon->ReloadAttachBack();
+	}
 }
 
 void AMultiShootGameCharacter::ToggleWeapon()

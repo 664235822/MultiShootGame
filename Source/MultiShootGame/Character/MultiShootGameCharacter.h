@@ -57,6 +57,12 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
+	UFUNCTION(BlueprintCallable)
+	void ReloadAttachToPlayer();
+
+	UFUNCTION(BlueprintCallable)
+	void ReloadAttachBack();
+
 	void BeginThrowGrenade();
 
 	UFUNCTION(BlueprintCallable)
@@ -163,6 +169,9 @@ protected:
 	FName BackShotgunSocketName = "BackShotgunSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName ClipPlayerSocketName = "ClipSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName GrenadeSocketName = "GrenadeSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -227,9 +236,8 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
-						 const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-private:
 	void ToggleDefaultAimWidget(bool Enabled);
 
 	void ToggleSniperAimWidget(bool Enabled);

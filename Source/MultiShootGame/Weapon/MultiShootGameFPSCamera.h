@@ -6,6 +6,7 @@
 #include "EWeapon.h"
 #include "MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
+#include "Sound/SoundCue.h"
 #include "MultiShootGameFPSCamera.generated.h"
 
 /**

@@ -46,6 +46,24 @@ void AMultiShootGameWeapon::ShakeCamera()
 	}
 }
 
+void AMultiShootGameWeapon::Initialize()
+{
+	const AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+	if (MyOwner)
+	{
+		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
+
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		CurrentClip = GetWorld()->SpawnActor<AMultiShootGameClip>(ClipClass, FVector::ZeroVector,
+																	 FRotator::ZeroRotator,
+																	 SpawnParameters);
+		CurrentClip->AttachToComponent(WeaponMeshComponent, FAttachmentTransformRules::SnapToTargetIncludingScale,
+									   ClipSocketName);
+	}
+}
+
 void AMultiShootGameWeapon::Fire()
 {
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
@@ -160,4 +178,15 @@ void AMultiShootGameWeapon::EnablePhysicsSimulate()
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	WeaponMeshComponent->SetCollisionProfileName("BlockAll");
 	WeaponMeshComponent->SetSimulatePhysics(true);
+}
+
+void AMultiShootGameWeapon::ReloadAttachToPlayer(USkeletalMeshComponent* PlayerMesh, FName PlayerSocket)
+{
+	CurrentClip->AttachToComponent(PlayerMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, PlayerSocket);
+}
+
+void AMultiShootGameWeapon::ReloadAttachBack()
+{
+	CurrentClip->AttachToComponent(WeaponMeshComponent, FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                               ClipSocketName);
 }

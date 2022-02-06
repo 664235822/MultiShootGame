@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "BulletShell.h"
 #include "MatineeCameraShake.h"
+#include "MultiShootGameClip.h"
 #include "GameFramework/Pawn.h"
-#include "Sound/SoundCue.h"
 #include "MultiShootGameWeapon.generated.h"
 
 UCLASS()
@@ -39,6 +39,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName BulletShellName = "BulletShell";
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	FName ClipBoneName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	FName ClipSocketName = "Clip";
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	UParticleSystem* MuzzleEffect;
 
@@ -50,6 +56,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CameraShake")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<AMultiShootGameClip> ClipClass;
 
 	FTimerHandle TimerHandle;
 
@@ -68,7 +77,11 @@ protected:
 
 	virtual void ShakeCamera();
 
+	AMultiShootGameClip* CurrentClip;
+
 public:
+	void Initialize();
+
 	void Fire();
 
 	void StartFire();
@@ -78,4 +91,8 @@ public:
 	void ShotgunFire();
 
 	void EnablePhysicsSimulate();
+
+	void ReloadAttachToPlayer(USkeletalMeshComponent* PlayerMesh, FName PlayerSocket);
+	
+	void ReloadAttachBack();
 };
