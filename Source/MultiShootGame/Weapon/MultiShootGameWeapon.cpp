@@ -57,10 +57,10 @@ void AMultiShootGameWeapon::Initialize()
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		CurrentClip = GetWorld()->SpawnActor<AMultiShootGameClip>(ClipClass, FVector::ZeroVector,
-																	 FRotator::ZeroRotator,
-																	 SpawnParameters);
+		                                                          FRotator::ZeroRotator,
+		                                                          SpawnParameters);
 		CurrentClip->AttachToComponent(WeaponMeshComponent, FAttachmentTransformRules::SnapToTargetIncludingScale,
-									   ClipSocketName);
+		                               ClipSocketName);
 	}
 }
 
@@ -189,4 +189,16 @@ void AMultiShootGameWeapon::ReloadAttachBack()
 {
 	CurrentClip->AttachToComponent(WeaponMeshComponent, FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                               ClipSocketName);
+}
+
+void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
+{
+	if (Enabled)
+	{
+		WeaponMeshComponent->UnHideBoneByName(ClipBoneName);
+	}
+	else
+	{
+		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
+	}
 }

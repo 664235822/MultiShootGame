@@ -95,4 +95,6 @@ public:
 	void ReloadAttachToPlayer(USkeletalMeshComponent* PlayerMesh, FName PlayerSocket);
 	
 	void ReloadAttachBack();
+
+	void ReloadShowClip(bool Enabled);
 };

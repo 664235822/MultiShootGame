@@ -633,17 +633,33 @@ void AMultiShootGameCharacter::EndReload()
 
 void AMultiShootGameCharacter::ReloadAttachToPlayer()
 {
-	if (WeaponMode == EWeaponMode::Weapon)
+	switch (WeaponMode)
 	{
+	case EWeaponMode::Weapon:
 		CurrentWeapon->ReloadAttachToPlayer(GetMesh(), ClipPlayerSocketName);
+		break;\
+	case EWeaponMode::Sniper:
+		CurrentSniper->ReloadShowClip(false);
+		break;
+	case EWeaponMode::Shotgun:
+		CurrentShotgun->ReloadShowClip(false);
+		break;
 	}
 }
 
 void AMultiShootGameCharacter::ReloadAttachBack()
 {
-	if (WeaponMode == EWeaponMode::Weapon)
+	switch (WeaponMode)
 	{
+	case EWeaponMode::Weapon:
 		CurrentWeapon->ReloadAttachBack();
+		break;
+	case EWeaponMode::Sniper:
+		CurrentSniper->ReloadShowClip(true);
+		break;
+	case EWeaponMode::Shotgun:
+		CurrentShotgun->ReloadShowClip(true);
+		break;
 	}
 }
 
