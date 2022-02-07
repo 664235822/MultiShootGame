@@ -91,7 +91,6 @@ void AMultiShootGameCharacter::BeginPlay()
 	{
 		CurrentWeapon->SetOwner(this);
 		CurrentWeapon->AttachToComponent(WeaponSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
-		CurrentWeapon->Initialize();
 	}
 
 	if (CurrentSniper)
@@ -281,7 +280,6 @@ void AMultiShootGameCharacter::BeginAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(false);
 	CurrentWeapon->SetActorHiddenInGame(true);
-	CurrentWeapon->SetClipHiddenInGame(true);
 	CurrentSniper->SetActorHiddenInGame(true);
 	CurrentShotgun->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
@@ -320,7 +318,6 @@ void AMultiShootGameCharacter::EndAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(true);
 	CurrentWeapon->SetActorHiddenInGame(false);
-	CurrentWeapon->SetClipHiddenInGame(false);
 	CurrentSniper->SetActorHiddenInGame(false);
 	CurrentShotgun->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
@@ -633,34 +630,18 @@ void AMultiShootGameCharacter::EndReload()
 	ToggleUseControlRotation(false);
 }
 
-void AMultiShootGameCharacter::ReloadAttachToPlayer()
+void AMultiShootGameCharacter::ReloadShowClip(bool Enabled)
 {
 	switch (WeaponMode)
 	{
 	case EWeaponMode::Weapon:
-		CurrentWeapon->ReloadAttachToPlayer(GetMesh(), ClipPlayerSocketName);
+		CurrentWeapon->ReloadShowClip(Enabled);
 		break;
 	case EWeaponMode::Sniper:
-		CurrentSniper->ReloadShowClip(false);
+		CurrentSniper->ReloadShowClip(Enabled);
 		break;
 	case EWeaponMode::Shotgun:
-		CurrentShotgun->ReloadShowClip(false);
-		break;
-	}
-}
-
-void AMultiShootGameCharacter::ReloadAttachBack()
-{
-	switch (WeaponMode)
-	{
-	case EWeaponMode::Weapon:
-		CurrentWeapon->ReloadAttachBack();
-		break;
-	case EWeaponMode::Sniper:
-		CurrentSniper->ReloadShowClip(true);
-		break;
-	case EWeaponMode::Shotgun:
-		CurrentShotgun->ReloadShowClip(true);
+		CurrentShotgun->ReloadShowClip(Enabled);
 		break;
 	}
 }

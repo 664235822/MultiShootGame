@@ -58,10 +58,7 @@ protected:
 	void EndReload();
 
 	UFUNCTION(BlueprintCallable)
-	void ReloadAttachToPlayer();
-
-	UFUNCTION(BlueprintCallable)
-	void ReloadAttachBack();
+	void ReloadShowClip(bool Enabled);
 
 	void BeginThrowGrenade();
 
@@ -167,9 +164,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName BackShotgunSocketName = "BackShotgunSocket";
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName ClipPlayerSocketName = "ClipSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName GrenadeSocketName = "GrenadeSocket";
