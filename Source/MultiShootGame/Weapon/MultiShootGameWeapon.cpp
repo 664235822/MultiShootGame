@@ -19,6 +19,7 @@ AMultiShootGameWeapon::AMultiShootGameWeapon()
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponmeshComponent"));
 	WeaponMeshComponent->SetupAttachment(RootComponent);
+	WeaponMeshComponent->SetCastHiddenShadow(true);
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AudioComponent->SetupAttachment(RootComponent);
@@ -200,5 +201,13 @@ void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
 	else
 	{
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
+	}
+}
+
+void AMultiShootGameWeapon::SetClipHiddenInGame(bool Enabled)
+{
+	if (CurrentClip)
+	{
+		CurrentClip->SetActorHiddenInGame(Enabled);
 	}
 }

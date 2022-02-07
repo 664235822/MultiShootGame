@@ -11,6 +11,7 @@ AMultiShootGameClip::AMultiShootGameClip()
 
 	ClipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ClipMeshComponent"));
 	RootComponent = ClipMeshComponent;
+	ClipMeshComponent->SetCastHiddenShadow(true);
 }
 
 // Called when the game starts or when spawned

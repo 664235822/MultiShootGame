@@ -97,4 +97,6 @@ public:
 	void ReloadAttachBack();
 
 	void ReloadShowClip(bool Enabled);
+
+	void SetClipHiddenInGame(bool Enabled);
 };

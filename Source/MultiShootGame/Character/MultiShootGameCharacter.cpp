@@ -281,6 +281,7 @@ void AMultiShootGameCharacter::BeginAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(false);
 	CurrentWeapon->SetActorHiddenInGame(true);
+	CurrentWeapon->SetClipHiddenInGame(true);
 	CurrentSniper->SetActorHiddenInGame(true);
 	CurrentShotgun->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
@@ -319,6 +320,7 @@ void AMultiShootGameCharacter::EndAim()
 
 	CurrentFPSCamera->SetActorHiddenInGame(true);
 	CurrentWeapon->SetActorHiddenInGame(false);
+	CurrentWeapon->SetClipHiddenInGame(false);
 	CurrentSniper->SetActorHiddenInGame(false);
 	CurrentShotgun->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
@@ -637,7 +639,7 @@ void AMultiShootGameCharacter::ReloadAttachToPlayer()
 	{
 	case EWeaponMode::Weapon:
 		CurrentWeapon->ReloadAttachToPlayer(GetMesh(), ClipPlayerSocketName);
-		break;\
+		break;
 	case EWeaponMode::Sniper:
 		CurrentSniper->ReloadShowClip(false);
 		break;
