@@ -2,7 +2,6 @@
 
 
 #include "MultiShootGameEnemyCharacter.h"
-
 #include "AIController.h"
 #include "DiffUtils.h"
 #include "MultiShootGameCharacter.h"
@@ -18,8 +17,7 @@ AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(RootComponent);
-
-
+	
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 

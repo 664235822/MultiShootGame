@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HealthComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
+#include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGameEnemyCharacter.generated.h"
 
 UCLASS()
@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
+	UFUNCTION(BlueprintCallable)
+	void Death();
+
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -47,6 +50,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable)
-	void Death();
+	
 };

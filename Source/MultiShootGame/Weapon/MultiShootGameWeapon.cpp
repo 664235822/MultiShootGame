@@ -2,10 +2,9 @@
 
 
 #include "MultiShootGameWeapon.h"
-
 #include "BulletShell.h"
 #include "MultiShootGameProjectile.h"
-#include "../Character/MultiShootGameCharacter.h"
+#include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"

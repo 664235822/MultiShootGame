@@ -3,7 +3,8 @@
 #include "MultiShootGameCharacter.h"
 #include "AIController.h"
 #include "MultiShootGameEnemyCharacter.h"
-#include "../Weapon/MultiShootGameProjectile.h"
+#include "MultiShootGame/MultiShootGame.h"
+#include "MultiShootGame/Weapon/MultiShootGameProjectile.h"
 #include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
@@ -14,6 +15,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 AMultiShootGameCharacter::AMultiShootGameCharacter()
 {
@@ -53,6 +55,8 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	FPSCameraSceneComponent->SetupAttachment(RootComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
+	HitEffectComponent = CreateDefaultSubobject<UHitEffectComponent>(TEXT("HitEfectComponent"));
 }
 
 void AMultiShootGameCharacter::BeginPlay()
@@ -376,7 +380,7 @@ void AMultiShootGameCharacter::BeginSniperReload()
 
 	EndAction();
 
-	FLatentActionInfo LatentActionInfo;
+	const FLatentActionInfo LatentActionInfo;
 	UKismetSystemLibrary::Delay(GetWorld(), 0.5f, LatentActionInfo);
 
 	PlayAnimMontage(SniperReloadAnimMontage);
@@ -519,31 +523,28 @@ void AMultiShootGameCharacter::KnifeAttack()
 		FVector ForwardVector = GetActorForwardVector() * 250.0f;
 		FVector EndLocation = ActorLocation + ForwardVector;
 
-		TArray<FHitResult> HitResults;
-		GetWorld()->LineTraceMultiByChannel(HitResults, ActorLocation, EndLocation, ECC_Visibility);
-		for (auto HitResult : HitResults)
+		TArray<AActor*> IgnoreActor;
+		FHitResult HitResult;
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), ActorLocation, EndLocation,TraceType_Weapon, false,
+		                                          IgnoreActor, EDrawDebugTrace::None, HitResult, true))
 		{
 			TargetTakeDownCharacter = Cast<AMultiShootGameEnemyCharacter>(
 				HitResult.GetActor());
 			if (TargetTakeDownCharacter)
 			{
-				SpringArmComponent->AttachToComponent(
-					GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-					FName("Spine1"));
+				SpringArmComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+				                                      FName("Spine1"));
 				GetCharacterMovement()->DisableMovement();
 				bTakeDown = false;
 				bTakingDown = true;
 
 				FTransform TargetTransform = TargetTakeDownCharacter->GetActorTransform();
 				FVector TargetLocation = TargetTransform.GetLocation() + TargetTakeDownCharacter->
-					GetActorForwardVector() *
-					-80.f;
+					GetActorForwardVector() * -80.f;
 				FQuat TargetRotation = TargetTransform.GetRotation();
 				SetActorTransform(FTransform(TargetRotation, TargetLocation));
 
 				PlayAnimMontage(TakeDownAttackerAnimMontage);
-
-				return;
 			}
 		}
 	}
@@ -617,7 +618,11 @@ void AMultiShootGameCharacter::TakeDownAttack()
 {
 	if (TargetTakeDownCharacter)
 	{
-		TargetTakeDownCharacter->Death();
+		UGameplayStatics::ApplyDamage(TargetTakeDownCharacter, TakeDownDamage, GetInstigatorController(), this,
+		                              DamageTypeClass);
+		HitEffectComponent->PlayHitEffect(
+			SURFACE_CHARACTER, TakeDownKnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName),
+			TakeDownKnifeSkeletalMeshComponent->GetComponentRotation());
 	}
 }
 
@@ -793,6 +798,21 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 void AMultiShootGameCharacter::Hit()
 {
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(KnifeCameraShakeClass);
+
+	const FVector HitLocation = KnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName);
+	const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
+	FHitResult HitResult;
+	const TArray<AActor*> IgnoreActors;
+	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), HitLocation, HitLocation, 50.f, TraceType_Weapon, false,
+	                                            IgnoreActors, EDrawDebugTrace::None, HitResult, true))
+	{
+		const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), KnifeDamage, GetInstigatorController(), this,
+		                              DamageTypeClass);
+
+		HitEffectComponent->PlayHitEffect(SurfaceType, HitLocation, HitRotation);
+	}
 }
 
 void AMultiShootGameCharacter::ToggleDefaultAimWidget(bool Enabled)

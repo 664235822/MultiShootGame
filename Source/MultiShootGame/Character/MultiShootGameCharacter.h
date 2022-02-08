@@ -3,16 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HealthComponent.h"
-#include "../Weapon/EWeapon.h"
-#include "../Weapon/MultiShootGameFPSCamera.h"
-#include "../Weapon/MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MatineeCameraShake.h"
 #include "MultiShootGameEnemyCharacter.h"
+#include "MultiShootGame/Enum//EWeapon.h"
+#include "MultiShootGame/Component/HealthComponent.h"
+#include "MultiShootGame/Component//HitEffectComponent.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
+#include "MultiShootGame/Weapon/MultiShootGameFPSCamera.h"
+#include "MultiShootGame/Weapon/MultiShootGameWeapon.h"
 #include "MultiShootGameCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -135,6 +136,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UHitEffectComponent* HitEffectComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameWeapon> WeaponClass;
 
@@ -146,6 +150,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameGrenade> GrenadeClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<UDamageType> DamageTypeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponSocketName = "WeaponSocket";
@@ -173,6 +180,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName TakeDownKnifeSocketName = "TakeDownKnifeSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	FName HitSocketName = "HitSocket";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
@@ -273,6 +283,10 @@ protected:
 	bool bEnableMovement = true;
 
 	int KnifeComboIndex = 0;
+
+	float KnifeDamage = 40.f;
+
+	float TakeDownDamage = 100.f;
 
 	FVector SpawnActorLocation;
 

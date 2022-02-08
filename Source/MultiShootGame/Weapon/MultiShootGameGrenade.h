@@ -37,10 +37,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Grenade")
 	USoundCue* ExplosionSoundCue;
 
+	UPROPERTY(EditDefaultsOnly, Category="Grenade")
+	TSubclassOf<UDamageType> DamageTypeClass;
+
 	FTimerHandle TimerHandle;
 
 	void Explode();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
+	float BaseDamage = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
+	float DamageRadius = 250.f;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
 	float ExplodedDelay = 4.0f;
 

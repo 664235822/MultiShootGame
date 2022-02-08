@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EWeapon.h"
 #include "MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
 #include "Sound/SoundCue.h"
+#include "MultiShootGame//Enum/EWeapon.h"
 #include "MultiShootGameFPSCamera.generated.h"
 
 /**

@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MultiShootGameProjectile.h"
-#include "../MultiShootGame.h"
+#include "MultiShootGame/MultiShootGame.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,6 +29,8 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystem"));
 	ParticleSystemComponent->SetupAttachment(CollisionComponent);
 
+	HitEffectComponent = CreateDefaultSubobject<UHitEffectComponent>(TEXT("HitEffectComponent"));
+
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComponent"));
 	ProjectileMovement->UpdatedComponent = CollisionComponent;
@@ -45,7 +47,7 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                       FVector NormalImpulse, const FHitResult& Hit)
 {
-	EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+	const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 
 	if (Cast<ACharacter>(OtherActor))
 	{
@@ -65,31 +67,7 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition, 10.f);
 	}
 
-	PlayImpactEffect(SurfaceType, Hit.Location);
+	HitEffectComponent->PlayHitEffect(SurfaceType, Hit.Location, GetActorRotation());
 
 	Destroy();
-}
-
-void AMultiShootGameProjectile::PlayImpactEffect(EPhysicalSurface SurfaceType, FVector ImpactPoint)
-{
-	TSubclassOf<AImpactParticleSystem> SelectEffect = nullptr;
-
-	switch (SurfaceType)
-	{
-	case SURFACE_CHARACTER:
-	case SURFACE_HEAD:
-		SelectEffect = FleshImpactEffect;
-		break;
-	case SURFACE_STONE:
-		SelectEffect = StoneImpactEffect;
-		break;
-	case SURFACE_WOOD:
-		SelectEffect = WoodImpactEffect;
-		break;
-	default:
-		SelectEffect = DefaultImpactEffect;
-		break;
-	}
-
-	GetWorld()->SpawnActor<AActor>(SelectEffect, ImpactPoint, GetActorRotation());
 }

@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGameGrenade.h"
-
 #include "Core/Private/Windows/WindowsRunnableThread.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -33,6 +32,11 @@ void AMultiShootGameGrenade::Explode()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticleSystem, GetActorLocation());
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSoundCue, GetActorLocation());
+
+	const TArray<AActor*> IgnoreActors;
+	
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageTypeClass,
+	                                    IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
 
 	Destroy();
 }
