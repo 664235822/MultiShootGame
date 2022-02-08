@@ -70,7 +70,7 @@ void AMultiShootGameWeapon::Fire()
 		const float HalfRad = FMath::DegreesToRadians(BulletSpread);
 		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
-		FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
+		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
 
 		if (Cast<AMultiShootGameFPSCamera>(this))
 		{
@@ -147,7 +147,7 @@ void AMultiShootGameWeapon::ShotgunFire()
 		return;
 	}
 
-	float CurrentFireTime = GetWorld()->GetTimeSeconds();
+	const float CurrentFireTime = GetWorld()->GetTimeSeconds();
 
 	if (CurrentFireTime - LastFireTime > DelayOfShotgun)
 	{

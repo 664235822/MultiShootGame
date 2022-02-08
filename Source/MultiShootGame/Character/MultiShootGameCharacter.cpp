@@ -301,14 +301,7 @@ void AMultiShootGameCharacter::BeginAim()
 		CurrentFPSCamera->StartFire();
 	}
 
-	if (WeaponMode == EWeaponMode::Weapon)
-	{
-		CurrentWeapon->StopFire(true);
-	}
-	else
-	{
-		CurrentWeapon->StopFire(false);
-	}
+	CurrentWeapon->StopFire(WeaponMode == EWeaponMode::Weapon);
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -342,14 +335,7 @@ void AMultiShootGameCharacter::EndAim()
 		}
 	}
 
-	if (WeaponMode == EWeaponMode::Weapon)
-	{
-		CurrentFPSCamera->StopFire(true);
-	}
-	else
-	{
-		CurrentFPSCamera->StopFire(false);
-	}
+	CurrentFPSCamera->StopFire(WeaponMode == EWeaponMode::Weapon);
 }
 
 
@@ -567,14 +553,10 @@ void AMultiShootGameCharacter::BeginKnifeAttack()
 	ShotgunSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                                         BackShotgunSocketName);
 
-	if (!bTakingDown)
-	{
-		KnifeSkeletalMeshComponent->SetVisibility(true);
-	}
-	else
-	{
-		TakeDownKnifeSkeletalMeshComponent->SetVisibility(true);
-	}
+	USkeletalMeshComponent* CurrentKnifeComponent = bTakingDown
+		                                                ? TakeDownKnifeSkeletalMeshComponent
+		                                                : KnifeSkeletalMeshComponent;
+	CurrentKnifeComponent->SetVisibility(true);
 }
 
 void AMultiShootGameCharacter::EndKnifeAttack()
@@ -637,18 +619,21 @@ void AMultiShootGameCharacter::EndReload()
 
 void AMultiShootGameCharacter::ReloadShowClip(bool Enabled)
 {
+	AMultiShootGameWeapon* TempWeapon = nullptr;
 	switch (WeaponMode)
 	{
 	case EWeaponMode::Weapon:
-		CurrentWeapon->ReloadShowClip(Enabled);
+		TempWeapon = CurrentWeapon;
 		break;
 	case EWeaponMode::Sniper:
-		CurrentSniper->ReloadShowClip(Enabled);
+		TempWeapon = CurrentSniper;
 		break;
 	case EWeaponMode::Shotgun:
-		CurrentShotgun->ReloadShowClip(Enabled);
+		TempWeapon = CurrentShotgun;
 		break;
 	}
+
+	TempWeapon->ReloadShowClip(Enabled);
 }
 
 void AMultiShootGameCharacter::ToggleWeapon()
@@ -882,14 +867,7 @@ void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)
 {
 	if (WeaponMode == EWeaponMode::Weapon)
 	{
-		if (Enabled)
-		{
-			bUseControlRotation = true;
-		}
-		else
-		{
-			bUseControlRotation = false;
-		}
+		bUseControlRotation = Enabled;
 	}
 }
 
