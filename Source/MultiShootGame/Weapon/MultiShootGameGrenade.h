@@ -45,10 +45,10 @@ protected:
 	void Explode();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
-	float BaseDamage = 100.f;
+	float BaseDamage = 120.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
-	float DamageRadius = 250.f;
+	float DamageRadius = 1000.f;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
 	float ExplodedDelay = 4.0f;
