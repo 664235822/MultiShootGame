@@ -30,6 +30,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void Death(AActor* Attacker);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
+	float MaxDeadTimeDilationDelay = 0.1f;
+
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -43,12 +46,16 @@ protected:
 	void OnBoxComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+private:
+
+	bool bDeadTimeDilation = false;
+
+	float DeadTimeDilationDelay = 0;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	
 };
