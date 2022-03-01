@@ -28,7 +28,7 @@ protected:
 	UHealthComponent* HealthComponent;
 
 	UFUNCTION(BlueprintCallable)
-	void Death();
+	void Death(AActor* Attacker);
 
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,

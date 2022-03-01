@@ -17,7 +17,7 @@ AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(RootComponent);
-	
+
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
@@ -38,11 +38,11 @@ void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHeal
 {
 	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
-		Death();
+		Death(OwningHealthComponent->GetOwner());
 	}
 }
 
-void AMultiShootGameEnemyCharacter::Death()
+void AMultiShootGameEnemyCharacter::Death(AActor* Attacker)
 {
 	HealthComponent->bDied = true;
 
@@ -51,6 +51,10 @@ void AMultiShootGameEnemyCharacter::Death()
 	GetMovementComponent()->SetActive(false);
 
 	GetMesh()->SetSimulatePhysics(true);
+
+	const FVector ForceVector = (Attacker->GetActorLocation() - GetActorLocation()) * 20000.f;
+	GetMesh()->AddImpulse(FVector(ForceVector.X, ForceVector.Y, 30000.f));
+
 	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	GetMesh()->GetAnimInstance()->StopAllMontages(0);
