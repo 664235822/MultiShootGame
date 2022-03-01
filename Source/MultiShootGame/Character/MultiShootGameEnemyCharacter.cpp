@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
@@ -38,7 +39,7 @@ void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHeal
 {
 	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
-		Death(OwningHealthComponent->GetOwner());
+		Death(DamageCauser);
 	}
 }
 
@@ -52,7 +53,9 @@ void AMultiShootGameEnemyCharacter::Death(AActor* Attacker)
 
 	GetMesh()->SetSimulatePhysics(true);
 
-	const FVector ForceVector = (Attacker->GetActorLocation() - GetActorLocation()) * 20000.f;
+	FVector ForceVector = GetActorLocation() - Attacker->GetActorLocation();
+	UKismetMathLibrary::Vector_Normalize(ForceVector);
+	ForceVector *= 20000.f;
 	GetMesh()->AddImpulse(FVector(ForceVector.X, ForceVector.Y, 30000.f));
 
 	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
