@@ -57,7 +57,7 @@ void AMultiShootGameEnemyCharacter::Death(AActor* Attacker)
 	FVector ForceVector = GetActorLocation() - Attacker->GetActorLocation();
 	UKismetMathLibrary::Vector_Normalize(ForceVector);
 	ForceVector *= 20000.f;
-	GetMesh()->AddImpulse(FVector(ForceVector.X, ForceVector.Y, 30000.f));
+	GetMesh()->AddImpulse(FVector(ForceVector.X, ForceVector.Y, 10000.f));
 
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
 	bDeadTimeDilation = true;
