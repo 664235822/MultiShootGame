@@ -209,7 +209,7 @@ protected:
 	UAnimMontage* ThrowGrenadeAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UAnimMontage* KnifeAttackAnimMontage[3];
+	TArray<UAnimMontage*> KnifeAttackAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* TakeDownAttackerAnimMontage;

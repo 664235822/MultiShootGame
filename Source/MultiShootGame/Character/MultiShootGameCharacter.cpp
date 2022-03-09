@@ -593,7 +593,14 @@ void AMultiShootGameCharacter::NextKnifeAttack()
 {
 	bNextKnifeAttack = true;
 
-	KnifeComboIndex++;
+	if (KnifeComboIndex < KnifeAttackAnimMontage.Num() - 1)
+	{
+		KnifeComboIndex++;
+	}
+	else
+	{
+		KnifeComboIndex = 0;
+	}
 }
 
 void AMultiShootGameCharacter::TakeDownAttack()
