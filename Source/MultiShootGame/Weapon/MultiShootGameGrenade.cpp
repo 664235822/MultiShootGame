@@ -32,9 +32,10 @@ void AMultiShootGameGrenade::Explode()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticleSystem, GetActorLocation());
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSoundCue, GetActorLocation());
+	UGameplayStatics::PlayWorldCameraShake(GetWorld(), GrenadeCameraShakeClass, GetActorLocation(), 0, DamageRadius);
 
 	const TArray<AActor*> IgnoreActors;
-	
+
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageTypeClass,
 	                                    IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
 

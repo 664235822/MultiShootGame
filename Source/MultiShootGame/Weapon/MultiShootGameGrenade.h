@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MatineeCameraShake.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
@@ -39,6 +40,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Grenade")
 	TSubclassOf<UDamageType> DamageTypeClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Grenade")
+	TSubclassOf<UMatineeCameraShake> GrenadeCameraShakeClass;
 
 	FTimerHandle TimerHandle;
 
