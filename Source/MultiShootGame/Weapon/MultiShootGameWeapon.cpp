@@ -38,6 +38,12 @@ void AMultiShootGameWeapon::ShakeCamera()
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
 	if (MyOwner)
 	{
+		if (MyOwner->GetWeaponMode() == EWeaponMode::Weapon)
+		{
+			MyOwner->AddControllerYawInput(FMath::RandRange(-1 * CameraSpread, CameraSpread));
+			MyOwner->AddControllerPitchInput(-1 * FMath::RandRange(0.f, CameraSpread));
+		}
+
 		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
 		if (PlayerController)
 		{
