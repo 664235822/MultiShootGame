@@ -58,6 +58,9 @@ protected:
 	float LastFireTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float BaseDamage = 20.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float RateOfFire = 600.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -85,4 +88,6 @@ public:
 	void EnablePhysicsSimulate();
 
 	void ReloadShowClip(bool Enabled);
+
+	float GetDamage()const;
 };

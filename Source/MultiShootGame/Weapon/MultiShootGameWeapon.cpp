@@ -179,3 +179,8 @@ void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
 	}
 }
+
+float AMultiShootGameWeapon::GetDamage() const
+{
+	return BaseDamage;
+}

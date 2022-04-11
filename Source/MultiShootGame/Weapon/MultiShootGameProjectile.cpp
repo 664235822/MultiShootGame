@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MultiShootGameProjectile.h"
+
+#include "MultiShootGameWeapon.h"
 #include "MultiShootGame/MultiShootGame.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -51,7 +53,12 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 
 	if (Cast<ACharacter>(OtherActor))
 	{
-		float CurrentDamage = BaseDamage;
+		const AMultiShootGameWeapon* Weapon = Cast<AMultiShootGameWeapon>(GetOwner());
+		float CurrentDamage = 20.0f;
+		if (Weapon)
+		{
+			CurrentDamage = Weapon->GetDamage();
+		}
 
 		if (SurfaceType == SURFACE_HEAD)
 		{

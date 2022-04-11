@@ -30,9 +30,6 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float BaseDamage = 20.0f;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
 	TSubclassOf<UDamageType> DamageType;
 
