@@ -65,7 +65,7 @@ void AMultiShootGameFPSCamera::ToggleWeapon(EWeaponMode WeaponMode)
 		if (WeaponMesh)
 		{
 			WeaponMeshComponent->SetSkeletalMesh(WeaponMesh);
-			CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)), FVector(0, 5.f, 15.f),
+			CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)), FVector(0, -15.f, 15.f),
 			                                                 FVector::OneVector));
 			AudioComponent->SetSound(WeaponFireCue);
 		}
