@@ -18,6 +18,7 @@ public:
 	AMultiShootGameProjectile();
 
 protected:
+	
 	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
 	UBoxComponent* CollisionComponent;
 
@@ -42,4 +43,9 @@ protected:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Projectile)
+	float BaseDamage = 20.f;
 };

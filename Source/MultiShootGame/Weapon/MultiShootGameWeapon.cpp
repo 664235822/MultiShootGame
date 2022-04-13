@@ -110,6 +110,7 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		AMultiShootGameProjectile* Projectile = Cast<AMultiShootGameProjectile>(
 			GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation, ShotDirection));
 		Projectile->SetOwner(this);
+		Projectile->BaseDamage = BaseDamage;
 	}
 
 	if (BulletShellClass)
@@ -178,9 +179,4 @@ void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
 	{
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
 	}
-}
-
-float AMultiShootGameWeapon::GetDamage() const
-{
-	return BaseDamage;
 }

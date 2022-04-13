@@ -53,19 +53,12 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 
 	if (Cast<ACharacter>(OtherActor))
 	{
-		const AMultiShootGameWeapon* Weapon = Cast<AMultiShootGameWeapon>(GetOwner());
-		float CurrentDamage = 20.0f;
-		if (Weapon)
-		{
-			CurrentDamage = Weapon->GetDamage();
-		}
-
 		if (SurfaceType == SURFACE_HEAD)
 		{
-			CurrentDamage *= 2.5f;
+			BaseDamage *= 2.5f;
 		}
 
-		UGameplayStatics::ApplyPointDamage(OtherActor, CurrentDamage, GetActorRotation().Vector(), Hit,
+		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,
 		                                   GetOwner()->GetInstigatorController(), GetOwner(), DamageType);
 	}
 	else

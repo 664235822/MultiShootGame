@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MultiShootGame/Enum/EWeapon.h"
 #include "MultiShootGameStartGameCharacter.generated.h"
 
 UCLASS()
@@ -21,18 +22,18 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneCaptureComponent2D* SceneCaptureComponent2D;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USkeletalMeshComponent* WeaponMeshComponent;
-    
+	USkeletalMeshComponent* WeaponMeshComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponSocketName = "StartWeaponSocket";
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 };

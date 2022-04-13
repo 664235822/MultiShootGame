@@ -661,6 +661,12 @@ void AMultiShootGameCharacter::ToggleWeapon()
 
 	WeaponMode = EWeaponMode::Weapon;
 
+	CurrentFPSCamera->BaseDamage = CurrentWeapon->BaseDamage;
+	CurrentFPSCamera->RateOfFire = CurrentWeapon->RateOfFire;
+	CurrentFPSCamera->DelayOfShotgun = CurrentWeapon->DelayOfShotgun;
+	CurrentFPSCamera->BulletSpread = CurrentWeapon->BulletSpread;
+	CurrentFPSCamera->CameraSpread = CurrentWeapon->CameraSpread;
+
 	bUseControllerRotationYaw = false;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
@@ -684,6 +690,12 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	WeaponMode = EWeaponMode::Sniper;
 
+	CurrentFPSCamera->BaseDamage = CurrentSniper->BaseDamage;
+	CurrentFPSCamera->RateOfFire = CurrentSniper->RateOfFire;
+	CurrentFPSCamera->DelayOfShotgun = CurrentSniper->DelayOfShotgun;
+	CurrentFPSCamera->BulletSpread = CurrentSniper->BulletSpread;
+	CurrentFPSCamera->CameraSpread = CurrentSniper->CameraSpread;
+
 	bUseControllerRotationYaw = true;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
@@ -706,6 +718,12 @@ void AMultiShootGameCharacter::ToggleShotgun()
 	EndAction();
 
 	WeaponMode = EWeaponMode::Shotgun;
+
+	CurrentFPSCamera->BaseDamage = CurrentShotgun->BaseDamage;
+	CurrentFPSCamera->RateOfFire = CurrentShotgun->RateOfFire;
+	CurrentFPSCamera->DelayOfShotgun = CurrentShotgun->DelayOfShotgun;
+	CurrentFPSCamera->BulletSpread = CurrentShotgun->BulletSpread;
+	CurrentFPSCamera->CameraSpread = CurrentShotgun->CameraSpread;
 
 	bUseControllerRotationYaw = true;
 

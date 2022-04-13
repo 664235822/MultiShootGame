@@ -56,23 +56,8 @@ protected:
 	FTimerHandle TimerHandle;
 
 	float LastFireTime;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float BaseDamage = 20.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float RateOfFire = 600.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float DelayOfShotgun = 0.3f;
-
+	
 	float TimeBetweenShots;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
-	float BulletSpread = 1.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
-	float CameraSpread = 0.4f;
 
 	virtual void ShakeCamera();
 
@@ -89,5 +74,18 @@ public:
 
 	void ReloadShowClip(bool Enabled);
 
-	float GetDamage()const;
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float BaseDamage = 20.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float RateOfFire = 600.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float DelayOfShotgun = 0.3f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
+	float BulletSpread = 1.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
+	float CameraSpread = 0.4f;
 };
