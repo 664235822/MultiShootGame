@@ -51,7 +51,7 @@ void AMultiShootGameFPSCamera::ShakeCamera()
 void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	const float TargetFOV = bWantToZoom ? ZoomedFOV : DefaultFOV;
 	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
 	CameraComponent->SetFieldOfView(CurrentFOV);

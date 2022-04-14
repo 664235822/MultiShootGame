@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "MultiShootGame/Enum/EWeapon.h"
 #include "MultiShootGameStartGameCharacter.generated.h"
 
 UCLASS()
