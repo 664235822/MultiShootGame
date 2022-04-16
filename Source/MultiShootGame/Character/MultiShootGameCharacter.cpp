@@ -296,6 +296,8 @@ void AMultiShootGameCharacter::BeginAim()
 
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
 
+	ToggleDefaultAimWidget(false);
+
 	if (WeaponMode == EWeaponMode::Sniper && CurrentSniper->WeaponInfo.AimTexture)
 	{
 		ToggleSniperAimWidget(true);
@@ -325,6 +327,11 @@ void AMultiShootGameCharacter::EndAim()
 	GetMesh()->SetHiddenInGame(false);
 
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
+
+	if (!(WeaponMode == EWeaponMode::Sniper && CurrentSniper->WeaponInfo.AimTexture))
+	{
+		ToggleDefaultAimWidget(true);
+	}
 
 	if (CurrentSniper->WeaponInfo.AimTexture)
 	{
