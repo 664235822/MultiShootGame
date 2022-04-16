@@ -112,7 +112,7 @@ void AMultiShootGameWeapon::Fire()
 		}
 
 		PlayFireEffect(TraceEnd);
-
+		
 		AudioComponent->Play();
 
 		LastFireTime = GetWorld()->TimeSeconds;
@@ -154,19 +154,14 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 void AMultiShootGameWeapon::StartFire()
 {
 	const float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
-
+	
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameWeapon::Fire, TimeBetweenShots, true,
 	                                FirstDelay);
 }
 
-void AMultiShootGameWeapon::StopFire(bool stopAudio)
+void AMultiShootGameWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle);
-
-	if (stopAudio)
-	{
-		AudioComponent->Stop();
-	}
 }
 
 void AMultiShootGameWeapon::ShotgunFire()

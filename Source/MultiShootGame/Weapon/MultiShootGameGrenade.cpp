@@ -48,9 +48,15 @@ void AMultiShootGameGrenade::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AMultiShootGameGrenade::ThrowGrenade(FRotator Direction)
+void AMultiShootGameGrenade::ThrowGrenade(FRotator Direction, bool Multiply)
 {
+	Direction += ThrowRotatorPlus;
+
 	ProjectileMovementComponent->Velocity = Direction.Vector() * ProjectileMovementComponent->InitialSpeed;
+	if (Multiply)
+	{
+		ProjectileMovementComponent->Velocity *= 1.5f;
+	}
 	ProjectileMovementComponent->Activate();
 
 	ParticleSystemComponent->Activate();

@@ -27,7 +27,7 @@ protected:
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float ZoomedFOV = 65.0f;
+	float ZoomedFOV = 40.0f;
 
 	float DefaultFOV;
 

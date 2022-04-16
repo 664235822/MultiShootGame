@@ -36,7 +36,7 @@ protected:
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
-
+	
 	void BeginFastRun();
 
 	void EndFastRun();
@@ -255,6 +255,10 @@ protected:
 	void EndAction();
 
 	bool bFired = false;
+
+	bool bFastRun = false;
+
+	bool bJump=false;
 
 	bool bAimed = false;
 

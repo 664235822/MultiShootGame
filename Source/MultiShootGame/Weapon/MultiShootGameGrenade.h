@@ -53,13 +53,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
 	float DamageRadius = 1000.f;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
 	float ExplodedDelay = 4.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
+	FRotator ThrowRotatorPlus = FRotator(20.f, 0, 0);
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void ThrowGrenade(FRotator Direction);
+	void ThrowGrenade(FRotator Direction, bool MultiPly);
 };

@@ -42,5 +42,6 @@ void AMultiShootGameFPSCamera::SetWeaponInfo(const AMultiShootGameWeapon* Weapon
 	CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
 	                                                 Weapon->WeaponInfo.AimVector,
 	                                                 FVector::OneVector));
+	AudioComponent->Stop();
 	AudioComponent->SetSound(Weapon->GetAudioComponent()->Sound);
 }

@@ -194,12 +194,12 @@ void AMultiShootGameCharacter::StopFire()
 	{
 		if (CurrentWeapon)
 		{
-			CurrentWeapon->StopFire(true);
+			CurrentWeapon->StopFire();
 		}
 
 		if (CurrentFPSCamera)
 		{
-			CurrentFPSCamera->StopFire(true);
+			CurrentFPSCamera->StopFire();
 		}
 	}
 }
@@ -237,11 +237,15 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 void AMultiShootGameCharacter::BeginFastRun()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+
+	bFastRun = true;
 }
 
 void AMultiShootGameCharacter::EndFastRun()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+
+	bFastRun = false;
 }
 
 void AMultiShootGameCharacter::BeginCrouch()
@@ -302,7 +306,7 @@ void AMultiShootGameCharacter::BeginAim()
 		CurrentFPSCamera->StartFire();
 	}
 
-	CurrentWeapon->StopFire(WeaponMode == EWeaponMode::Weapon);
+	CurrentWeapon->StopFire();
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -335,7 +339,7 @@ void AMultiShootGameCharacter::EndAim()
 		}
 	}
 
-	CurrentFPSCamera->StopFire(WeaponMode == EWeaponMode::Weapon);
+	CurrentFPSCamera->StopFire();
 }
 
 
@@ -458,7 +462,7 @@ void AMultiShootGameCharacter::ThrowGrenadeOut()
 	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
 	CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	CurrentGrenade->ThrowGrenade(LookAtRotation);
+	CurrentGrenade->ThrowGrenade(LookAtRotation, bFastRun || bJump);
 }
 
 void AMultiShootGameCharacter::SpawnGrenade()
@@ -768,7 +772,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		break;
 	}
-	
+
 	ToggleDefaultAimWidget(!(WeaponMode == EWeaponMode::Sniper && CurrentSniper->WeaponInfo.AimTexture));
 }
 

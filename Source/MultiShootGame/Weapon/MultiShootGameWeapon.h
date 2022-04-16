@@ -61,6 +61,8 @@ protected:
 
 	float TimeBetweenShots;
 
+	bool Loop = false;
+
 	void ShakeCamera();
 
 public:
@@ -68,7 +70,7 @@ public:
 
 	void StartFire();
 
-	void StopFire(bool StopAudio);
+	void StopFire();
 
 	void ShotgunFire();
 
