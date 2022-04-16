@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "Sound/SoundCue.h"
 #include "WeaponInfo.generated.h"
 
 /**
@@ -15,7 +16,6 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 public:
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	FString Name;
 

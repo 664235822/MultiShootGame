@@ -8,6 +8,7 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MultiShootGame/SaveGame/ChooseWeaponSaveGame.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -29,6 +30,37 @@ AMultiShootGameWeapon::AMultiShootGameWeapon()
 void AMultiShootGameWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	const UChooseWeaponSaveGame* SaveGame = Cast<UChooseWeaponSaveGame>(
+		UGameplayStatics::LoadGameFromSlot(TEXT("ChooseWeapon"), 0));
+	if (SaveGame)
+	{
+		TArray<FWeaponInfo> WeaponInfoList;
+		FWeaponInfo WeaponInfo;
+		switch (CurrentWeaponMode)
+		{
+		case EWeaponMode::Weapon:
+			WeaponInfoList = SaveGame->MainWeaponList;
+			WeaponInfo = WeaponInfoList[SaveGame->MainWeaponIndex];
+			break;
+		case EWeaponMode::Sniper:
+			WeaponInfoList = SaveGame->SecondWeaponList;
+			WeaponInfo = WeaponInfoList[SaveGame->SecondWeaponIndex];
+			break;
+		case EWeaponMode::Shotgun:
+			WeaponInfoList = SaveGame->ShotgunWeaponList;
+			WeaponInfo = WeaponInfoList[SaveGame->ShotgunWeaponIndex];
+			break;
+		}
+		WeaponMeshComponent->SetSkeletalMesh(WeaponInfo.WeaponMesh);
+		BaseDamage = WeaponInfo.BaseDamage;
+		RateOfFire = WeaponInfo.RateOfFire;
+		DelayOfShotgun = WeaponInfo.DelayOfShotgun;
+		BulletSpread = WeaponInfo.BulletSpread;
+		CameraSpread = WeaponInfo.CameraSpread;
+		AimVector = WeaponInfo.AimVector;
+		AimTexture = WeaponInfo.AimTexture;
+	}
 
 	TimeBetweenShots = 60.0f / RateOfFire;
 }
@@ -179,4 +211,14 @@ void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
 	{
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
 	}
+}
+
+UAudioComponent* AMultiShootGameWeapon::GetAudioComponent() const
+{
+	return AudioComponent;
+}
+
+USkeletalMeshComponent* AMultiShootGameWeapon::GetWeaponMeshComponent() const
+{
+	return WeaponMeshComponent;
 }

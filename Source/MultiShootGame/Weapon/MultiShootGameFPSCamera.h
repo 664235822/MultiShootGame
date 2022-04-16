@@ -27,12 +27,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	USkeletalMesh* WeaponMesh;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	USkeletalMesh* ShotgunMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 	USoundCue* WeaponFireCue;
@@ -49,8 +43,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camerashake")
 	TSubclassOf<UMatineeCameraShake> ShotgunCameraShake;
 
-	bool bWantToZoom = false;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float ZoomedFOV = 65.0f;
 
@@ -64,10 +56,6 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
 	UCameraComponent* GetCameraComponent() const;
-
-	void ToggleWeapon(EWeaponMode WeaponMode);
-
-	void SetZoomed(bool WantToZoom);
 };

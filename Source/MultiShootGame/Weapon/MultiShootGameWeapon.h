@@ -6,6 +6,8 @@
 #include "BulletShell.h"
 #include "MatineeCameraShake.h"
 #include "GameFramework/Pawn.h"
+#include "MultiShootGame/Enum/EWeapon.h"
+#include "Sound/SoundCue.h"
 #include "MultiShootGameWeapon.generated.h"
 
 UCLASS()
@@ -41,6 +43,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FName ClipBoneName;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	EWeaponMode CurrentWeaponMode;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	UParticleSystem* MuzzleEffect;
 
@@ -56,7 +61,7 @@ protected:
 	FTimerHandle TimerHandle;
 
 	float LastFireTime;
-	
+
 	float TimeBetweenShots;
 
 	virtual void ShakeCamera();
@@ -74,6 +79,10 @@ public:
 
 	void ReloadShowClip(bool Enabled);
 
+	USkeletalMeshComponent* GetWeaponMeshComponent() const;
+
+	UAudioComponent* GetAudioComponent() const;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float BaseDamage = 20.0f;
 
@@ -88,4 +97,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
 	float CameraSpread = 0.4f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
+	FVector AimVector = FVector(0, -15.f, 15.f);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	bool AimTexture = false;
 };
