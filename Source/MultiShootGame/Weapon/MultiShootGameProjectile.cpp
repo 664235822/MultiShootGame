@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MultiShootGameProjectile.h"
-
 #include "MultiShootGameWeapon.h"
 #include "MultiShootGame/MultiShootGame.h"
 #include "GameFramework/Character.h"

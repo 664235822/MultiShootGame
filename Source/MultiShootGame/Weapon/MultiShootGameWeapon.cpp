@@ -36,7 +36,6 @@ void AMultiShootGameWeapon::BeginPlay()
 	if (SaveGame)
 	{
 		TArray<FWeaponInfo> WeaponInfoList;
-		FWeaponInfo WeaponInfo;
 		switch (CurrentWeaponMode)
 		{
 		case EWeaponMode::Weapon:
@@ -53,16 +52,9 @@ void AMultiShootGameWeapon::BeginPlay()
 			break;
 		}
 		WeaponMeshComponent->SetSkeletalMesh(WeaponInfo.WeaponMesh);
-		BaseDamage = WeaponInfo.BaseDamage;
-		RateOfFire = WeaponInfo.RateOfFire;
-		DelayOfShotgun = WeaponInfo.DelayOfShotgun;
-		BulletSpread = WeaponInfo.BulletSpread;
-		CameraSpread = WeaponInfo.CameraSpread;
-		AimVector = WeaponInfo.AimVector;
-		AimTexture = WeaponInfo.AimTexture;
 	}
 
-	TimeBetweenShots = 60.0f / RateOfFire;
+	TimeBetweenShots = 60.0f / WeaponInfo.RateOfFire;
 }
 
 void AMultiShootGameWeapon::ShakeCamera()
@@ -72,14 +64,14 @@ void AMultiShootGameWeapon::ShakeCamera()
 	{
 		if (MyOwner->GetWeaponMode() == EWeaponMode::Weapon)
 		{
-			MyOwner->AddControllerYawInput(FMath::RandRange(-1 * CameraSpread, CameraSpread));
-			MyOwner->AddControllerPitchInput(-1 * FMath::RandRange(0.f, CameraSpread));
+			MyOwner->AddControllerYawInput(FMath::RandRange(-1 * WeaponInfo.CameraSpread, WeaponInfo.CameraSpread));
+			MyOwner->AddControllerPitchInput(-1 * FMath::RandRange(0.f, WeaponInfo.CameraSpread));
 		}
 
 		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
 		if (PlayerController)
 		{
-			PlayerController->ClientPlayCameraShake(FireCameraShake);
+			PlayerController->ClientPlayCameraShake(WeaponInfo.FireCameraShake);
 		}
 	}
 }
@@ -105,7 +97,7 @@ void AMultiShootGameWeapon::Fire()
 
 		FVector ShotDirection = EyeRotation.Vector();
 
-		const float HalfRad = FMath::DegreesToRadians(BulletSpread);
+		const float HalfRad = FMath::DegreesToRadians(WeaponInfo.BulletSpread);
 		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
 		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
@@ -142,7 +134,7 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		AMultiShootGameProjectile* Projectile = Cast<AMultiShootGameProjectile>(
 			GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation, ShotDirection));
 		Projectile->SetOwner(this);
-		Projectile->BaseDamage = BaseDamage;
+		Projectile->BaseDamage = WeaponInfo.BaseDamage;
 	}
 
 	if (BulletShellClass)
@@ -188,7 +180,7 @@ void AMultiShootGameWeapon::ShotgunFire()
 
 	const float CurrentFireTime = GetWorld()->GetTimeSeconds();
 
-	if (CurrentFireTime - LastFireTime > DelayOfShotgun)
+	if (CurrentFireTime - LastFireTime > WeaponInfo.DelayOfShotgun)
 	{
 		Fire();
 	}

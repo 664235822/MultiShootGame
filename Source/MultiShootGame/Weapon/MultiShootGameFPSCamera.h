@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "MultiShootGameWeapon.h"
 #include "Camera/CameraComponent.h"
-#include "Sound/SoundCue.h"
-#include "MultiShootGame//Enum/EWeapon.h"
 #include "MultiShootGameFPSCamera.generated.h"
 
 /**
@@ -28,21 +26,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
-	USoundCue* WeaponFireCue;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
-	USoundCue* SniperFireCue;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
-	USoundCue* ShotgunFireCue;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CameraShake")
-	TSubclassOf<UMatineeCameraShake> SniperCameraShake;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camerashake")
-	TSubclassOf<UMatineeCameraShake> ShotgunCameraShake;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float ZoomedFOV = 65.0f;
 
@@ -51,11 +34,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.1f, ClampMax = 100.0f))
 	float ZoomInterpSpeed = 20.0f;;
 
-	virtual void ShakeCamera() override;
-
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
 	UCameraComponent* GetCameraComponent() const;
+
+	void SetWeaponInfo(const AMultiShootGameWeapon* Weapon);
 };

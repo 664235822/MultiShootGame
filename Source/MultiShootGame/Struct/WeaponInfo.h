@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MatineeCameraShake.h"
 #include "Engine/DataTable.h"
 #include "Sound/SoundCue.h"
 #include "WeaponInfo.generated.h"
@@ -45,4 +46,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	bool AimTexture;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CameraShake")
+	TSubclassOf<UMatineeCameraShake> FireCameraShake;
 };

@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "BulletShell.h"
-#include "MatineeCameraShake.h"
 #include "GameFramework/Pawn.h"
 #include "MultiShootGame/Enum/EWeapon.h"
+#include "MultiShootGame/Struct/WeaponInfo.h"
 #include "Sound/SoundCue.h"
 #include "MultiShootGameWeapon.generated.h"
 
@@ -55,16 +55,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<ABulletShell> BulletShellClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CameraShake")
-	TSubclassOf<UMatineeCameraShake> FireCameraShake;
-
 	FTimerHandle TimerHandle;
 
 	float LastFireTime;
 
 	float TimeBetweenShots;
 
-	virtual void ShakeCamera();
+	void ShakeCamera();
 
 public:
 	void Fire();
@@ -84,23 +81,5 @@ public:
 	UAudioComponent* GetAudioComponent() const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float BaseDamage = 20.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float RateOfFire = 600.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	float DelayOfShotgun = 0.3f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
-	float BulletSpread = 1.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
-	float CameraSpread = 0.4f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
-	FVector AimVector = FVector(0, -15.f, 15.f);
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	bool AimTexture = false;
+	FWeaponInfo WeaponInfo;
 };
