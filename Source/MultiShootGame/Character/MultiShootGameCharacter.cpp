@@ -285,6 +285,8 @@ void AMultiShootGameCharacter::BeginAim()
 
 	ToggleUseControlRotation(true);
 
+	SpringArmComponent->SocketOffset = FVector::ZeroVector;
+
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
 
@@ -316,6 +318,8 @@ void AMultiShootGameCharacter::EndAim()
 	bAimed = false;
 
 	ToggleUseControlRotation(false);
+
+	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerController->SetViewTargetWithBlend(this, 0.1f);
