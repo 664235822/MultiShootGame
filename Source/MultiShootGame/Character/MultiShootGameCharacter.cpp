@@ -116,6 +116,8 @@ void AMultiShootGameCharacter::BeginPlay()
 		                                    FAttachmentTransformRules::SnapToTargetIncludingScale);
 
 		CurrentFPSCamera->SetActorHiddenInGame(true);
+
+		SetWeaponInfo(CurrentWeapon);
 	}
 
 	if (CurrentGrenade)
@@ -290,7 +292,7 @@ void AMultiShootGameCharacter::BeginAim()
 
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
 
-	if (CurrentSniper->AimTexture)
+	if (WeaponMode == EWeaponMode::Sniper && CurrentSniper->AimTexture)
 	{
 		ToggleSniperAimWidget(true);
 	}
@@ -659,19 +661,7 @@ void AMultiShootGameCharacter::ToggleWeapon()
 
 	WeaponMode = EWeaponMode::Weapon;
 
-	CurrentFPSCamera->GetWeaponMeshComponent()->SetSkeletalMesh(!CurrentWeapon->AimTexture
-		                                                      ? CurrentWeapon->GetWeaponMeshComponent()->SkeletalMesh
-		                                                      : nullptr);
-	CurrentFPSCamera->BaseDamage = CurrentWeapon->BaseDamage;
-	CurrentFPSCamera->RateOfFire = CurrentWeapon->RateOfFire;
-	CurrentFPSCamera->DelayOfShotgun = CurrentWeapon->DelayOfShotgun;
-	CurrentFPSCamera->BulletSpread = CurrentWeapon->BulletSpread;
-	CurrentFPSCamera->CameraSpread = CurrentWeapon->CameraSpread;
-	CurrentFPSCamera->GetCameraComponent()->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
-	                                                                        CurrentWeapon->AimVector,
-	                                                                        FVector::OneVector));
-	CurrentFPSCamera->AimTexture = CurrentWeapon->AimTexture;
-	CurrentFPSCamera->GetAudioComponent()->SetSound(CurrentWeapon->GetAudioComponent()->Sound);
+	SetWeaponInfo(CurrentWeapon);
 
 	bUseControllerRotationYaw = false;
 
@@ -696,19 +686,7 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	WeaponMode = EWeaponMode::Sniper;
 
-	CurrentFPSCamera->GetWeaponMeshComponent()->SetSkeletalMesh(!CurrentSniper->AimTexture
-		                                                      ? CurrentSniper->GetWeaponMeshComponent()->SkeletalMesh
-		                                                      : nullptr);
-	CurrentFPSCamera->BaseDamage = CurrentSniper->BaseDamage;
-	CurrentFPSCamera->RateOfFire = CurrentSniper->RateOfFire;
-	CurrentFPSCamera->DelayOfShotgun = CurrentSniper->DelayOfShotgun;
-	CurrentFPSCamera->BulletSpread = CurrentSniper->BulletSpread;
-	CurrentFPSCamera->CameraSpread = CurrentSniper->CameraSpread;
-	CurrentFPSCamera->GetCameraComponent()->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
-	                                                                        CurrentSniper->AimVector,
-	                                                                        FVector::OneVector));
-	CurrentFPSCamera->AimTexture = CurrentSniper->AimTexture;
-	CurrentFPSCamera->GetAudioComponent()->SetSound(CurrentSniper->GetAudioComponent()->Sound);
+	SetWeaponInfo(CurrentSniper);
 
 	bUseControllerRotationYaw = true;
 
@@ -733,19 +711,7 @@ void AMultiShootGameCharacter::ToggleShotgun()
 
 	WeaponMode = EWeaponMode::Shotgun;
 
-	CurrentFPSCamera->GetWeaponMeshComponent()->SetSkeletalMesh(!CurrentShotgun->AimTexture
-		                                                      ? CurrentShotgun->GetWeaponMeshComponent()->SkeletalMesh
-		                                                      : nullptr);
-	CurrentFPSCamera->BaseDamage = CurrentShotgun->BaseDamage;
-	CurrentFPSCamera->RateOfFire = CurrentShotgun->RateOfFire;
-	CurrentFPSCamera->DelayOfShotgun = CurrentShotgun->DelayOfShotgun;
-	CurrentFPSCamera->BulletSpread = CurrentShotgun->BulletSpread;
-	CurrentFPSCamera->CameraSpread = CurrentShotgun->CameraSpread;
-	CurrentFPSCamera->GetCameraComponent()->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
-	                                                                        CurrentShotgun->AimVector,
-	                                                                        FVector::OneVector));
-	CurrentFPSCamera->AimTexture = CurrentShotgun->AimTexture;
-	CurrentFPSCamera->GetAudioComponent()->SetSound(CurrentShotgun->GetAudioComponent()->Sound);
+	SetWeaponInfo(CurrentShotgun);
 
 	bUseControllerRotationYaw = true;
 
@@ -772,8 +738,6 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		UKismetSystemLibrary::MoveComponentTo(WeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
-		ToggleDefaultAimWidget(true);
-
 		break;
 	case EWeaponMode::Sniper:
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -787,8 +751,6 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		UKismetSystemLibrary::MoveComponentTo(SniperSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
-
-		ToggleDefaultAimWidget(false);
 
 		break;
 	case EWeaponMode::Shotgun:
@@ -804,10 +766,10 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		UKismetSystemLibrary::MoveComponentTo(ShotgunSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
-		ToggleDefaultAimWidget(true);
-
 		break;
 	}
+
+	ToggleDefaultAimWidget(!CurrentSniper->AimTexture);
 }
 
 void AMultiShootGameCharacter::ToggleWeaponEnd()
@@ -902,6 +864,23 @@ void AMultiShootGameCharacter::EndAction()
 	{
 		StopFire();
 	}
+}
+
+void AMultiShootGameCharacter::SetWeaponInfo(const AMultiShootGameWeapon* Weapon) const
+{
+	CurrentFPSCamera->GetWeaponMeshComponent()->SetSkeletalMesh(!Weapon->AimTexture
+		                                                            ? Weapon->GetWeaponMeshComponent()->SkeletalMesh
+		                                                            : nullptr);
+	CurrentFPSCamera->BaseDamage = Weapon->BaseDamage;
+	CurrentFPSCamera->RateOfFire = Weapon->RateOfFire;
+	CurrentFPSCamera->DelayOfShotgun = Weapon->DelayOfShotgun;
+	CurrentFPSCamera->BulletSpread = Weapon->BulletSpread;
+	CurrentFPSCamera->CameraSpread = Weapon->CameraSpread;
+	CurrentFPSCamera->GetCameraComponent()->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
+	                                                                        Weapon->AimVector,
+	                                                                        FVector::OneVector));
+	CurrentFPSCamera->AimTexture = Weapon->AimTexture;
+	CurrentFPSCamera->GetAudioComponent()->SetSound(Weapon->GetAudioComponent()->Sound);
 }
 
 void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)

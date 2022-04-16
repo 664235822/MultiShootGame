@@ -254,6 +254,8 @@ protected:
 
 	void EndAction();
 
+	void SetWeaponInfo(const AMultiShootGameWeapon* Weapon) const;
+
 	bool bFired = false;
 
 	bool bAimed = false;
