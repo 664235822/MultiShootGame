@@ -549,8 +549,6 @@ void AMultiShootGameCharacter::KnifeAttack()
 
 void AMultiShootGameCharacter::BeginKnifeAttack()
 {
-	bEnableMovement = false;
-
 	bKnifeAttack = true;
 
 	bNextKnifeAttack = false;
@@ -582,8 +580,6 @@ void AMultiShootGameCharacter::EndKnifeAttack()
 		bTakeDown = false;
 		bTakingDown = false;
 	}
-
-	bEnableMovement = true;
 
 	bKnifeAttack = false;
 
