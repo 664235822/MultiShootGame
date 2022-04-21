@@ -59,8 +59,11 @@ void AMultiShootGameEnemyCharacter::Death(AActor* Attacker)
 	ForceVector *= 20000.f;
 	GetMesh()->AddImpulse(FVector(ForceVector.X, ForceVector.Y, 10000.f));
 
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
-	bDeadTimeDilation = true;
+	if (UKismetMathLibrary::RandomFloat() <= RandomDeadTimeDilationRate)
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
+		bDeadTimeDilation = true;
+	}
 
 	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
@@ -106,7 +109,7 @@ void AMultiShootGameEnemyCharacter::Tick(float DeltaTime)
 		else
 		{
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
-			bDeadTimeDilation= false;
+			bDeadTimeDilation = false;
 			DeadTimeDilationDelay = 0;
 		}
 	}

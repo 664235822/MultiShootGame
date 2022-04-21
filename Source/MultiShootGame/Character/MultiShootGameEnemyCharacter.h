@@ -27,11 +27,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
-	UFUNCTION(BlueprintCallable)
-	void Death(AActor* Attacker);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
+	float RandomDeadTimeDilationRate = 0.3f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
 	float MaxDeadTimeDilationDelay = 0.1f;
+
+	UFUNCTION(BlueprintCallable)
+	void Death(AActor* Attacker);
 
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
