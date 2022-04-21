@@ -236,16 +236,16 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 
 void AMultiShootGameCharacter::BeginFastRun()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
-
 	bFastRun = true;
+
+	HandleWalkSpeed();
 }
 
 void AMultiShootGameCharacter::EndFastRun()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-
 	bFastRun = false;
+
+	HandleWalkSpeed();
 }
 
 void AMultiShootGameCharacter::BeginCrouch()
@@ -676,6 +676,8 @@ void AMultiShootGameCharacter::ToggleWeapon()
 
 	bUseControllerRotationYaw = false;
 
+	HandleWalkSpeed();
+
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
@@ -701,6 +703,8 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	bUseControllerRotationYaw = true;
 
+	HandleWalkSpeed();
+
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
@@ -725,6 +729,8 @@ void AMultiShootGameCharacter::ToggleShotgun()
 	CurrentFPSCamera->SetWeaponInfo(CurrentShotgun);
 
 	bUseControllerRotationYaw = true;
+
+	HandleWalkSpeed();
 
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
@@ -874,6 +880,18 @@ void AMultiShootGameCharacter::EndAction()
 	if (bFired)
 	{
 		StopFire();
+	}
+}
+
+void AMultiShootGameCharacter::HandleWalkSpeed()
+{
+	if (bFastRun)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::Sniper ? 600.f : 500.f;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::Sniper ? 300.f : 250.f;
 	}
 }
 

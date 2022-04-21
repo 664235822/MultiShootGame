@@ -254,6 +254,8 @@ protected:
 
 	void EndAction();
 
+	void HandleWalkSpeed();
+
 	bool bFired = false;
 
 	bool bFastRun = false;
