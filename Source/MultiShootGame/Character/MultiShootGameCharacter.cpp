@@ -253,6 +253,8 @@ void AMultiShootGameCharacter::BeginCrouch()
 	Crouch();
 
 	ToggleUseControlRotation(true);
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
 }
 
 void AMultiShootGameCharacter::EndCrouch()
@@ -260,17 +262,19 @@ void AMultiShootGameCharacter::EndCrouch()
 	UnCrouch();
 
 	ToggleUseControlRotation(false);
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
 }
 
 void AMultiShootGameCharacter::ToggleCrouch()
 {
 	if (!GetCharacterMovement()->IsCrouching())
 	{
-		Crouch();
+		BeginCrouch();
 	}
 	else
 	{
-		UnCrouch();
+		EndCrouch();
 	}
 }
 
@@ -296,7 +300,10 @@ void AMultiShootGameCharacter::BeginAim()
 	CurrentShotgun->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
 
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
+	if (!GetCharacterMovement()->IsCrouching())
+	{
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
+	}
 
 	ToggleDefaultAimWidget(false);
 
@@ -330,7 +337,10 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentShotgun->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
 
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
+	if (!GetCharacterMovement()->IsCrouching())
+	{
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
+	}
 
 	if (!(WeaponMode == EWeaponMode::Sniper && CurrentSniper->WeaponInfo.AimTexture))
 	{
