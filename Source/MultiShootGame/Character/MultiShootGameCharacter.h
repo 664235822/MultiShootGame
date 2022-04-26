@@ -36,7 +36,7 @@ protected:
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
-	
+
 	void BeginFastRun();
 
 	void EndFastRun();
@@ -223,6 +223,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
 	EWeaponMode WeaponMode = EWeaponMode::Weapon;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	float KnifeDamage = 40.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	float TakeDownDamage = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	float CameraPitchClamp = 60.f;
+
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentWeapon;
 
@@ -260,7 +269,7 @@ protected:
 
 	bool bFastRun = false;
 
-	bool bJump=false;
+	bool bJump = false;
 
 	bool bAimed = false;
 
@@ -289,10 +298,6 @@ protected:
 	bool bEnableMovement = true;
 
 	int KnifeComboIndex = 0;
-
-	float KnifeDamage = 40.f;
-
-	float TakeDownDamage = 100.f;
 
 	FVector SpawnActorLocation;
 

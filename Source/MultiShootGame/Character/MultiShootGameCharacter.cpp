@@ -63,6 +63,10 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
+	PlayerCameraManager->ViewPitchMin = -1 * CameraPitchClamp;
+
 	CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
 	CurrentDefaultUserWidget->AddToViewport();
 	CurrentDefaultUserWidget->SetVisibility(ESlateVisibility::Visible);
