@@ -312,7 +312,7 @@ void AMultiShootGameCharacter::BeginAim()
 		ToggleSniperAimWidget(true);
 	}
 
-	if (bFired)
+	if (WeaponMode == EWeaponMode::Weapon && bFired)
 	{
 		CurrentFPSCamera->StartFire();
 	}
@@ -352,12 +352,9 @@ void AMultiShootGameCharacter::EndAim()
 		ToggleSniperAimWidget(false);
 	}
 
-	if (bFired)
+	if (WeaponMode == EWeaponMode::Weapon && bFired)
 	{
-		if (WeaponMode == EWeaponMode::Weapon)
-		{
-			CurrentWeapon->StartFire();
-		}
+		CurrentWeapon->StartFire();
 	}
 
 	CurrentFPSCamera->StopFire();
