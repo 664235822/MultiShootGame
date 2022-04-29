@@ -111,7 +111,35 @@ void AMultiShootGameWeapon::Fire()
 			Cast<AMultiShootGameCharacter>(GetOwner())->GetFPSCameraSceneComponent()->SetWorldRotation(TargetRotation);
 		}
 
-		PlayFireEffect(TraceEnd);
+		if (MuzzleEffect)
+		{
+			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
+		}
+
+		if (WeaponInfo.ProjectileClass)
+		{
+			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
+
+			AMultiShootGameProjectileBase* Projectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
+				WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection);
+			Projectile->SetOwner(this);
+			Projectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+		}
+
+		if (MyOwner->GetWeaponMode() != EWeaponMode::SecondWeapon && BulletShellClass)
+		{
+			const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
+			const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
+
+			ABulletShell* BulletShell = GetWorld()->SpawnActor<ABulletShell>(
+				BulletShellClass, BulletShellLocation, BulletShellRotation);
+			BulletShell->SetOwner(this);
+			BulletShell->ThrowBulletShell();
+		}
+
+		ShakeCamera();
+
 
 		AudioComponent->Play();
 
@@ -121,34 +149,6 @@ void AMultiShootGameWeapon::Fire()
 
 void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 {
-	if (MuzzleEffect)
-	{
-		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
-	}
-
-	if (WeaponInfo.ProjectileClass)
-	{
-		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
-		const FRotator ShotDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEndPoint);
-
-		AMultiShootGameProjectileBase* Projectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
-			WeaponInfo.ProjectileClass, MuzzleLocation, ShotDirection);
-		Projectile->SetOwner(this);
-		Projectile->ProjectileInitialize(WeaponInfo.BaseDamage);
-	}
-
-	if (BulletShellClass)
-	{
-		const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
-		const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
-
-		ABulletShell* BulletShell = GetWorld()->SpawnActor<ABulletShell>(
-			BulletShellClass, BulletShellLocation, BulletShellRotation);
-		BulletShell->SetOwner(this);
-		BulletShell->ThrowBulletShell();
-	}
-
-	ShakeCamera();
 }
 
 void AMultiShootGameWeapon::StartFire()
