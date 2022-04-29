@@ -33,14 +33,14 @@ protected:
 	UProjectileMovementComponent* ProjectileMovement;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
-	TSubclassOf<UDamageType> DamageType;
+	TSubclassOf<UDamageType> DamageTypeClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
 	UMaterialInterface* BulletDecalMaterial;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
 	FVector BulletDecalSize;
-
+	
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);

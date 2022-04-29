@@ -58,7 +58,7 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,
-		                                   GetOwner()->GetInstigatorController(), GetOwner(), DamageType);
+		                                   GetOwner()->GetInstigatorController(), GetOwner(), DamageTypeClass);
 	}
 	else
 	{
