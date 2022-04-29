@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "MatineeCameraShake.h"
+#include "../Weapon/MultiShootGameProjectileBase.h"
 #include "Engine/DataTable.h"
-#include "Sound/SoundCue.h"
 #include "WeaponInfo.generated.h"
 
 /**
@@ -46,7 +46,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	bool AimTexture;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
+	TSubclassOf<AMultiShootGameProjectileBase> ProjectileClass;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CameraShake")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
 };

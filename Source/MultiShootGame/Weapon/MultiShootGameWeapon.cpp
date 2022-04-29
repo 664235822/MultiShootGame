@@ -112,7 +112,7 @@ void AMultiShootGameWeapon::Fire()
 		}
 
 		PlayFireEffect(TraceEnd);
-		
+
 		AudioComponent->Play();
 
 		LastFireTime = GetWorld()->TimeSeconds;
@@ -126,15 +126,15 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
 	}
 
-	if (TracerEffectClass)
+	if (WeaponInfo.ProjectileClass)
 	{
 		const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 		const FRotator ShotDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEndPoint);
 
-		AMultiShootGameProjectile* Projectile = Cast<AMultiShootGameProjectile>(
-			GetWorld()->SpawnActor<AActor>(TracerEffectClass, MuzzleLocation, ShotDirection));
+		AMultiShootGameProjectileBase* Projectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
+			WeaponInfo.ProjectileClass, MuzzleLocation, ShotDirection);
 		Projectile->SetOwner(this);
-		Projectile->BaseDamage = WeaponInfo.BaseDamage;
+		Projectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 	}
 
 	if (BulletShellClass)
@@ -142,8 +142,8 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 		const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
 		const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
 
-		ABulletShell* BulletShell = Cast<ABulletShell>(
-			GetWorld()->SpawnActor<AActor>(BulletShellClass, BulletShellLocation, BulletShellRotation));
+		ABulletShell* BulletShell = GetWorld()->SpawnActor<ABulletShell>(
+			BulletShellClass, BulletShellLocation, BulletShellRotation);
 		BulletShell->SetOwner(this);
 		BulletShell->ThrowBulletShell();
 	}
@@ -154,7 +154,7 @@ void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
 void AMultiShootGameWeapon::StartFire()
 {
 	const float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
-	
+
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameWeapon::Fire, TimeBetweenShots, true,
 	                                FirstDelay);
 }

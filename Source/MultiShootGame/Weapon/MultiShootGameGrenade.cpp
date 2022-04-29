@@ -64,9 +64,9 @@ void AMultiShootGameGrenade::ThrowGrenade(FRotator Direction, bool Multiply)
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameGrenade::Explode, ExplodedDelay);
 }
 
-void AMultiShootGameGrenade::ProjectileInitialize()
+void AMultiShootGameGrenade::ProjectileInitialize(float Damage)
 {
-	Super::ProjectileInitialize();
+	Super::ProjectileInitialize(Damage);
 
 	ThrowGrenade(GetActorRotation(), false);
 }

@@ -23,8 +23,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void ProjectileInitialize(float Damage);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Projectile)
 	float BaseDamage = 20.f;
-
-	virtual void ProjectileInitialize();
 };

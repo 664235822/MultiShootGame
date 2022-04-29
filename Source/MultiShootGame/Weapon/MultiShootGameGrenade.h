@@ -63,5 +63,5 @@ public:
 
 	void ThrowGrenade(FRotator Direction, bool MultiPly);
 
-	virtual void ProjectileInitialize() override;
+	virtual void ProjectileInitialize(float BaseDamage) override;
 };
