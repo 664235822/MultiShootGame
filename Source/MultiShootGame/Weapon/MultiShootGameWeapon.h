@@ -69,7 +69,7 @@ public:
 
 	void StopFire();
 
-	void ShotgunFire();
+	void FireOfDelay();
 
 	void EnablePhysicsSimulate();
 

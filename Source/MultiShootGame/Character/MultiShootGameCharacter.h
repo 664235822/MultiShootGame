@@ -53,7 +53,7 @@ protected:
 
 	void BeginReload();
 
-	void BeginSniperReload();
+	void BeginSecondWeaponReload();
 
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
@@ -88,11 +88,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void TakeDownAttack();
 
-	void ToggleWeapon();
+	void ToggleMainWeapon();
 
-	void ToggleSniper();
+	void ToggleSecondWeapon();
 
-	void ToggleShotgun();
+	void ToggleThirdWeapon();
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleWeaponBegin();
@@ -116,13 +116,13 @@ protected:
 	USceneComponent* FPSCameraSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USceneComponent* WeaponSceneComponent;
+	USceneComponent* MainWeaponSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USceneComponent* SniperSceneComponent;
+	USceneComponent* SecondWeaponSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USceneComponent* ShotgunSceneComponent;
+	USceneComponent* ThirdWeaponSceneComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* GrenadeSceneComponent;
@@ -140,13 +140,13 @@ protected:
 	UHitEffectComponent* HitEffectComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<AMultiShootGameWeapon> WeaponClass;
+	TSubclassOf<AMultiShootGameWeapon> MainWeaponClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<AMultiShootGameWeapon> SniperClass;
+	TSubclassOf<AMultiShootGameWeapon> SecondWeaponClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<AMultiShootGameWeapon> ShotgunClass;
+	TSubclassOf<AMultiShootGameWeapon> ThirdWeaponClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameGrenade> GrenadeClass;
@@ -155,22 +155,22 @@ protected:
 	TSubclassOf<UDamageType> DamageTypeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName WeaponSocketName = "WeaponSocket";
+	FName MainWeaponSocketName = "MainWeaponSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName BackWeaponSocketName = "BackWeaponSocket";
+	FName BackMainWeaponSocketName = "BackMainWeaponSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName SniperSocketName = "SniperSocket";
+	FName SecondWeaponSocketName = "SecondWeaponSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName BackSniperSocketName = "BackSniperSocket";
+	FName BackSecondWeaponSocketName = "BackSecondWeaponSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName ShotgunSocketName = "ShotgunSocket";
+	FName ThirdWeaponSocketName = "ThirdWeaponSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName BackShotgunSocketName = "BackShotgunSocket";
+	FName BackThirdWeaponSocketName = "BackThirdWeaponSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName GrenadeSocketName = "GrenadeSocket";
@@ -203,7 +203,7 @@ protected:
 	UAnimMontage* ReloadAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UAnimMontage* SniperReloadAnimMontage;
+	UAnimMontage* SecondWeaponReloadAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* ThrowGrenadeAnimMontage;
@@ -278,7 +278,7 @@ protected:
 
 	bool bReloading = false;
 
-	bool bSniperReloading = false;
+	bool bSecondWeaponReloading = false;
 
 	bool bToggleWeapon = false;
 

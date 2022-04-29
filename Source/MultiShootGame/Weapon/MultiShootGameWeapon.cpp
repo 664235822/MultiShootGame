@@ -164,7 +164,7 @@ void AMultiShootGameWeapon::StopFire()
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 }
 
-void AMultiShootGameWeapon::ShotgunFire()
+void AMultiShootGameWeapon::FireOfDelay()
 {
 	if (LastFireTime == 0)
 	{
