@@ -41,6 +41,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	float CameraSpread;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
+	float CameraSpreadDown;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	FVector AimVector;
 
