@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MultiShootGameProjectileBase.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "MultiShootGame//Component/HitEffectComponent.h"
+#include "MultiShootGame/Component/HitEffectComponent.h"
 #include "MultiShootGameProjectile.generated.h"
 
 UCLASS(config=Game)
-class AMultiShootGameProjectile : public AActor
+class AMultiShootGameProjectile : public AMultiShootGameProjectileBase
 {
 	GENERATED_BODY()
 
@@ -43,9 +44,5 @@ protected:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);
-
-public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Projectile)
-	float BaseDamage = 20.f;
+	
 };

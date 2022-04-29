@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MultiShootGameProjectileBase.h"
 #include "MatineeCameraShake.h"
-#include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 #include "MultiShootGameGrenade.generated.h"
 
 UCLASS()
-class MULTISHOOTGAME_API AMultiShootGameGrenade : public AActor
+class MULTISHOOTGAME_API AMultiShootGameGrenade : public AMultiShootGameProjectileBase
 {
 	GENERATED_BODY()
 
@@ -49,9 +49,6 @@ protected:
 	void Explode();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
-	float BaseDamage = 150.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
 	float DamageRadius = 1000.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
@@ -65,4 +62,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void ThrowGrenade(FRotator Direction, bool MultiPly);
+
+	virtual void ProjectileInitialize() override;
 };

@@ -38,17 +38,17 @@ void AMultiShootGameWeapon::BeginPlay()
 		TArray<FWeaponInfo> WeaponInfoList;
 		switch (CurrentWeaponMode)
 		{
-		case EWeaponMode::Weapon:
+		case EWeaponMode::MainWeapon:
 			WeaponInfoList = SaveGame->MainWeaponList;
 			WeaponInfo = WeaponInfoList[SaveGame->MainWeaponIndex];
 			break;
-		case EWeaponMode::Sniper:
+		case EWeaponMode::SecondWeapon:
 			WeaponInfoList = SaveGame->SecondWeaponList;
 			WeaponInfo = WeaponInfoList[SaveGame->SecondWeaponIndex];
 			break;
-		case EWeaponMode::Shotgun:
-			WeaponInfoList = SaveGame->ShotgunWeaponList;
-			WeaponInfo = WeaponInfoList[SaveGame->ShotgunWeaponIndex];
+		case EWeaponMode::ThirdWeapon:
+			WeaponInfoList = SaveGame->ThirdWeaponList;
+			WeaponInfo = WeaponInfoList[SaveGame->ThirdWeaponIndex];
 			break;
 		}
 		WeaponMeshComponent->SetSkeletalMesh(WeaponInfo.WeaponMesh);
@@ -62,7 +62,7 @@ void AMultiShootGameWeapon::ShakeCamera()
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
 	if (MyOwner)
 	{
-		if (MyOwner->GetWeaponMode() == EWeaponMode::Weapon)
+		if (MyOwner->GetWeaponMode() == EWeaponMode::MainWeapon)
 		{
 			MyOwner->AddControllerYawInput(FMath::RandRange(-1 * WeaponInfo.CameraSpread, WeaponInfo.CameraSpread));
 			MyOwner->AddControllerPitchInput(-1 * FMath::RandRange(0.f, WeaponInfo.CameraSpread));

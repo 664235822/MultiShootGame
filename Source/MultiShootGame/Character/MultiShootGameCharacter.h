@@ -221,7 +221,7 @@ protected:
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
-	EWeaponMode WeaponMode = EWeaponMode::Weapon;
+	EWeaponMode WeaponMode = EWeaponMode::MainWeapon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	float KnifeDamage = 40.f;
@@ -229,17 +229,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	float TakeDownDamage = 100.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	float GrenadeDamage = 150.f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	float CameraPitchClamp = 60.f;
 
 	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentWeapon;
+	AMultiShootGameWeapon* CurrentMainWeapon;
 
 	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentSniper;
+	AMultiShootGameWeapon* CurrentSecondWeapon;
 
 	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentShotgun;
+	AMultiShootGameWeapon* CurrentThirdWeapon;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;

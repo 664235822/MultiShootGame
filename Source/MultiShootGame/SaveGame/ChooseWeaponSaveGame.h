@@ -23,7 +23,7 @@ public:
 	TArray<FWeaponInfo> SecondWeaponList;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
-	TArray<FWeaponInfo> ShotgunWeaponList;
+	TArray<FWeaponInfo> ThirdWeaponList;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
 	int MainWeaponIndex;
@@ -32,5 +32,7 @@ public:
 	int SecondWeaponIndex;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
-	int ShotgunWeaponIndex;
+	int ThirdWeaponIndex;
+
+	
 };

@@ -82,35 +82,38 @@ void AMultiShootGameCharacter::BeginPlay()
 
 	SpawnActorLocation = GetActorLocation();
 
-	CurrentWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(WeaponClass, FVector::ZeroVector,
-	                                                              FRotator::ZeroRotator,
-	                                                              SpawnParameters);
-	CurrentSniper = GetWorld()->SpawnActor<AMultiShootGameWeapon>(SniperClass, FVector::ZeroVector,
-	                                                              FRotator::ZeroRotator,
-	                                                              SpawnParameters);
-	CurrentShotgun = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ShotgunClass, FVector::ZeroVector,
-	                                                               FRotator::ZeroRotator,
-	                                                               SpawnParameters);
+	CurrentMainWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(WeaponClass, FVector::ZeroVector,
+	                                                                  FRotator::ZeroRotator,
+	                                                                  SpawnParameters);
+	CurrentSecondWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(SniperClass, FVector::ZeroVector,
+	                                                                    FRotator::ZeroRotator,
+	                                                                    SpawnParameters);
+	CurrentThirdWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ShotgunClass, FVector::ZeroVector,
+	                                                                   FRotator::ZeroRotator,
+	                                                                   SpawnParameters);
 	CurrentFPSCamera = GetWorld()->SpawnActor<AMultiShootGameFPSCamera>(FPSCameraClass, FVector::ZeroVector,
 	                                                                    FRotator::ZeroRotator,
 	                                                                    SpawnParameters);
 
-	if (CurrentWeapon)
+	if (CurrentMainWeapon)
 	{
-		CurrentWeapon->SetOwner(this);
-		CurrentWeapon->AttachToComponent(WeaponSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		CurrentMainWeapon->SetOwner(this);
+		CurrentMainWeapon->AttachToComponent(WeaponSceneComponent,
+		                                     FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
-	if (CurrentSniper)
+	if (CurrentSecondWeapon)
 	{
-		CurrentSniper->SetOwner(this);
-		CurrentSniper->AttachToComponent(SniperSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		CurrentSecondWeapon->SetOwner(this);
+		CurrentSecondWeapon->AttachToComponent(SniperSceneComponent,
+		                                       FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
-	if (CurrentShotgun)
+	if (CurrentThirdWeapon)
 	{
-		CurrentShotgun->SetOwner(this);
-		CurrentShotgun->AttachToComponent(ShotgunSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		CurrentThirdWeapon->SetOwner(this);
+		CurrentThirdWeapon->AttachToComponent(ShotgunSceneComponent,
+		                                      FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentFPSCamera)
@@ -121,7 +124,7 @@ void AMultiShootGameCharacter::BeginPlay()
 
 		CurrentFPSCamera->SetActorHiddenInGame(true);
 
-		CurrentFPSCamera->SetWeaponInfo(CurrentWeapon);
+		CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
 	}
 
 	if (CurrentGrenade)
@@ -146,23 +149,23 @@ void AMultiShootGameCharacter::StartFire()
 	{
 		switch (WeaponMode)
 		{
-		case EWeaponMode::Weapon:
-			if (CurrentWeapon)
+		case EWeaponMode::MainWeapon:
+			if (CurrentMainWeapon)
 			{
-				CurrentWeapon->StartFire();
+				CurrentMainWeapon->StartFire();
 			}
 			break;
-		case EWeaponMode::Sniper:
-			if (CurrentSniper)
+		case EWeaponMode::SecondWeapon:
+			if (CurrentSecondWeapon)
 			{
-				CurrentSniper->Fire();
+				CurrentSecondWeapon->Fire();
 				BeginSniperReload();
 			}
 			break;
-		case EWeaponMode::Shotgun:
-			if (CurrentShotgun)
+		case EWeaponMode::ThirdWeapon:
+			if (CurrentThirdWeapon)
 			{
-				CurrentShotgun->ShotgunFire();
+				CurrentThirdWeapon->ShotgunFire();
 			}
 			break;
 		}
@@ -173,14 +176,14 @@ void AMultiShootGameCharacter::StartFire()
 		{
 			switch (WeaponMode)
 			{
-			case EWeaponMode::Weapon:
+			case EWeaponMode::MainWeapon:
 				CurrentFPSCamera->StartFire();
 				break;
-			case EWeaponMode::Sniper:
+			case EWeaponMode::SecondWeapon:
 				CurrentFPSCamera->Fire();
 				BeginSniperReload();
 				break;
-			case EWeaponMode::Shotgun:
+			case EWeaponMode::ThirdWeapon:
 				CurrentFPSCamera->ShotgunFire();
 				break;
 			}
@@ -194,11 +197,11 @@ void AMultiShootGameCharacter::StopFire()
 
 	ToggleUseControlRotation(false);
 
-	if (WeaponMode == EWeaponMode::Weapon)
+	if (WeaponMode == EWeaponMode::MainWeapon)
 	{
-		if (CurrentWeapon)
+		if (CurrentMainWeapon)
 		{
-			CurrentWeapon->StopFire();
+			CurrentMainWeapon->StopFire();
 		}
 
 		if (CurrentFPSCamera)
@@ -299,9 +302,9 @@ void AMultiShootGameCharacter::BeginAim()
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
 
 	CurrentFPSCamera->SetActorHiddenInGame(false);
-	CurrentWeapon->SetActorHiddenInGame(true);
-	CurrentSniper->SetActorHiddenInGame(true);
-	CurrentShotgun->SetActorHiddenInGame(true);
+	CurrentMainWeapon->SetActorHiddenInGame(true);
+	CurrentSecondWeapon->SetActorHiddenInGame(true);
+	CurrentThirdWeapon->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
 
 	if (!GetCharacterMovement()->IsCrouching())
@@ -311,17 +314,17 @@ void AMultiShootGameCharacter::BeginAim()
 
 	ToggleDefaultAimWidget(false);
 
-	if (WeaponMode == EWeaponMode::Sniper && CurrentSniper->WeaponInfo.AimTexture)
+	if (WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture)
 	{
 		ToggleSniperAimWidget(true);
 	}
 
-	if (WeaponMode == EWeaponMode::Weapon && bFired)
+	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
 	{
 		CurrentFPSCamera->StartFire();
 	}
 
-	CurrentWeapon->StopFire();
+	CurrentMainWeapon->StopFire();
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -336,9 +339,9 @@ void AMultiShootGameCharacter::EndAim()
 	PlayerController->SetViewTargetWithBlend(this, 0.1f);
 
 	CurrentFPSCamera->SetActorHiddenInGame(true);
-	CurrentWeapon->SetActorHiddenInGame(false);
-	CurrentSniper->SetActorHiddenInGame(false);
-	CurrentShotgun->SetActorHiddenInGame(false);
+	CurrentMainWeapon->SetActorHiddenInGame(false);
+	CurrentSecondWeapon->SetActorHiddenInGame(false);
+	CurrentThirdWeapon->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
 
 	if (!GetCharacterMovement()->IsCrouching())
@@ -346,19 +349,19 @@ void AMultiShootGameCharacter::EndAim()
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
 	}
 
-	if (!(WeaponMode == EWeaponMode::Sniper && CurrentSniper->WeaponInfo.AimTexture))
+	if (!(WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture))
 	{
 		ToggleDefaultAimWidget(true);
 	}
 
-	if (CurrentSniper->WeaponInfo.AimTexture)
+	if (CurrentSecondWeapon->WeaponInfo.AimTexture)
 	{
 		ToggleSniperAimWidget(false);
 	}
 
-	if (WeaponMode == EWeaponMode::Weapon && bFired)
+	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
 	{
-		CurrentWeapon->StartFire();
+		CurrentMainWeapon->StartFire();
 	}
 
 	CurrentFPSCamera->StopFire();
@@ -497,6 +500,7 @@ void AMultiShootGameCharacter::SpawnGrenade()
 
 	if (CurrentGrenade)
 	{
+		CurrentGrenade->BaseDamage = GrenadeDamage;
 		CurrentGrenade->SetOwner(this);
 		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	}
@@ -651,14 +655,14 @@ void AMultiShootGameCharacter::ReloadShowClip(bool Enabled)
 	AMultiShootGameWeapon* TempWeapon = nullptr;
 	switch (WeaponMode)
 	{
-	case EWeaponMode::Weapon:
-		TempWeapon = CurrentWeapon;
+	case EWeaponMode::MainWeapon:
+		TempWeapon = CurrentMainWeapon;
 		break;
-	case EWeaponMode::Sniper:
-		TempWeapon = CurrentSniper;
+	case EWeaponMode::SecondWeapon:
+		TempWeapon = CurrentSecondWeapon;
 		break;
-	case EWeaponMode::Shotgun:
-		TempWeapon = CurrentShotgun;
+	case EWeaponMode::ThirdWeapon:
+		TempWeapon = CurrentThirdWeapon;
 		break;
 	}
 
@@ -672,7 +676,7 @@ void AMultiShootGameCharacter::ToggleWeapon()
 		return;
 	}
 
-	if (WeaponMode == EWeaponMode::Weapon)
+	if (WeaponMode == EWeaponMode::MainWeapon)
 	{
 		return;
 	}
@@ -681,9 +685,9 @@ void AMultiShootGameCharacter::ToggleWeapon()
 
 	EndAction();
 
-	WeaponMode = EWeaponMode::Weapon;
+	WeaponMode = EWeaponMode::MainWeapon;
 
-	CurrentFPSCamera->SetWeaponInfo(CurrentWeapon);
+	CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
 
 	bUseControllerRotationYaw = false;
 
@@ -699,7 +703,7 @@ void AMultiShootGameCharacter::ToggleSniper()
 		return;
 	}
 
-	if (WeaponMode == EWeaponMode::Sniper)
+	if (WeaponMode == EWeaponMode::SecondWeapon)
 	{
 		return;
 	}
@@ -708,9 +712,9 @@ void AMultiShootGameCharacter::ToggleSniper()
 
 	EndAction();
 
-	WeaponMode = EWeaponMode::Sniper;
+	WeaponMode = EWeaponMode::SecondWeapon;
 
-	CurrentFPSCamera->SetWeaponInfo(CurrentSniper);
+	CurrentFPSCamera->SetWeaponInfo(CurrentSecondWeapon);
 
 	bUseControllerRotationYaw = true;
 
@@ -726,7 +730,7 @@ void AMultiShootGameCharacter::ToggleShotgun()
 		return;
 	}
 
-	if (WeaponMode == EWeaponMode::Shotgun)
+	if (WeaponMode == EWeaponMode::ThirdWeapon)
 	{
 		return;
 	}
@@ -735,9 +739,9 @@ void AMultiShootGameCharacter::ToggleShotgun()
 
 	EndAction();
 
-	WeaponMode = EWeaponMode::Shotgun;
+	WeaponMode = EWeaponMode::ThirdWeapon;
 
-	CurrentFPSCamera->SetWeaponInfo(CurrentShotgun);
+	CurrentFPSCamera->SetWeaponInfo(CurrentThirdWeapon);
 
 	bUseControllerRotationYaw = true;
 
@@ -753,7 +757,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 	switch (WeaponMode)
 	{
-	case EWeaponMode::Weapon:
+	case EWeaponMode::MainWeapon:
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
 		                                        WeaponSocketName);
 
@@ -767,7 +771,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
 		break;
-	case EWeaponMode::Sniper:
+	case EWeaponMode::SecondWeapon:
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 		                                        BackWeaponSocketName);
 
@@ -781,7 +785,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
 		break;
-	case EWeaponMode::Shotgun:
+	case EWeaponMode::ThirdWeapon:
 		WeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 		                                        BackWeaponSocketName);
 
@@ -797,7 +801,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 		break;
 	}
 
-	ToggleDefaultAimWidget(!(WeaponMode == EWeaponMode::Sniper && CurrentSniper->WeaponInfo.AimTexture));
+	ToggleDefaultAimWidget(!(WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture));
 }
 
 void AMultiShootGameCharacter::ToggleWeaponEnd()
@@ -898,17 +902,17 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 {
 	if (bFastRun)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::Sniper ? 600.f : 500.f;
+		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::SecondWeapon ? 600.f : 500.f;
 	}
 	else
 	{
-		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::Sniper ? 300.f : 250.f;
+		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::SecondWeapon ? 300.f : 250.f;
 	}
 }
 
 void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)
 {
-	if (WeaponMode == EWeaponMode::Weapon)
+	if (WeaponMode == EWeaponMode::MainWeapon)
 	{
 		bUseControlRotation = Enabled;
 	}
@@ -929,9 +933,9 @@ void AMultiShootGameCharacter::Death()
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	GetMesh()->GetAnimInstance()->StopAllMontages(0);
 
-	CurrentWeapon->EnablePhysicsSimulate();
-	CurrentSniper->EnablePhysicsSimulate();
-	CurrentShotgun->EnablePhysicsSimulate();
+	CurrentMainWeapon->EnablePhysicsSimulate();
+	CurrentSecondWeapon->EnablePhysicsSimulate();
+	CurrentThirdWeapon->EnablePhysicsSimulate();
 }
 
 void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
@@ -953,7 +957,7 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 		AimLookAround();
 	}
 
-	if (WeaponMode == EWeaponMode::Weapon && (bUseControlRotation ||
+	if (WeaponMode == EWeaponMode::MainWeapon && (bUseControlRotation ||
 		(!bUseControlRotation && GetMovementComponent()->Velocity.Size() != 0)))
 	{
 		const FRotator TargetRotation = FRotator(0, GetControlRotation().Yaw, 0);

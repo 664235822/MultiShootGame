@@ -63,3 +63,10 @@ void AMultiShootGameGrenade::ThrowGrenade(FRotator Direction, bool Multiply)
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameGrenade::Explode, ExplodedDelay);
 }
+
+void AMultiShootGameGrenade::ProjectileInitialize()
+{
+	Super::ProjectileInitialize();
+
+	ThrowGrenade(GetActorRotation(), false);
+}
