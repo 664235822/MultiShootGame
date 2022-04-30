@@ -15,7 +15,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 
 	// Use a sphere as a simple collision representation
 	CollisionComponent1 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent1"));
-	CollisionComponent1->InitBoxExtent(FVector(70.f, 5.f, 5.f));
+	CollisionComponent1->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent1->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComponent1->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
 	// set up a notification for when this component hits something blocking
@@ -39,7 +39,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 
 	// Use a sphere as a simple collision representation
 	CollisionComponent2 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent2"));
-	CollisionComponent2->InitBoxExtent(FVector(70.f, 5.f, 5.f));
+	CollisionComponent2->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent2->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComponent2->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
 	// set up a notification for when this component hits something blocking
@@ -63,7 +63,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 
 	// Use a sphere as a simple collision representation
 	CollisionComponent3 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent3"));
-	CollisionComponent3->InitBoxExtent(FVector(70.f, 5.f, 5.f));
+	CollisionComponent3->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent3->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComponent3->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
 	// set up a notification for when this component hits something blocking
@@ -87,7 +87,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 
 	// Use a sphere as a simple collision representation
 	CollisionComponent4 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent4"));
-	CollisionComponent4->InitBoxExtent(FVector(70.f, 5.f, 5.f));
+	CollisionComponent4->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent4->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComponent4->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
 	// set up a notification for when this component hits something blocking
@@ -111,8 +111,8 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 
 	HitEffectComponent = CreateDefaultSubobject<UHitEffectComponent>(TEXT("HitEffectComponent"));
 
-	// Die after 3 seconds by default
-	InitialLifeSpan = 4.0f;
+	// Die after 1 seconds by default
+	InitialLifeSpan = 1.0f;
 }
 
 void AMultiShootGameShotgun::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,

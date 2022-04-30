@@ -14,7 +14,7 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 {
 	// Use a sphere as a simple collision representation
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
-	CollisionComponent->InitBoxExtent(FVector(70.f, 5.f, 5.f));
+	CollisionComponent->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameProjectile::OnHit);
 	// set up a notification for when this component hits something blocking
