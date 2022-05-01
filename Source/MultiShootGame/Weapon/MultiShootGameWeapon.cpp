@@ -124,7 +124,7 @@ void AMultiShootGameWeapon::Fire()
 
 			AMultiShootGameProjectileBase* Projectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
 				WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection);
-			Projectile->SetOwner(this);
+			Projectile->SetOwner(GetOwner());
 			Projectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 		}
 
