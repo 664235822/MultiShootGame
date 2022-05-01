@@ -94,6 +94,10 @@ protected:
 
 	void ToggleThirdWeapon();
 
+	void ToggleWeaponUp();
+
+	void ToggleWeaponDown();
+
 	UFUNCTION(BlueprintCallable)
 	void ToggleWeaponBegin();
 

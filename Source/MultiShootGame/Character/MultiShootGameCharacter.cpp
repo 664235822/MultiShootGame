@@ -739,6 +739,38 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 	PlayAnimMontage(WeaponOutAnimMontage);
 }
 
+void AMultiShootGameCharacter::ToggleWeaponUp()
+{
+	switch (WeaponMode)
+	{
+	case EWeaponMode::MainWeapon:
+		ToggleThirdWeapon();
+		break;
+	case EWeaponMode::SecondWeapon:
+		ToggleMainWeapon();
+		break;
+	case EWeaponMode::ThirdWeapon:
+		ToggleSecondWeapon();
+		break;
+	}
+}
+
+void AMultiShootGameCharacter::ToggleWeaponDown()
+{
+	switch (WeaponMode)
+	{
+	case EWeaponMode::MainWeapon:
+		ToggleSecondWeapon();
+		break;
+	case EWeaponMode::SecondWeapon:
+		ToggleThirdWeapon();
+		break;
+	case EWeaponMode::ThirdWeapon:
+		ToggleMainWeapon();
+		break;
+	}
+}
+
 void AMultiShootGameCharacter::ToggleWeaponBegin()
 {
 	FLatentActionInfo LatentActionInfo;
@@ -985,6 +1017,8 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("MainWeapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleMainWeapon);
 	PlayerInputComponent->BindAction("SecondWeapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleSecondWeapon);
 	PlayerInputComponent->BindAction("ThirdWeapon", IE_Pressed, this, &AMultiShootGameCharacter::ToggleThirdWeapon);
+	PlayerInputComponent->BindAction("ToggleWeaponUp", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeaponUp);
+	PlayerInputComponent->BindAction("ToggleWeaponDown", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeaponDown);
 
 	// Bind throw grenade
 	PlayerInputComponent->BindAction("ThrowGrenade", IE_Pressed, this, &AMultiShootGameCharacter::BeginThrowGrenade);
