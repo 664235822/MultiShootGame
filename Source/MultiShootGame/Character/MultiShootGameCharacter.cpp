@@ -67,10 +67,6 @@ void AMultiShootGameCharacter::BeginPlay()
 	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
 	PlayerCameraManager->ViewPitchMin = -1 * CameraPitchClamp;
 
-	CurrentDefaultUserWidget = CreateWidget(GetWorld(), DefaultUserWidgetClass);
-	CurrentDefaultUserWidget->AddToViewport();
-	CurrentDefaultUserWidget->SetVisibility(ESlateVisibility::Visible);
-
 	CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
 	CurrentSniperUserWidget->AddToViewport();
 	CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
@@ -312,11 +308,9 @@ void AMultiShootGameCharacter::BeginAim()
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
 	}
 
-	ToggleDefaultAimWidget(false);
-
 	if (WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture)
 	{
-		ToggleSniperAimWidget(true);
+		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 
 	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
@@ -349,14 +343,9 @@ void AMultiShootGameCharacter::EndAim()
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
 	}
 
-	if (!(WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture))
-	{
-		ToggleDefaultAimWidget(true);
-	}
-
 	if (CurrentSecondWeapon->WeaponInfo.AimTexture)
 	{
-		ToggleSniperAimWidget(false);
+		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
@@ -420,13 +409,13 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 	bBeginThrowGrenade = true;
 
 	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                        BackMainWeaponSocketName);
+	                                            BackMainWeaponSocketName);
 
 	SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                        BackSecondWeaponSocketName);
+	                                              BackSecondWeaponSocketName);
 
 	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                         BackThirdWeaponSocketName);
+	                                             BackThirdWeaponSocketName);
 
 	PlayAnimMontage(ThrowGrenadeAnimMontage);
 }
@@ -459,13 +448,13 @@ void AMultiShootGameCharacter::ThrowGrenade()
 	if (!bBeginThrowGrenade)
 	{
 		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                        BackMainWeaponSocketName);
+		                                            BackMainWeaponSocketName);
 
 		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                        BackSecondWeaponSocketName);
+		                                              BackSecondWeaponSocketName);
 
 		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                         BackThirdWeaponSocketName);
+		                                             BackThirdWeaponSocketName);
 	}
 
 	if (!bSpawnGrenade)
@@ -573,13 +562,13 @@ void AMultiShootGameCharacter::BeginKnifeAttack()
 	bNextKnifeAttack = false;
 
 	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                        BackMainWeaponSocketName);
+	                                            BackMainWeaponSocketName);
 
 	SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                        BackSecondWeaponSocketName);
+	                                              BackSecondWeaponSocketName);
 
 	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                         BackThirdWeaponSocketName);
+	                                             BackThirdWeaponSocketName);
 
 	USkeletalMeshComponent* CurrentKnifeComponent = bTakingDown
 		                                                ? TakeDownKnifeSkeletalMeshComponent
@@ -759,49 +748,50 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 	{
 	case EWeaponMode::MainWeapon:
 		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
-		                                        MainWeaponSocketName);
+		                                            MainWeaponSocketName);
 
 		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                        BackSecondWeaponSocketName);
+		                                              BackSecondWeaponSocketName);
 
 		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                         BackThirdWeaponSocketName);
+		                                             BackThirdWeaponSocketName);
 
-		UKismetSystemLibrary::MoveComponentTo(MainWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
+		UKismetSystemLibrary::MoveComponentTo(MainWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
+		                                      true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
 		break;
 	case EWeaponMode::SecondWeapon:
 		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                        BackMainWeaponSocketName);
+		                                            BackMainWeaponSocketName);
 
 		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
-		                                        SecondWeaponSocketName);
+		                                              SecondWeaponSocketName);
 
 		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                         BackThirdWeaponSocketName);
+		                                             BackThirdWeaponSocketName);
 
-		UKismetSystemLibrary::MoveComponentTo(SecondWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
+		UKismetSystemLibrary::MoveComponentTo(SecondWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
+		                                      true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
 		break;
 	case EWeaponMode::ThirdWeapon:
 		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                        BackMainWeaponSocketName);
+		                                            BackMainWeaponSocketName);
 
 		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                        BackSecondWeaponSocketName);
+		                                              BackSecondWeaponSocketName);
 
 		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
-		                                         ThirdWeaponSocketName);
+		                                             ThirdWeaponSocketName);
 
-		UKismetSystemLibrary::MoveComponentTo(ThirdWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator, true,
+		UKismetSystemLibrary::MoveComponentTo(ThirdWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
+		                                      true,
 		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
 
 		break;
 	}
-
-	ToggleDefaultAimWidget(!(WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture));
 }
 
 void AMultiShootGameCharacter::ToggleWeaponEnd()
@@ -835,34 +825,10 @@ void AMultiShootGameCharacter::Hit()
 	}
 }
 
-void AMultiShootGameCharacter::ToggleDefaultAimWidget(bool Enabled)
-{
-	CurrentDefaultUserWidget->SetVisibility(Enabled ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-}
-
-void AMultiShootGameCharacter::ToggleSniperAimWidget(bool Enabled)
-{
-	CurrentSniperUserWidget->SetVisibility(Enabled ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-}
-
-void AMultiShootGameCharacter::AimLookAround()
-{
-	const FVector StartLocation = FPSCameraSceneComponent->GetComponentLocation();
-
-	const FVector CameraLocation = CameraComponent->GetComponentLocation();
-	const FRotator CameraRotation = CameraComponent->GetComponentRotation();
-	const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 3000.f;
-
-	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
-
-	const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
-
-	FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
-}
-
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
-	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSecondWeaponReloading || bThrowingGrenade || bTakingDown)
+	if (HealthComponent->bDied || bReloading || bToggleWeapon || bSecondWeaponReloading || bThrowingGrenade ||
+		bTakingDown)
 	{
 		return false;
 	}
@@ -954,7 +920,17 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 
 	if (bAimed)
 	{
-		AimLookAround();
+		const FVector StartLocation = FPSCameraSceneComponent->GetComponentLocation();
+
+		const FVector CameraLocation = CameraComponent->GetComponentLocation();
+		const FRotator CameraRotation = CameraComponent->GetComponentRotation();
+		const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 3000.f;
+
+		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+
+		const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
+
+		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 	}
 
 	if (WeaponMode == EWeaponMode::MainWeapon && (bUseControlRotation ||

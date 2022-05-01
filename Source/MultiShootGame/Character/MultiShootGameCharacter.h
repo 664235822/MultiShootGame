@@ -215,9 +215,6 @@ protected:
 	UAnimMontage* TakeDownAttackerAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
-	TSubclassOf<UUserWidget> DefaultUserWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
@@ -254,13 +251,7 @@ protected:
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-	void ToggleDefaultAimWidget(bool Enabled);
-
-	void ToggleSniperAimWidget(bool Enabled);
-
 	void ToggleUseControlRotation(bool Enabled);
-
-	void AimLookAround();
 
 	bool CheckStatus(bool CheckAimed, bool CheckThrowGrenade);
 
@@ -303,8 +294,6 @@ protected:
 	int KnifeComboIndex = 0;
 
 	FVector SpawnActorLocation;
-
-	UUserWidget* CurrentDefaultUserWidget;
 
 	UUserWidget* CurrentSniperUserWidget;
 
