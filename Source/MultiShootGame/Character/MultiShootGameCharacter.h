@@ -208,6 +208,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* SecondWeaponReloadAnimMontage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UAnimMontage* ThirdWeaponReloadAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* ThrowGrenadeAnimMontage;
@@ -235,6 +238,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	float CameraPitchClamp = 60.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Weapon")
+	float MaxDeadTimeDilationDelay = 0.1f;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentMainWeapon;
@@ -294,8 +300,12 @@ protected:
 	bool bUseControlRotation = false;
 
 	bool bEnableMovement = true;
+	
+	bool bDeadTimeDilation = false;
 
 	int KnifeComboIndex = 0;
+
+	float DeadTimeDilationDelay = 0;
 
 	FVector SpawnActorLocation;
 
@@ -309,6 +319,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void DeadTimeDilation();
 
 	USceneComponent* GetFPSCameraSceneComponent() const;
 

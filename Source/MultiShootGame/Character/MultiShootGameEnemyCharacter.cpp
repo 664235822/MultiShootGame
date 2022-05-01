@@ -3,7 +3,6 @@
 
 #include "MultiShootGameEnemyCharacter.h"
 #include "AIController.h"
-#include "DiffUtils.h"
 #include "MultiShootGameCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -59,12 +58,6 @@ void AMultiShootGameEnemyCharacter::Death(AActor* Attacker)
 	ForceVector *= 20000.f;
 	GetMesh()->AddImpulse(FVector(ForceVector.X, ForceVector.Y, 10000.f));
 
-	if (UKismetMathLibrary::RandomFloat() <= RandomDeadTimeDilationRate)
-	{
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
-		bDeadTimeDilation = true;
-	}
-
 	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	GetMesh()->GetAnimInstance()->StopAllMontages(0);
@@ -99,20 +92,6 @@ void AMultiShootGameEnemyCharacter::OnBoxComponentEndOverlap(UPrimitiveComponent
 void AMultiShootGameEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (bDeadTimeDilation)
-	{
-		if (DeadTimeDilationDelay <= MaxDeadTimeDilationDelay)
-		{
-			DeadTimeDilationDelay += DeltaTime;
-		}
-		else
-		{
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
-			bDeadTimeDilation = false;
-			DeadTimeDilationDelay = 0;
-		}
-	}
 }
 
 // Called to bind functionality to input

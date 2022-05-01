@@ -3,6 +3,7 @@
 #include "MultiShootGameGrenade.h"
 #include "Core/Private/Windows/WindowsRunnableThread.h"
 #include "Kismet/GameplayStatics.h"
+#include "MultiShootGame/Character/MultiShootGameCharacter.h"
 
 // Sets default values
 AMultiShootGameGrenade::AMultiShootGameGrenade()
@@ -38,6 +39,12 @@ void AMultiShootGameGrenade::Explode()
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageTypeClass,
 	                                    IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
+
+	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
+	if (Character)
+	{
+		Character->DeadTimeDilation();
+	}
 
 	Destroy();
 }

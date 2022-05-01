@@ -370,7 +370,16 @@ void AMultiShootGameCharacter::BeginReload()
 
 	EndAction();
 
-	PlayAnimMontage(ReloadAnimMontage);
+	switch (WeaponMode)
+	{
+	case EWeaponMode::MainWeapon:
+	case EWeaponMode::SecondWeapon:
+		PlayAnimMontage(ReloadAnimMontage);
+		break;
+	case EWeaponMode::ThirdWeapon:
+		PlayAnimMontage(ThirdWeaponReloadAnimMontage);
+		break;
+	}
 }
 
 void AMultiShootGameCharacter::BeginSecondWeaponReload()
@@ -908,6 +917,12 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 	}
 }
 
+void AMultiShootGameCharacter::DeadTimeDilation()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
+	bDeadTimeDilation = true;
+}
+
 void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)
 {
 	if (WeaponMode == EWeaponMode::MainWeapon)
@@ -963,6 +978,20 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 		const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
 
 		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
+	}
+
+	if (bDeadTimeDilation)
+	{
+		if (DeadTimeDilationDelay <= MaxDeadTimeDilationDelay)
+		{
+			DeadTimeDilationDelay += DeltaTime;
+		}
+		else
+		{
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+			bDeadTimeDilation = false;
+			DeadTimeDilationDelay = 0;
+		}
 	}
 
 	if (WeaponMode == EWeaponMode::MainWeapon && (bUseControlRotation ||

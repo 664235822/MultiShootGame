@@ -27,12 +27,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
-	float RandomDeadTimeDilationRate = 0.3f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
-	float MaxDeadTimeDilationDelay = 0.1f;
-
 	UFUNCTION(BlueprintCallable)
 	void Death(AActor* Attacker);
 
@@ -48,12 +42,6 @@ protected:
 	UFUNCTION()
 	void OnBoxComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-private:
-
-	bool bDeadTimeDilation = false;
-
-	float DeadTimeDilationDelay = 0;
 
 public:
 	// Called every frame

@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 
@@ -55,6 +56,12 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		if (SurfaceType == SURFACE_HEAD)
 		{
 			BaseDamage *= 2.5f;
+
+			AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
+			if (Character)
+			{
+				Character->DeadTimeDilation();
+			}
 		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,
