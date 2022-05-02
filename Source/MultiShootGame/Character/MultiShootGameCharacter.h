@@ -208,9 +208,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* SecondWeaponReloadAnimMontage;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    UAnimMontage* ThirdWeaponReloadAnimMontage;
+	UAnimMontage* ThirdWeaponReloadAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* ThrowGrenadeAnimMontage;
@@ -300,7 +300,7 @@ protected:
 	bool bUseControlRotation = false;
 
 	bool bEnableMovement = true;
-	
+
 	bool bDeadTimeDilation = false;
 
 	int KnifeComboIndex = 0;

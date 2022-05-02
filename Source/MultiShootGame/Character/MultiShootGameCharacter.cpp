@@ -579,10 +579,14 @@ void AMultiShootGameCharacter::BeginKnifeAttack()
 	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                                             BackThirdWeaponSocketName);
 
-	USkeletalMeshComponent* CurrentKnifeComponent = bTakingDown
-		                                                ? TakeDownKnifeSkeletalMeshComponent
-		                                                : KnifeSkeletalMeshComponent;
-	CurrentKnifeComponent->SetVisibility(true);
+	if (!bTakeDown)
+	{
+		KnifeSkeletalMeshComponent->SetVisibility(true);
+	}
+	else
+	{
+		TakeDownKnifeSkeletalMeshComponent->SetVisibility(true);
+	}
 }
 
 void AMultiShootGameCharacter::EndKnifeAttack()
@@ -607,7 +611,6 @@ void AMultiShootGameCharacter::EndKnifeAttack()
 	KnifeComboIndex = 0;
 
 	KnifeSkeletalMeshComponent->SetVisibility(false);
-
 	TakeDownKnifeSkeletalMeshComponent->SetVisibility(false);
 
 	PlayAnimMontage(WeaponOutAnimMontage);
