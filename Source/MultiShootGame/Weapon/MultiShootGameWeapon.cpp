@@ -72,7 +72,7 @@ void AMultiShootGameWeapon::ShakeCamera()
 		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
 		if (PlayerController)
 		{
-			PlayerController->ClientPlayCameraShake(WeaponInfo.FireCameraShake);
+			PlayerController->ClientStartCameraShake(WeaponInfo.FireCameraShake);
 		}
 	}
 }

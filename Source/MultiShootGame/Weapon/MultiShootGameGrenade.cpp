@@ -40,12 +40,6 @@ void AMultiShootGameGrenade::Explode()
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageTypeClass,
 	                                    IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
 
-	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
-	if (Character)
-	{
-		Character->DeadTimeDilation();
-	}
-
 	Destroy();
 }
 
