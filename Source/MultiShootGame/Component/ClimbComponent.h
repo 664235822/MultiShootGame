@@ -33,8 +33,6 @@ private:
 
 	FVector WallNormal;
 	
-	TArray<AActor*> IgnoreActors;
-	
 	bool bDetectClimbing = false;
 
 	float HalfHeight;

@@ -40,7 +40,7 @@ void UClimbComponent::SlopeDetecting()
 	                                      CharacterLocation.Z - HalfHeight * 0.5f);
 	const FVector StartLocation = ActorLocation + CharacterForwardVector * 50.f;
 	const FVector EndLocation = ActorLocation + CharacterForwardVector * DetectDistance + FVector(0, 0, 70.f);
-
+	const TArray<AActor*> IgnoreActors;
 	FHitResult HitResult;
 	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), StartLocation, EndLocation,TraceType_Visibility, false,
 	                                          IgnoreActors, EDrawDebugTrace::Persistent, HitResult, true))
@@ -62,6 +62,7 @@ void UClimbComponent::StairHeightDetecting(int Index)
 	const FVector HalfScale = FVector(0, 10.f, 10.f);
 	const FVector EndLocation = ActorLocation + CharacterForwardVector * DetectDistance;
 	const FRotator Rotation = UKismetMathLibrary::MakeRotFromX(CharacterForwardVector);
+	const TArray<AActor*> IgnoreActors;
 	FHitResult HitResult;
 	if (!bLastDetect)
 	{
@@ -110,7 +111,7 @@ bool UClimbComponent::CanGetFrontOfClimbing()
 	FRotator EndRotation;
 	ClimbCalculate(50, 0, EndLocation, EndRotation);
 	EndLocation += FVector(0, 0, HalfHeight * 0.5f);
-
+	const TArray<AActor*> IgnoreActors;
 	FHitResult HitResult;
 	if (!UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), StartLocation, EndLocation, 20.f, 0,
 	                                              TraceType_Visibility, false, IgnoreActors,
@@ -254,6 +255,7 @@ bool UClimbComponent::WallWeightDetecting()
 	FRotator EndRotation;
 	ClimbCalculateMesh(-60.f, WallHeight, EndLocation, EndRotation);
 	EndLocation += FVector(0, 0, 30.f);
+	const TArray<AActor*> IgnoreActors;
 	FHitResult HitResult;
 	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), StartLocation, EndLocation, 20.F,
 	                                               TraceType_Visibility, false, IgnoreActors,
@@ -273,6 +275,7 @@ bool UClimbComponent::ClimbingDetecting(float Multiply)
 	ClimbCalculateMesh(-10.f, WallHeight, Location, Rotation);
 	const FVector StartLocation = Location + FVector(0, 0, 40.f);
 	const FVector EndLocation = Location + FVector(0, 0, HalfHeight * Multiply);
+	const TArray<AActor*> IgnoreActors;
 	FHitResult HitResult;
 	return UKismetSystemLibrary::SphereTraceSingle(GetWorld(), StartLocation, EndLocation, 20.f,TraceType_Visibility,
 	                                               false, IgnoreActors, EDrawDebugTrace::Persistent, HitResult, true);
