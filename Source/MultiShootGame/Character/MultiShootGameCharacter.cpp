@@ -57,8 +57,6 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	HitEffectComponent = CreateDefaultSubobject<UHitEffectComponent>(TEXT("HitEfectComponent"));
-
-	ClimbComponent = CreateDefaultSubobject<UClimbComponent>(TEXT("ClimbComponent"));
 }
 
 void AMultiShootGameCharacter::BeginPlay()
@@ -237,12 +235,6 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 	{
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(MovementCameraShakeClass);
 	}
-}
-
-void AMultiShootGameCharacter::Jump()
-{
-	// Super::Jump();
-	ClimbComponent->BeginJump();
 }
 
 void AMultiShootGameCharacter::BeginFastRun()
@@ -879,7 +871,7 @@ void AMultiShootGameCharacter::Hit()
 
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
-	if (HealthComponent->bDied || ClimbComponent->GetDetectClimbing() || bReloading || bToggleWeapon || bSecondWeaponReloading ||
+	if (HealthComponent->bDied ||  bReloading || bToggleWeapon || bSecondWeaponReloading ||
 		bThrowingGrenade || bTakingDown)
 	{
 		return false;
@@ -1020,7 +1012,7 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	check(PlayerInputComponent);
 
 	// Bind jump events
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMultiShootGameCharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	// Bind fire event
@@ -1101,9 +1093,4 @@ void AMultiShootGameCharacter::SetTakeDown(bool Value)
 void AMultiShootGameCharacter::SetEnableMovement(bool Value)
 {
 	bEnableMovement = Value;
-}
-
-void AMultiShootGameCharacter::NormalJump()
-{
-	Super::Jump();
 }

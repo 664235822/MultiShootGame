@@ -11,7 +11,6 @@
 #include "MultiShootGame/Enum//EWeapon.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGame/Component//HitEffectComponent.h"
-#include "MultiShootGame/Component/ClimbComponent.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
 #include "MultiShootGame/Weapon/MultiShootGameFPSCamera.h"
 #include "MultiShootGame/Weapon/MultiShootGameWeapon.h"
@@ -37,8 +36,6 @@ protected:
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
-
-	virtual void Jump() override;
 
 	void BeginFastRun();
 
@@ -145,9 +142,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHitEffectComponent* HitEffectComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UClimbComponent* ClimbComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<AMultiShootGameWeapon> MainWeaponClass;
@@ -341,6 +335,4 @@ public:
 	void SetTakeDown(bool Value);
 
 	void SetEnableMovement(bool Value);
-
-	void NormalJump();
 };
