@@ -275,6 +275,12 @@ protected:
 
 	bool bJump = false;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bMoving = false;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bDetectingClimb = false;
+
 	bool bAimed = false;
 
 	bool bReloading = false;
@@ -299,6 +305,7 @@ protected:
 
 	bool bUseControlRotation = false;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool bEnableMovement = true;
 
 	bool bDeadTimeDilation = false;

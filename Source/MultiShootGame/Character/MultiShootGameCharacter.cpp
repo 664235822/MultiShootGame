@@ -216,9 +216,12 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 
 	AddMovementInput(GetActorForwardVector() * Value);
 
-	if (bAimed && Value != 0)
+	if (Value != 0)
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(MovementCameraShakeClass);
+		if (bAimed)
+		{
+			UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(MovementCameraShakeClass);
+		}
 	}
 }
 
@@ -871,7 +874,7 @@ void AMultiShootGameCharacter::Hit()
 
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
-	if (HealthComponent->bDied ||  bReloading || bToggleWeapon || bSecondWeaponReloading ||
+	if (HealthComponent->bDied || bDetectingClimb || bReloading || bToggleWeapon || bSecondWeaponReloading ||
 		bThrowingGrenade || bTakingDown)
 	{
 		return false;
@@ -967,6 +970,8 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
 void AMultiShootGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	bMoving = GetCharacterMovement()->Velocity.Size() > 0;
 
 	if (bAimed)
 	{
