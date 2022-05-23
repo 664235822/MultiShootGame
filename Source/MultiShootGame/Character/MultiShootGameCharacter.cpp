@@ -67,6 +67,9 @@ void AMultiShootGameCharacter::BeginPlay()
 	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
 	PlayerCameraManager->ViewPitchMin = -1 * CameraPitchClamp;
 
+	CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
+	CurrentGameUserWidget->AddToViewport();
+
 	CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
 	CurrentSniperUserWidget->AddToViewport();
 	CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
@@ -376,11 +379,21 @@ void AMultiShootGameCharacter::BeginReload()
 	switch (WeaponMode)
 	{
 	case EWeaponMode::MainWeapon:
+		if (CurrentMainWeapon->WeaponInfo.MaxBulletNumber > 0)
+		{
+			PlayAnimMontage(ReloadAnimMontage);
+		}
 	case EWeaponMode::SecondWeapon:
-		PlayAnimMontage(ReloadAnimMontage);
+		if (CurrentSecondWeapon->WeaponInfo.MaxBulletNumber > 0)
+		{
+			PlayAnimMontage(ReloadAnimMontage);
+		}
 		break;
 	case EWeaponMode::ThirdWeapon:
-		PlayAnimMontage(ThirdWeaponReloadAnimMontage);
+		if (CurrentThirdWeapon->WeaponInfo.MaxBulletNumber > 0)
+		{
+			PlayAnimMontage(ThirdWeaponReloadAnimMontage);
+		}
 		break;
 	}
 }
@@ -649,7 +662,24 @@ void AMultiShootGameCharacter::EndReload()
 {
 	bReloading = false;
 
+	if (!bSecondWeaponReloading)
+	{
+		switch (WeaponMode)
+		{
+		case EWeaponMode::MainWeapon:
+			CurrentMainWeapon->BulletReload();
+			break;
+		case EWeaponMode::SecondWeapon:
+			CurrentSecondWeapon->BulletReload();
+			break;
+		case EWeaponMode::ThirdWeapon:
+			CurrentThirdWeapon->BulletReload();
+			break;
+		}
+	}
+
 	bSecondWeaponReloading = false;
+
 
 	ToggleUseControlRotation(false);
 }
@@ -1073,11 +1103,6 @@ USceneComponent* AMultiShootGameCharacter::GetFPSCameraSceneComponent() const
 UCameraComponent* AMultiShootGameCharacter::GetCameraComponent() const
 {
 	return CameraComponent;
-}
-
-AMultiShootGameFPSCamera* AMultiShootGameCharacter::GetCurrentFPSCamera() const
-{
-	return CurrentFPSCamera;
 }
 
 bool AMultiShootGameCharacter::GetAimed() const

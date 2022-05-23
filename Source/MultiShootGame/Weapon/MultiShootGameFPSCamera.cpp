@@ -3,6 +3,7 @@
 
 #include "MultiShootGameFPSCamera.h"
 #include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 
 AMultiShootGameFPSCamera::AMultiShootGameFPSCamera()
@@ -25,6 +26,42 @@ void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 	const float TargetFOV = WeaponInfo.AimTexture ? ZoomedFOV : DefaultFOV;
 	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
 	CameraComponent->SetFieldOfView(CurrentFOV);
+}
+
+void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
+{
+	switch (MyOwner->GetWeaponMode())
+	{
+	case EWeaponMode::MainWeapon:
+		if (MyOwner->CurrentMainWeapon->WeaponInfo.BulletNumber > 0)
+		{
+			MyOwner->CurrentMainWeapon->WeaponInfo.BulletNumber--;
+		}
+		else
+		{
+			MyOwner->BeginReload();
+		}
+		break;
+	case EWeaponMode::SecondWeapon:
+		if (MyOwner->CurrentSecondWeapon->WeaponInfo.BulletNumber > 0)
+		{
+			MyOwner->CurrentSecondWeapon->WeaponInfo.BulletNumber--;
+		}
+		else
+		{
+			MyOwner->BeginReload();
+		}
+		break;
+	case EWeaponMode::ThirdWeapon:
+		if (MyOwner->CurrentThirdWeapon->WeaponInfo.BulletNumber > 0)
+		{
+			MyOwner->CurrentThirdWeapon->WeaponInfo.BulletNumber--;
+		}
+		else
+		{
+			MyOwner->BeginReload();
+		}
+	}
 }
 
 UCameraComponent* AMultiShootGameFPSCamera::GetCameraComponent() const

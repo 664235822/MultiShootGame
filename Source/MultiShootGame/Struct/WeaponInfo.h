@@ -55,4 +55,13 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
+	int BulletNumber;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
+	int PerBulletNumber;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
+	int MaxBulletNumber;
 };

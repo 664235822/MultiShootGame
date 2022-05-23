@@ -87,8 +87,8 @@ void AMultiShootGameWeapon::Fire()
 
 		if (MyOwner->GetAimed())
 		{
-			EyeLocation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentLocation();
-			EyeRotation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentRotation();
+			EyeLocation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentLocation();
+			EyeRotation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentRotation();
 		}
 		else
 		{
@@ -141,15 +141,12 @@ void AMultiShootGameWeapon::Fire()
 
 		ShakeCamera();
 
+		BulletFire(MyOwner);
 
 		AudioComponent->Play();
 
 		LastFireTime = GetWorld()->TimeSeconds;
 	}
-}
-
-void AMultiShootGameWeapon::PlayFireEffect(FVector TraceEndPoint)
-{
 }
 
 void AMultiShootGameWeapon::StartFire()
@@ -198,6 +195,50 @@ void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
 	else
 	{
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
+	}
+}
+
+void AMultiShootGameWeapon::BulletFire(AMultiShootGameCharacter* MyOwner)
+{
+	if (WeaponInfo.BulletNumber > 0)
+	{
+		WeaponInfo.BulletNumber--;
+	}
+	else
+	{
+		MyOwner->BeginReload();
+	}
+}
+
+void AMultiShootGameWeapon::BulletReload()
+{
+	if (WeaponInfo.MaxBulletNumber > WeaponInfo.PerBulletNumber)
+	{
+		if (WeaponInfo.BulletNumber < WeaponInfo.PerBulletNumber)
+		{
+			const int TempNumber = WeaponInfo.PerBulletNumber - WeaponInfo.BulletNumber;
+			WeaponInfo.BulletNumber = WeaponInfo.PerBulletNumber;
+			WeaponInfo.MaxBulletNumber -= TempNumber;
+		}
+		else
+		{
+			WeaponInfo.BulletNumber += WeaponInfo.PerBulletNumber;
+			WeaponInfo.MaxBulletNumber -= WeaponInfo.PerBulletNumber;
+		}
+	}
+	else
+	{
+		if (WeaponInfo.BulletNumber + WeaponInfo.MaxBulletNumber > WeaponInfo.PerBulletNumber)
+		{
+			const int TempNumber = WeaponInfo.PerBulletNumber - WeaponInfo.BulletNumber;
+			WeaponInfo.BulletNumber = WeaponInfo.PerBulletNumber;
+			WeaponInfo.MaxBulletNumber -= TempNumber;;
+		}
+		else
+		{
+			WeaponInfo.BulletNumber += WeaponInfo.MaxBulletNumber;
+			WeaponInfo.MaxBulletNumber = 0;
+		}
 	}
 }
 

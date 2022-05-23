@@ -10,6 +10,8 @@
 #include "Sound/SoundCue.h"
 #include "MultiShootGameWeapon.generated.h"
 
+class AMultiShootGameCharacter;
+
 UCLASS()
 class MULTISHOOTGAME_API AMultiShootGameWeapon : public APawn
 {
@@ -22,8 +24,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void PlayFireEffect(FVector TraceEndPoint);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* WeaponMeshComponent;
@@ -75,10 +75,14 @@ public:
 
 	void ReloadShowClip(bool Enabled);
 
+	virtual void BulletFire(AMultiShootGameCharacter* MyOwner);
+
+	void BulletReload();
+
 	USkeletalMeshComponent* GetWeaponMeshComponent() const;
 
 	UAudioComponent* GetAudioComponent() const;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FWeaponInfo WeaponInfo;
 };

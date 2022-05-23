@@ -51,8 +51,6 @@ protected:
 
 	void EndAim();
 
-	void BeginReload();
-
 	void BeginSecondWeaponReload();
 
 	UFUNCTION(BlueprintCallable)
@@ -222,6 +220,9 @@ protected:
 	UAnimMontage* TakeDownAttackerAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
+	TSubclassOf<UUserWidget> GameUserWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
@@ -241,18 +242,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Weapon")
 	float MaxDeadTimeDilationDelay = 0.1f;
-
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentMainWeapon;
-
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentSecondWeapon;
-
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentThirdWeapon;
-
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;
@@ -281,6 +270,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	bool bDetectingClimb = false;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool bAimed = false;
 
 	bool bReloading = false;
@@ -316,6 +306,8 @@ protected:
 
 	FVector SpawnActorLocation;
 
+	UUserWidget* CurrentGameUserWidget;
+
 	UUserWidget* CurrentSniperUserWidget;
 
 	AMultiShootGameEnemyCharacter* TargetTakeDownCharacter;
@@ -327,13 +319,25 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void BeginReload();
+	
 	void DeadTimeDilation();
 
 	USceneComponent* GetFPSCameraSceneComponent() const;
 
 	UCameraComponent* GetCameraComponent() const;
 
-	AMultiShootGameFPSCamera* GetCurrentFPSCamera() const;
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentMainWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentSecondWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentThirdWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
 	bool GetAimed() const;
 
