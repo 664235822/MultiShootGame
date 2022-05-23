@@ -38,6 +38,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual bool BulletCheck(AMultiShootGameCharacter* MyOwner) override;
+
 	virtual void BulletFire(AMultiShootGameCharacter* MyOwner) override;
 	
 	UCameraComponent* GetCameraComponent() const;

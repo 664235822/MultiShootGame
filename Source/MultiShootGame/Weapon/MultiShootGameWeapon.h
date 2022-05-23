@@ -25,6 +25,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual bool BulletCheck(AMultiShootGameCharacter* MyOwner);
+	
+	virtual void BulletFire(AMultiShootGameCharacter* MyOwner);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* WeaponMeshComponent;
 
@@ -70,15 +74,13 @@ public:
 	void StopFire();
 
 	void FireOfDelay();
-
+	
 	void EnablePhysicsSimulate();
 
 	void ReloadShowClip(bool Enabled);
 
-	virtual void BulletFire(AMultiShootGameCharacter* MyOwner);
-
 	void BulletReload();
-
+	
 	USkeletalMeshComponent* GetWeaponMeshComponent() const;
 
 	UAudioComponent* GetAudioComponent() const;

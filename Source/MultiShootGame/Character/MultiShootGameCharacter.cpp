@@ -667,13 +667,22 @@ void AMultiShootGameCharacter::EndReload()
 		switch (WeaponMode)
 		{
 		case EWeaponMode::MainWeapon:
-			CurrentMainWeapon->BulletReload();
+			if (CurrentMainWeapon->WeaponInfo.BulletNumber < CurrentMainWeapon->WeaponInfo.PerBulletNumber)
+			{
+				CurrentMainWeapon->BulletReload();
+			}
 			break;
 		case EWeaponMode::SecondWeapon:
-			CurrentSecondWeapon->BulletReload();
+			if (CurrentSecondWeapon->WeaponInfo.BulletNumber < CurrentSecondWeapon->WeaponInfo.PerBulletNumber)
+			{
+				CurrentSecondWeapon->BulletReload();
+			}
 			break;
 		case EWeaponMode::ThirdWeapon:
-			CurrentThirdWeapon->BulletReload();
+			if (CurrentThirdWeapon->WeaponInfo.BulletNumber < CurrentThirdWeapon->WeaponInfo.PerBulletNumber)
+			{
+				CurrentThirdWeapon->BulletReload();
+			}
 			break;
 		}
 	}

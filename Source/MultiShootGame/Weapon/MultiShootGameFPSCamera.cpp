@@ -28,6 +28,32 @@ void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 	CameraComponent->SetFieldOfView(CurrentFOV);
 }
 
+bool AMultiShootGameFPSCamera::BulletCheck(AMultiShootGameCharacter* MyOwner)
+{
+	switch (MyOwner->GetWeaponMode())
+	{
+	case EWeaponMode::MainWeapon:
+		if (MyOwner->CurrentMainWeapon->WeaponInfo.BulletNumber == 0 &&
+			MyOwner->CurrentMainWeapon->WeaponInfo.MaxBulletNumber == 0)
+		{
+			return true;
+		}
+	case EWeaponMode::SecondWeapon:
+		if (MyOwner->CurrentSecondWeapon->WeaponInfo.BulletNumber == 0 &&
+			MyOwner->CurrentSecondWeapon->WeaponInfo.MaxBulletNumber == 0)
+		{
+			return true;
+		}
+	case EWeaponMode::ThirdWeapon:
+		if (MyOwner->CurrentThirdWeapon->WeaponInfo.BulletNumber == 0 &&
+			MyOwner->CurrentThirdWeapon->WeaponInfo.MaxBulletNumber == 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 {
 	switch (MyOwner->GetWeaponMode())

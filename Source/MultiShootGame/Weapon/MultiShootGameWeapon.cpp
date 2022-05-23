@@ -80,6 +80,12 @@ void AMultiShootGameWeapon::ShakeCamera()
 void AMultiShootGameWeapon::Fire()
 {
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+
+	if (BulletCheck(MyOwner))
+	{
+		return;
+	}
+	
 	if (MyOwner)
 	{
 		FVector EyeLocation;
@@ -196,6 +202,16 @@ void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
 	{
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
 	}
+}
+
+bool AMultiShootGameWeapon::BulletCheck(AMultiShootGameCharacter* MyOwner)
+{
+	if (WeaponInfo.BulletNumber == 0 && WeaponInfo.MaxBulletNumber == 0)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void AMultiShootGameWeapon::BulletFire(AMultiShootGameCharacter* MyOwner)
