@@ -433,14 +433,7 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 
 	bBeginThrowGrenade = true;
 
-	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                            BackMainWeaponSocketName);
-
-	SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                              BackSecondWeaponSocketName);
-
-	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                             BackThirdWeaponSocketName);
+	AttachWeapon(false, false, false);
 
 	PlayAnimMontage(ThrowGrenadeAnimMontage);
 }
@@ -472,14 +465,7 @@ void AMultiShootGameCharacter::ThrowGrenade()
 
 	if (!bBeginThrowGrenade)
 	{
-		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                            BackMainWeaponSocketName);
-
-		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                              BackSecondWeaponSocketName);
-
-		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                             BackThirdWeaponSocketName);
+		AttachWeapon(false, false, false);
 	}
 
 	if (!bSpawnGrenade)
@@ -586,14 +572,7 @@ void AMultiShootGameCharacter::BeginKnifeAttack()
 
 	bNextKnifeAttack = false;
 
-	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                            BackMainWeaponSocketName);
-
-	SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                              BackSecondWeaponSocketName);
-
-	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-	                                             BackThirdWeaponSocketName);
+	AttachWeapon(false, false, false);
 
 	if (!bTakeDown)
 	{
@@ -833,14 +812,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 	switch (WeaponMode)
 	{
 	case EWeaponMode::MainWeapon:
-		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
-		                                            MainWeaponSocketName);
-
-		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                              BackSecondWeaponSocketName);
-
-		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                             BackThirdWeaponSocketName);
+		AttachWeapon(true, false, false);
 
 		UKismetSystemLibrary::MoveComponentTo(MainWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
 		                                      true,
@@ -848,14 +820,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		break;
 	case EWeaponMode::SecondWeapon:
-		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                            BackMainWeaponSocketName);
-
-		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
-		                                              SecondWeaponSocketName);
-
-		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                             BackThirdWeaponSocketName);
+		AttachWeapon(false, true, false);
 
 		UKismetSystemLibrary::MoveComponentTo(SecondWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
 		                                      true,
@@ -863,14 +828,7 @@ void AMultiShootGameCharacter::ToggleWeaponBegin()
 
 		break;
 	case EWeaponMode::ThirdWeapon:
-		MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                            BackMainWeaponSocketName);
-
-		SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		                                              BackSecondWeaponSocketName);
-
-		ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
-		                                             ThirdWeaponSocketName);
+		AttachWeapon(false, false, true);
 
 		UKismetSystemLibrary::MoveComponentTo(ThirdWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
 		                                      true,
@@ -960,6 +918,18 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::SecondWeapon ? 300.f : 250.f;
 	}
+}
+
+void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon)
+{
+	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                            MainWeapon ? MainWeaponSocketName : BackMainWeaponSocketName);
+
+	SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	                                              SecondWeapon ? SecondWeaponSocketName : BackSecondWeaponSocketName);
+
+	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
+	                                             ThirdWeapon ? ThirdWeaponSocketName : BackThirdWeaponSocketName);
 }
 
 void AMultiShootGameCharacter::DeadTimeDilation()

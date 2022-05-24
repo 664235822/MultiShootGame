@@ -258,6 +258,9 @@ protected:
 
 	void HandleWalkSpeed();
 
+	UFUNCTION(BlueprintCallable)
+	void AttachWeapon(bool MainWeapon,bool SecondWeapon,bool ThirdWeapon);
+
 	bool bFired = false;
 
 	bool bFastRun = false;
