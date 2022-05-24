@@ -928,7 +928,7 @@ void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, 
 	SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                                              SecondWeapon ? SecondWeaponSocketName : BackSecondWeaponSocketName);
 
-	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform,
+	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 	                                             ThirdWeapon ? ThirdWeaponSocketName : BackThirdWeaponSocketName);
 }
 
