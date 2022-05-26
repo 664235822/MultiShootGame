@@ -252,8 +252,10 @@ protected:
 
 	void ToggleUseControlRotation(bool Enabled);
 
+    UFUNCTION(BlueprintCallable)
 	bool CheckStatus(bool CheckAimed, bool CheckThrowGrenade);
 
+	UFUNCTION(BlueprintCallable)
 	void EndAction();
 
 	void HandleWalkSpeed();
