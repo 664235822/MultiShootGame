@@ -67,6 +67,8 @@ void AMultiShootGameCharacter::BeginPlay()
 	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
 	PlayerCameraManager->ViewPitchMin = -1 * CameraPitchClamp;
 
+	GrenadeCount = MaxGrenadeCount;
+
 	CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
 	CurrentGameUserWidget->AddToViewport();
 
@@ -422,7 +424,7 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 		return;
 	}
 
-	if (bBeginThrowGrenade || bThrowingGrenade)
+	if (bBeginThrowGrenade || bThrowingGrenade || GrenadeCount == 0)
 	{
 		return;
 	}
@@ -454,7 +456,7 @@ void AMultiShootGameCharacter::ThrowGrenade()
 		return;
 	}
 
-	if (bThrowingGrenade)
+	if (bThrowingGrenade || GrenadeCount == 0)
 	{
 		return;
 	}
@@ -488,6 +490,8 @@ void AMultiShootGameCharacter::ThrowGrenadeOut()
 
 	CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	CurrentGrenade->ThrowGrenade(LookAtRotation, bFastRun || bJump);
+
+	GrenadeCount = FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount);
 }
 
 void AMultiShootGameCharacter::SpawnGrenade()

@@ -240,8 +240,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	float CameraPitchClamp = 60.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	float MaxDeadTimeDilationDelay = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	int MaxGrenadeCount = 10;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;
@@ -252,7 +255,7 @@ protected:
 
 	void ToggleUseControlRotation(bool Enabled);
 
-    UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 	bool CheckStatus(bool CheckAimed, bool CheckThrowGrenade);
 
 	UFUNCTION(BlueprintCallable)
@@ -261,7 +264,7 @@ protected:
 	void HandleWalkSpeed();
 
 	UFUNCTION(BlueprintCallable)
-	void AttachWeapon(bool MainWeapon,bool SecondWeapon,bool ThirdWeapon);
+	void AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon);
 
 	bool bFired = false;
 
@@ -309,6 +312,9 @@ protected:
 
 	float DeadTimeDilationDelay = 0;
 
+	UPROPERTY(BlueprintReadOnly)
+	int GrenadeCount;
+
 	FVector SpawnActorLocation;
 
 	UUserWidget* CurrentGameUserWidget;
@@ -325,7 +331,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void BeginReload();
-	
+
 	void DeadTimeDilation();
 
 	USceneComponent* GetFPSCameraSceneComponent() const;
