@@ -297,6 +297,7 @@ protected:
 
 	bool bNextKnifeAttack = false;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool bTakeDown = false;
 
 	bool bTakingDown = false;
