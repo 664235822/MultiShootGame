@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BulletShell.h"
+#include "Magazine.h"
 #include "GameFramework/Pawn.h"
 #include "MultiShootGame/Enum/EWeapon.h"
 #include "MultiShootGame/Struct/WeaponInfo.h"
@@ -56,6 +57,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<ABulletShell> BulletShellClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<AMagazine> MagazineClass;
+
 	FTimerHandle TimerHandle;
 
 	float LastFireTime;
@@ -77,7 +81,7 @@ public:
 	
 	void EnablePhysicsSimulate();
 
-	void ReloadShowClip(bool Enabled);
+	void ReloadShowMagazine(bool Enabled);
 
 	void BulletReload();
 	

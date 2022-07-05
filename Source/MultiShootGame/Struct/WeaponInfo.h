@@ -41,7 +41,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	float CameraSpread;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	float CameraSpreadDown;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
@@ -52,16 +52,19 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	TSubclassOf<AMultiShootGameProjectileBase> ProjectileClass;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	int BulletNumber;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	int PerBulletNumber;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponInfo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	int MaxBulletNumber;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
+	UStaticMesh* MagazineMesh;
 };

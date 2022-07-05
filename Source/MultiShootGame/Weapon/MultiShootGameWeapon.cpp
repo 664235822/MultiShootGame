@@ -85,7 +85,7 @@ void AMultiShootGameWeapon::Fire()
 	{
 		return;
 	}
-	
+
 	if (MyOwner)
 	{
 		FVector EyeLocation;
@@ -192,7 +192,7 @@ void AMultiShootGameWeapon::EnablePhysicsSimulate()
 	WeaponMeshComponent->SetSimulatePhysics(true);
 }
 
-void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
+void AMultiShootGameWeapon::ReloadShowMagazine(bool Enabled)
 {
 	if (Enabled)
 	{
@@ -201,6 +201,19 @@ void AMultiShootGameWeapon::ReloadShowClip(bool Enabled)
 	else
 	{
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
+		if (WeaponInfo.MagazineMesh)
+		{
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			AMagazine* CurrentMagazine = GetWorld()->SpawnActor<AMagazine>(
+				MagazineClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+			CurrentMagazine->SetOwner(this);
+			CurrentMagazine->AttachToComponent(WeaponMeshComponent,
+			                                   FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Magazine"));
+
+			CurrentMagazine->ThrowMagazine(WeaponInfo.MagazineMesh);
+		}
 	}
 }
 

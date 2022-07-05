@@ -692,7 +692,7 @@ void AMultiShootGameCharacter::ReloadShowClip(bool Enabled)
 		break;
 	}
 
-	TempWeapon->ReloadShowClip(Enabled);
+	TempWeapon->ReloadShowMagazine(Enabled);
 }
 
 void AMultiShootGameCharacter::ToggleMainWeapon()
