@@ -60,7 +60,7 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 			AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
 			if (Character)
 			{
-				Character->DeadTimeDilation();
+				//Character->DeadTimeDilation();
 			}
 		}
 
