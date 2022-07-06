@@ -11,11 +11,17 @@ AMultiShootGameStartGameCharacter::AMultiShootGameStartGameCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
-	SceneCaptureComponent2D->SetupAttachment(GetArrowComponent());
+	CharacterMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMeshComponent"));
+	RootComponent = CharacterMeshComponent;
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMeshComponent"));
-	WeaponMeshComponent->SetupAttachment(GetMesh(), WeaponSocketName);
+	WeaponMeshComponent->SetupAttachment(CharacterMeshComponent, WeaponSocketName);
+
+	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCaptureComponent2D"));
+	SceneCaptureComponent2D->SetupAttachment(CharacterMeshComponent);
+
+	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
+	SpotLightComponent->SetupAttachment(CharacterMeshComponent);
 }
 
 // Called when the game starts or when spawned
@@ -28,10 +34,4 @@ void AMultiShootGameStartGameCharacter::BeginPlay()
 void AMultiShootGameStartGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
-void AMultiShootGameStartGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

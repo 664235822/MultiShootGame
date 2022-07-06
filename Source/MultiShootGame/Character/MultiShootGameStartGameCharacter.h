@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SpotLightComponent.h"
 #include "GameFramework/Character.h"
 #include "MultiShootGameStartGameCharacter.generated.h"
 
 UCLASS()
-class MULTISHOOTGAME_API AMultiShootGameStartGameCharacter : public ACharacter
+class MULTISHOOTGAME_API AMultiShootGameStartGameCharacter : public APawn
 {
 	GENERATED_BODY()
 
@@ -18,12 +19,18 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USkeletalMeshComponent* CharacterMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* WeaponMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneCaptureComponent2D* SceneCaptureComponent2D;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* WeaponMeshComponent;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Components")
+	USpotLightComponent* SpotLightComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponSocketName = "StartWeaponSocket";
@@ -31,8 +38,5 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 };
