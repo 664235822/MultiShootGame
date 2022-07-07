@@ -8,7 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "MatineeCameraShake.h"
 #include "MultiShootGameEnemyCharacter.h"
-#include "MultiShootGame/Enum//EWeapon.h"
+#include "MultiShootGame/Enum//EWeaponMode.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGame/Component//HitEffectComponent.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"

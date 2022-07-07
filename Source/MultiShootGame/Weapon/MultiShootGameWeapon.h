@@ -6,7 +6,7 @@
 #include "BulletShell.h"
 #include "Magazine.h"
 #include "GameFramework/Pawn.h"
-#include "MultiShootGame/Enum/EWeapon.h"
+#include "MultiShootGame/Enum/EWeaponMode.h"
 #include "MultiShootGame/Struct/WeaponInfo.h"
 #include "Sound/SoundCue.h"
 #include "MultiShootGameWeapon.generated.h"
