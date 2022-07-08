@@ -241,26 +241,26 @@ void AMultiShootGameWeapon::BulletFire(AMultiShootGameCharacter* MyOwner)
 
 void AMultiShootGameWeapon::BulletReload()
 {
-	if (WeaponInfo.MaxBulletNumber > WeaponInfo.PerBulletNumber)
+	if (WeaponInfo.MaxBulletNumber > WeaponInfo.FillUpBulletNumber)
 	{
-		if (WeaponInfo.BulletNumber < WeaponInfo.PerBulletNumber)
+		if (WeaponInfo.BulletNumber < WeaponInfo.FillUpBulletNumber)
 		{
-			const int TempNumber = WeaponInfo.PerBulletNumber - WeaponInfo.BulletNumber;
-			WeaponInfo.BulletNumber = WeaponInfo.PerBulletNumber;
+			const int TempNumber = WeaponInfo.FillUpBulletNumber - WeaponInfo.BulletNumber;
+			WeaponInfo.BulletNumber = WeaponInfo.FillUpBulletNumber;
 			WeaponInfo.MaxBulletNumber -= TempNumber;
 		}
 		else
 		{
-			WeaponInfo.BulletNumber += WeaponInfo.PerBulletNumber;
-			WeaponInfo.MaxBulletNumber -= WeaponInfo.PerBulletNumber;
+			WeaponInfo.BulletNumber += WeaponInfo.FillUpBulletNumber;
+			WeaponInfo.MaxBulletNumber -= WeaponInfo.FillUpBulletNumber;
 		}
 	}
 	else
 	{
-		if (WeaponInfo.BulletNumber + WeaponInfo.MaxBulletNumber > WeaponInfo.PerBulletNumber)
+		if (WeaponInfo.BulletNumber + WeaponInfo.MaxBulletNumber > WeaponInfo.FillUpBulletNumber)
 		{
-			const int TempNumber = WeaponInfo.PerBulletNumber - WeaponInfo.BulletNumber;
-			WeaponInfo.BulletNumber = WeaponInfo.PerBulletNumber;
+			const int TempNumber = WeaponInfo.FillUpBulletNumber - WeaponInfo.BulletNumber;
+			WeaponInfo.BulletNumber = WeaponInfo.FillUpBulletNumber;
 			WeaponInfo.MaxBulletNumber -= TempNumber;;
 		}
 		else
@@ -269,6 +269,12 @@ void AMultiShootGameWeapon::BulletReload()
 			WeaponInfo.MaxBulletNumber = 0;
 		}
 	}
+}
+
+void AMultiShootGameWeapon::FillUpBullet()
+{
+	WeaponInfo.BulletNumber = WeaponInfo.FillUpBulletNumber;
+	WeaponInfo.MaxBulletNumber = WeaponInfo.FillUpMaxBulletNumber;
 }
 
 UAudioComponent* AMultiShootGameWeapon::GetAudioComponent() const

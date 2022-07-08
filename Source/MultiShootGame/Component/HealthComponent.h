@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	UAnimMontage* HitHeadMontage;
 
+	UFUNCTION(BlueprintCallable)
+	void Heal(float HealAmount);
+
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
 	                         class AController* InstigatedBy, AActor* DamageCauser);
@@ -47,9 +50,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnHealthChangedSignature OnHealthChanged;
-
-	UFUNCTION(BlueprintCallable, Category = "HealthComponent")
-	void Heal(float HealAmount);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health")
 	uint8 TeamNumber = 0;

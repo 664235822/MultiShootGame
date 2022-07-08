@@ -60,10 +60,13 @@ public:
 	int BulletNumber;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
-	int PerBulletNumber;
+	int FillUpBulletNumber;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	int MaxBulletNumber;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
+	int FillUpMaxBulletNumber;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="WeaponInfo")
 	UStaticMesh* MagazineMesh;

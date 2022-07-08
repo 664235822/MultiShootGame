@@ -106,6 +106,9 @@ protected:
 	void Hit();
 
 	UFUNCTION(BlueprintCallable)
+	void FillUpWeaponBullet();
+	
+	UFUNCTION(BlueprintCallable)
 	void Death();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

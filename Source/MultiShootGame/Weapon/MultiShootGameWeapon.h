@@ -84,11 +84,13 @@ public:
 	void ReloadShowMagazine(bool Enabled);
 
 	void BulletReload();
+
+	void FillUpBullet();
 	
 	USkeletalMeshComponent* GetWeaponMeshComponent() const;
 
 	UAudioComponent* GetAudioComponent() const;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	FWeaponInfo WeaponInfo;
 };

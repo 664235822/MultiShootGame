@@ -650,19 +650,19 @@ void AMultiShootGameCharacter::EndReload()
 		switch (WeaponMode)
 		{
 		case EWeaponMode::MainWeapon:
-			if (CurrentMainWeapon->WeaponInfo.BulletNumber < CurrentMainWeapon->WeaponInfo.PerBulletNumber)
+			if (CurrentMainWeapon->WeaponInfo.BulletNumber < CurrentMainWeapon->WeaponInfo.FillUpBulletNumber)
 			{
 				CurrentMainWeapon->BulletReload();
 			}
 			break;
 		case EWeaponMode::SecondWeapon:
-			if (CurrentSecondWeapon->WeaponInfo.BulletNumber < CurrentSecondWeapon->WeaponInfo.PerBulletNumber)
+			if (CurrentSecondWeapon->WeaponInfo.BulletNumber < CurrentSecondWeapon->WeaponInfo.FillUpBulletNumber)
 			{
 				CurrentSecondWeapon->BulletReload();
 			}
 			break;
 		case EWeaponMode::ThirdWeapon:
-			if (CurrentThirdWeapon->WeaponInfo.BulletNumber < CurrentThirdWeapon->WeaponInfo.PerBulletNumber)
+			if (CurrentThirdWeapon->WeaponInfo.BulletNumber < CurrentThirdWeapon->WeaponInfo.FillUpBulletNumber)
 			{
 				CurrentThirdWeapon->BulletReload();
 			}
@@ -871,6 +871,15 @@ void AMultiShootGameCharacter::Hit()
 
 		HitEffectComponent->PlayHitEffect(SurfaceType, HitLocation, HitRotation);
 	}
+}
+
+void AMultiShootGameCharacter::FillUpWeaponBullet()
+{
+	CurrentMainWeapon->FillUpBullet();
+	CurrentSecondWeapon->FillUpBullet();
+	CurrentThirdWeapon->FillUpBullet();
+	CurrentFPSCamera->FillUpBullet();
+	GrenadeCount = MaxGrenadeCount;
 }
 
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
