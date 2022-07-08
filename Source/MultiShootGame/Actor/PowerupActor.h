@@ -48,12 +48,8 @@ protected:
 
     UFUNCTION()
     void OnTickPowerup();
-
-    UPROPERTY(ReplicatedUsing = OnRep_PowerupActive)
+    
     bool bIsPowerupActive = false;
-
-    UFUNCTION()
-    void OnRep_PowerupActive();
 
     UFUNCTION(BlueprintImplementableEvent, Category = "Powerup")
     void OnPowerupStateChanged(bool bNewIsActive);

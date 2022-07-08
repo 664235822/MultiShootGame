@@ -80,12 +80,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void EndKnifeAttack();
 
-	UFUNCTION(BlueprintCallable)
-	void NextKnifeAttack();
-
-	UFUNCTION(BlueprintCallable)
-	void TakeDownAttack();
-
 	void ToggleMainWeapon();
 
 	void ToggleSecondWeapon();
@@ -136,9 +130,6 @@ protected:
 	USkeletalMeshComponent* KnifeSkeletalMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* TakeDownKnifeSkeletalMeshComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -184,9 +175,6 @@ protected:
 	FName KnifeSocketName = "KnifeSocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FName TakeDownKnifeSocketName = "TakeDownKnifeSocket";
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName HitSocketName = "HitSocket";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -217,10 +205,7 @@ protected:
 	UAnimMontage* ThrowGrenadeAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TArray<UAnimMontage*> KnifeAttackAnimMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	UAnimMontage* TakeDownAttackerAnimMontage;
+	UAnimMontage* KnifeAttackAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
 	TSubclassOf<UUserWidget> GameUserWidgetClass;
@@ -232,10 +217,7 @@ protected:
 	EWeaponMode WeaponMode = EWeaponMode::MainWeapon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	float KnifeDamage = 40.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	float TakeDownDamage = 100.f;
+	float KnifeDamage = 100.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	float GrenadeDamage = 150.f;
@@ -298,23 +280,10 @@ protected:
 
 	bool bKnifeAttack = false;
 
-	bool bNextKnifeAttack = false;
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bTakeDown = false;
-
-	bool bTakingDown = false;
-
 	bool bUseControlRotation = false;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bEnableMovement = true;
-
-	bool bDeadTimeDilation = false;
-
-	int KnifeComboIndex = 0;
-
-	float DeadTimeDilationDelay = 0;
 
 	UPROPERTY(BlueprintReadOnly)
 	int GrenadeCount;
@@ -336,8 +305,6 @@ public:
 
 	void BeginReload();
 
-	void DeadTimeDilation();
-
 	USceneComponent* GetFPSCameraSceneComponent() const;
 
 	UCameraComponent* GetCameraComponent() const;
@@ -357,8 +324,6 @@ public:
 	bool GetAimed() const;
 
 	EWeaponMode GetWeaponMode() const;
-
-	void SetTakeDown(bool Value);
 
 	void SetEnableMovement(bool Value);
 };

@@ -126,12 +126,6 @@ void AMultiShootGameShotgun::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 		if (SurfaceType == SURFACE_HEAD)
 		{
 			BaseDamage *= 2.5f;
-
-			AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
-			if (Character)
-			{
-				Character->DeadTimeDilation();
-			}
 		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,

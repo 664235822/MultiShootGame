@@ -2,7 +2,6 @@
 
 
 #include "PowerupActor.h"
-#include "Net/UnrealNetwork.h"
 
 APowerupActor::APowerupActor()
 {
@@ -16,8 +15,6 @@ APowerupActor::APowerupActor()
 	PointLightComponent->SetupAttachment(PowerupMeshComponent);
 
 	RotatingMovementComponent = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovementComponent"));
-
-	SetReplicates(true);
 }
 
 void APowerupActor::BeginPlay()
@@ -36,15 +33,9 @@ void APowerupActor::OnTickPowerup()
 		OnExpired();
 
 		bIsPowerupActive = false;
-		OnRep_PowerupActive();
 
 		GetWorldTimerManager().ClearTimer(TimerHandle_PowerupTick);
 	}
-}
-
-void APowerupActor::OnRep_PowerupActive()
-{
-	OnPowerupStateChanged(bIsPowerupActive);
 }
 
 void APowerupActor::ActivatedPowerUp(AActor* OtherActor)
@@ -52,7 +43,6 @@ void APowerupActor::ActivatedPowerUp(AActor* OtherActor)
 	OnActivated(OtherActor);
 
 	bIsPowerupActive = true;
-	OnRep_PowerupActive();
 
 	if (PowerupInterval > 0.0f)
 	{
@@ -63,11 +53,4 @@ void APowerupActor::ActivatedPowerUp(AActor* OtherActor)
 	{
 		OnTickPowerup();
 	}
-}
-
-void APowerupActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(APowerupActor, bIsPowerupActive);
 }

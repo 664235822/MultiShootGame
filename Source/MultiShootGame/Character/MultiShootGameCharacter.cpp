@@ -43,11 +43,6 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	KnifeSkeletalMeshComponent->SetupAttachment(GetMesh(), KnifeSocketName);
 	KnifeSkeletalMeshComponent->SetVisibility(false);
 
-	TakeDownKnifeSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(
-		TEXT("TakeDownKnifeSkeletalMeshComponent"));
-	TakeDownKnifeSkeletalMeshComponent->SetupAttachment(GetMesh(), TakeDownKnifeSocketName);
-	TakeDownKnifeSkeletalMeshComponent->SetVisibility(false);
-
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
@@ -523,122 +518,30 @@ void AMultiShootGameCharacter::KnifeAttack()
 
 	EndAction();
 
-	if (!bTakeDown)
-	{
-		if (!bNextKnifeAttack)
-		{
-			if (!bKnifeAttack)
-			{
-				PlayAnimMontage(KnifeAttackAnimMontage[0], 1.5f);
-			}
-		}
-		else
-		{
-			PlayAnimMontage(KnifeAttackAnimMontage[KnifeComboIndex], 1.5f);
-		}
-	}
-	else
-	{
-		FVector ActorLocation = GetActorLocation();
-		FVector ForwardVector = GetActorForwardVector() * 250.0f;
-		FVector EndLocation = ActorLocation + ForwardVector;
-
-		TArray<AActor*> IgnoreActor;
-		FHitResult HitResult;
-		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), ActorLocation, EndLocation,TraceType_Weapon, false,
-		                                          IgnoreActor, EDrawDebugTrace::None, HitResult, true))
-		{
-			TargetTakeDownCharacter = Cast<AMultiShootGameEnemyCharacter>(
-				HitResult.GetActor());
-			if (TargetTakeDownCharacter)
-			{
-				SpringArmComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-				                                      FName("Spine1"));
-				GetCharacterMovement()->DisableMovement();
-				bTakeDown = false;
-				bTakingDown = true;
-
-				FTransform TargetTransform = TargetTakeDownCharacter->GetActorTransform();
-				FVector TargetLocation = TargetTransform.GetLocation() + TargetTakeDownCharacter->
-					GetActorForwardVector() * -80.f;
-				FQuat TargetRotation = TargetTransform.GetRotation();
-				SetActorTransform(FTransform(TargetRotation, TargetLocation));
-
-				PlayAnimMontage(TakeDownAttackerAnimMontage);
-			}
-		}
-	}
+	GetCharacterMovement()->SetMovementMode(MOVE_None);
+	PlayAnimMontage(KnifeAttackAnimMontage);
 }
 
 void AMultiShootGameCharacter::BeginKnifeAttack()
 {
 	bKnifeAttack = true;
 
-	bNextKnifeAttack = false;
-
 	AttachWeapon(false, false, false);
 
-	if (!bTakeDown)
-	{
-		KnifeSkeletalMeshComponent->SetVisibility(true);
-	}
-	else
-	{
-		TakeDownKnifeSkeletalMeshComponent->SetVisibility(true);
-	}
+	KnifeSkeletalMeshComponent->SetVisibility(true);
 }
 
 void AMultiShootGameCharacter::EndKnifeAttack()
 {
-	if (bTakingDown)
-	{
-		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-		SpringArmComponent->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-		SpringArmComponent->SetRelativeLocation(FVector(0, 0, 70.f));
-
-		TargetTakeDownCharacter = nullptr;
-		bTakeDown = false;
-		bTakingDown = false;
-	}
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 
 	bKnifeAttack = false;
 
-	bNextKnifeAttack = false;
-
 	bToggleWeapon = true;
 
-	KnifeComboIndex = 0;
-
 	KnifeSkeletalMeshComponent->SetVisibility(false);
-	TakeDownKnifeSkeletalMeshComponent->SetVisibility(false);
 
 	PlayAnimMontage(WeaponOutAnimMontage);
-}
-
-void AMultiShootGameCharacter::NextKnifeAttack()
-{
-	bNextKnifeAttack = true;
-
-	if (KnifeComboIndex < KnifeAttackAnimMontage.Num() - 1)
-	{
-		KnifeComboIndex++;
-	}
-	else
-	{
-		KnifeComboIndex = 0;
-	}
-}
-
-void AMultiShootGameCharacter::TakeDownAttack()
-{
-	if (TargetTakeDownCharacter)
-	{
-		UGameplayStatics::ApplyDamage(TargetTakeDownCharacter, TakeDownDamage, GetInstigatorController(), this,
-		                              DamageTypeClass);
-		HitEffectComponent->PlayHitEffect(
-			SURFACE_CHARACTER, TakeDownKnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName),
-			TakeDownKnifeSkeletalMeshComponent->GetComponentRotation());
-	}
 }
 
 void AMultiShootGameCharacter::EndReload()
@@ -885,7 +788,7 @@ void AMultiShootGameCharacter::FillUpWeaponBullet()
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
 	if (HealthComponent->bDied || bDetectingClimb || bReloading || bToggleWeapon || bSecondWeaponReloading ||
-		bThrowingGrenade || bTakingDown)
+		bThrowingGrenade || bKnifeAttack)
 	{
 		return false;
 	}
@@ -896,11 +799,6 @@ bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrena
 	}
 
 	if (CheckThrowGrenade && bBeginThrowGrenade)
-	{
-		return false;
-	}
-
-	if (bKnifeAttack && !bNextKnifeAttack)
 	{
 		return false;
 	}
@@ -943,12 +841,6 @@ void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, 
 
 	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 	                                             ThirdWeapon ? ThirdWeaponSocketName : BackThirdWeaponSocketName);
-}
-
-void AMultiShootGameCharacter::DeadTimeDilation()
-{
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
-	bDeadTimeDilation = true;
 }
 
 void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)
@@ -1008,20 +900,6 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 		const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
 
 		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
-	}
-
-	if (bDeadTimeDilation)
-	{
-		if (DeadTimeDilationDelay <= MaxDeadTimeDilationDelay)
-		{
-			DeadTimeDilationDelay += DeltaTime;
-		}
-		else
-		{
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
-			bDeadTimeDilation = false;
-			DeadTimeDilationDelay = 0;
-		}
 	}
 
 	if (WeaponMode == EWeaponMode::MainWeapon && (bUseControlRotation ||
@@ -1105,11 +983,6 @@ bool AMultiShootGameCharacter::GetAimed() const
 EWeaponMode AMultiShootGameCharacter::GetWeaponMode() const
 {
 	return WeaponMode;
-}
-
-void AMultiShootGameCharacter::SetTakeDown(bool Value)
-{
-	bTakeDown = Value;
 }
 
 void AMultiShootGameCharacter::SetEnableMovement(bool Value)
