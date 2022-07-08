@@ -23,6 +23,8 @@ AMiniMapCamera::AMiniMapCamera()
 void AMiniMapCamera::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MinimapCameraComponent2D->HiddenActors.Add(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 }
 
 // Called every frame
