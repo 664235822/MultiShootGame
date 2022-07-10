@@ -133,6 +133,7 @@ void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHeal
 
 		GetMovementComponent()->StopMovementImmediately();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 		DetachFromControllerPendingDestroy();
 		PlayAnimMontage(DeathMontage);
 		CurrentWeapon->EnablePhysicsSimulate();
