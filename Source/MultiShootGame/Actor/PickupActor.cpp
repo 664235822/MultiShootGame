@@ -3,6 +3,7 @@
 
 #include "PickupActor.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 
 // Sets default values
@@ -40,20 +41,28 @@ void APickupActor::Respawn()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	PowerupInstance = GetWorld()->SpawnActor<APowerupActor>(PowerupClass, GetTransform(), SpawnParameters);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_RespawnBoolTimer, this, &APickupActor::RespawnBool,
+	                                RespawnBoolDuration);
+}
+
+void APickupActor::RespawnBool()
+{
+	bRespawn = true;
 }
 
 void APickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (!Cast<AMultiShootGameCharacter>(OtherActor))
+	if (Cast<AMultiShootGameCharacter>(OtherActor) && bRespawn)
 	{
-		return;
+		PowerupInstance->ActivatedPowerUp(OtherActor);
+
+		PowerupInstance = nullptr;
+
+		bRespawn = false;
+
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &APickupActor::Respawn, CooldownDuration);
 	}
-	
-	PowerupInstance->ActivatedPowerUp(OtherActor);
-
-	PowerupInstance = nullptr;
-
-	GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &APickupActor::Respawn, CooldownDuration);
 }
