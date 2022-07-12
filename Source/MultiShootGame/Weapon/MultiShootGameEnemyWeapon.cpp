@@ -52,13 +52,15 @@ void AMultiShootGameEnemyWeapon::Fire()
 		FVector TraceEndPoint = TraceEnd;
 
 		EPhysicalSurface SurfaceType = SurfaceType_Default;
-
-		FHitResult Hit;
-		if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd,ECC_Weapon, QueryOParams))
+		TArray<AActor*> IgnoreActors;
+		IgnoreActors.Add(GetOwner());
+		FHitResult HitResult;
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), EyeLocation, TraceEnd,TraceType_Weapon, false,
+		                                          IgnoreActors, EDrawDebugTrace::None, HitResult, true))
 		{
-			AActor* HitActor = Hit.GetActor();
+			AActor* HitActor = HitResult.GetActor();
 
-			SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+			SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 
 			float CurrentDamage = BaseDamage;
 
@@ -67,11 +69,11 @@ void AMultiShootGameEnemyWeapon::Fire()
 				CurrentDamage *= 2.5f;
 			}
 
-			UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit,
+			UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, HitResult,
 			                                   MyOwner->GetInstigatorController(),
 			                                   MyOwner, DamageType);
 
-			TraceEndPoint = Hit.ImpactPoint;
+			TraceEndPoint = HitResult.ImpactPoint;
 		}
 
 		PlayFireEffect(TraceEndPoint);
@@ -120,6 +122,7 @@ void AMultiShootGameEnemyWeapon::StopFire()
 
 void AMultiShootGameEnemyWeapon::EnablePhysicsSimulate()
 {
+	StopFire();
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	WeaponMeshComponent->SetSimulatePhysics(true);
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
@@ -50,13 +51,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
 	TSubclassOf<AMultiShootGameEnemyWeapon> WeaponClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
 	UAnimMontage* DeathMontage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
-	float DeathDestroyDelay = 20.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
+	float DeathDestroyDelay = 5.f;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	FName WeaponSocketName = "WeaponSocket";
 
 	UPROPERTY(BlueprintReadOnly, Category = "Enemy")

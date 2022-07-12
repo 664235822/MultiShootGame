@@ -11,4 +11,3 @@
 #define TraceType_Visibility TraceTypeQuery1
 #define TraceType_Camera TraceTypeQuery2
 #define TraceType_Weapon TraceTypeQuery3
-#define ECC_Weapon ECC_GameTraceChannel1
