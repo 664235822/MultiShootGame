@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGame/Weapon/MultiShootGameEnemyWeapon.h"
+#include "Perception/AIPerceptionComponent.h"
 #include "MultiShootGameEnemyCharacter.generated.h"
 
 UCLASS()
@@ -33,7 +34,7 @@ protected:
 	void EndCrouch();
 
 	void DeathDestroy();
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComponent;
 
@@ -43,10 +44,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UAIPerceptionComponent* AIPerceptionComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
 	TSubclassOf<AMultiShootGameEnemyWeapon> WeaponClass;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Enemy")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Enemy")
