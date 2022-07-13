@@ -60,9 +60,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	FName WeaponSocketName = "WeaponSocket";
 
-	UPROPERTY(BlueprintReadOnly, Category = "Enemy")
-	bool bDied = false;
-
 	AMultiShootGameEnemyWeapon* CurrentWeapon;
 
 	FTimerHandle TimerHandle;

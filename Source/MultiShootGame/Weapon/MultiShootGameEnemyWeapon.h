@@ -33,7 +33,7 @@ protected:
     TSubclassOf<UDamageType> DamageType;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    float BaseDamage = 10.0f;
+    float BaseDamage = 5.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float DestroyDelay = 10.0f;

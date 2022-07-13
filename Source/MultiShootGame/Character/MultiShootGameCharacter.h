@@ -326,4 +326,6 @@ public:
 	EWeaponMode GetWeaponMode() const;
 
 	void SetEnableMovement(bool Value);
+
+	UHealthComponent* GetHealthComponent() const;
 };

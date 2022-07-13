@@ -989,3 +989,8 @@ void AMultiShootGameCharacter::SetEnableMovement(bool Value)
 {
 	bEnableMovement = Value;
 }
+
+UHealthComponent* AMultiShootGameCharacter::GetHealthComponent() const
+{
+	return HealthComponent;
+}

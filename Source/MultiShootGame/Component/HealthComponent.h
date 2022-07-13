@@ -44,6 +44,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
 	bool bDied = false;
 
 	float GetHealth() const;

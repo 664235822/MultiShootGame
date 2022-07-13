@@ -4,8 +4,6 @@
 #include "MultiShootGameEnemyCharacter.h"
 #include "AIController.h"
 #include "MultiShootGameCharacter.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -130,9 +128,9 @@ void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHeal
                                                     class AController* InstigatedBy,
                                                     AActor* DamageCauser)
 {
-	if (Health <= 0.0f && !bDied)
+	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
-		bDied = true;
+		HealthComponent->bDied = true;
 
 		GetMovementComponent()->StopMovementImmediately();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
