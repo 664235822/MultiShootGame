@@ -229,7 +229,7 @@ protected:
 	float MaxDeadTimeDilationDelay = 0.1f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	int MaxGrenadeCount = 10;
+	int MaxGrenadeCount = 4;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;

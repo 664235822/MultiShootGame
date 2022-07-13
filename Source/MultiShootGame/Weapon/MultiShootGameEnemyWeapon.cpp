@@ -3,6 +3,7 @@
 
 #include "MultiSHootGameEnemyWeapon.h"
 #include "DrawDebugHelpers.h"
+#include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
@@ -17,6 +18,10 @@ AMultiShootGameEnemyWeapon::AMultiShootGameEnemyWeapon()
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMeshComponent"));
 	RootComponent = WeaponMeshComponent;
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
+	AudioComponent->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned
@@ -79,6 +84,8 @@ void AMultiShootGameEnemyWeapon::Fire()
 		PlayFireEffect(TraceEndPoint);
 
 		LastFireTime = GetWorld()->TimeSeconds;
+
+		AudioComponent->Play();
 	}
 }
 
