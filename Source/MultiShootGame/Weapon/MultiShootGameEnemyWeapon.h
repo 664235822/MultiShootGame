@@ -33,10 +33,10 @@ protected:
     TSubclassOf<UDamageType> DamageType;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    float BaseDamage = 20.0f;;
+    float BaseDamage = 10.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    float DestroyDelay = 20.0f;;
+    float DestroyDelay = 10.0f;
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     FName MuzzleSocketName = "Muzzle";

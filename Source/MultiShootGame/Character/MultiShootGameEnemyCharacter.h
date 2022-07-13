@@ -55,7 +55,7 @@ protected:
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
-	float DeathDestroyDelay = 5.f;
+	float DeathDestroyDelay = 10.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	FName WeaponSocketName = "WeaponSocket";
