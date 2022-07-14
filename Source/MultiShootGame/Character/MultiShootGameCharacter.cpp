@@ -519,7 +519,7 @@ void AMultiShootGameCharacter::KnifeAttack()
 	EndAction();
 
 	GetCharacterMovement()->SetMovementMode(MOVE_None);
-	PlayAnimMontage(KnifeAttackAnimMontage);
+	PlayAnimMontage(KnifeAttackAnimMontage, 2.0f);
 }
 
 void AMultiShootGameCharacter::BeginKnifeAttack()
@@ -574,7 +574,6 @@ void AMultiShootGameCharacter::EndReload()
 	}
 
 	bSecondWeaponReloading = false;
-
 
 	ToggleUseControlRotation(false);
 }
