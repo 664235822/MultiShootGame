@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BulletShell.h"
-#include "Magazine.h"
+#include "MultiShootGameBulletShell.h"
+#include "MultiShootGameMagazineClip.h"
 #include "GameFramework/Pawn.h"
 #include "MultiShootGame/Enum/EWeaponMode.h"
 #include "MultiShootGame/Struct/WeaponInfo.h"
@@ -30,35 +30,35 @@ protected:
 	
 	virtual void BulletFire(AMultiShootGameCharacter* MyOwner);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USkeletalMeshComponent* WeaponMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UAudioComponent* AudioComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FName MuzzleSocketName = "Muzzle";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FName TracerTargetName = "Target";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FName BulletShellName = "BulletShell";
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FName ClipBoneName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	EWeaponMode CurrentWeaponMode;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	UParticleSystem* MuzzleEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<ABulletShell> BulletShellClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	TSubclassOf<AMultiShootGameBulletShell> BulletShellClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<AMagazine> MagazineClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	TSubclassOf<AMultiShootGameMagazineClip> MagazineClipClass;
 
 	FTimerHandle TimerHandle;
 
@@ -81,7 +81,7 @@ public:
 	
 	void EnablePhysicsSimulate();
 
-	void ReloadShowMagazine(bool Enabled);
+	void ReloadShowMagazineClip(bool Enabled);
 
 	void BulletReload();
 
@@ -91,6 +91,6 @@ public:
 
 	UAudioComponent* GetAudioComponent() const;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FWeaponInfo WeaponInfo;
 };

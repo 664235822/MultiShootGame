@@ -16,13 +16,13 @@ public:
 	AImpactParticleSystem();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UParticleSystemComponent* ParticleSystemComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Impact")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Impact)
 	UMaterialInterface* DecalMaterial;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Impact")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Impact)
 	FVector DecalSize;
 
 	UFUNCTION()

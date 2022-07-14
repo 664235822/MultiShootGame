@@ -21,16 +21,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = HitEffect)
 	TSubclassOf<AImpactParticleSystem> DefaultImpactEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = HitEffect)
 	TSubclassOf<AImpactParticleSystem> FleshImpactEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = HitEffect)
 	TSubclassOf<AImpactParticleSystem> StoneImpactEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = HitEffect)
 	TSubclassOf<AImpactParticleSystem> WoodImpactEffect;
 
 public:	

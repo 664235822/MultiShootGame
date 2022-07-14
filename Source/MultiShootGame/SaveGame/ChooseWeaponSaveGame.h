@@ -16,23 +16,21 @@ class MULTISHOOTGAME_API UChooseWeaponSaveGame : public USaveGame
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ChooseWeapon)
 	TArray<FWeaponInfo> MainWeaponList;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ChooseWeapon)
 	TArray<FWeaponInfo> SecondWeaponList;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ChooseWeapon)
 	TArray<FWeaponInfo> ThirdWeaponList;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ChooseWeapon)
 	int MainWeaponIndex;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ChooseWeapon)
 	int SecondWeaponIndex;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="ChooseWeapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ChooseWeapon)
 	int ThirdWeaponIndex;
-
-	
 };

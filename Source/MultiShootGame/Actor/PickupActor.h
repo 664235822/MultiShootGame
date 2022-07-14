@@ -22,13 +22,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, Category = Components)
 	USphereComponent* SphereComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, Category = Components)
 	UDecalComponent* DecalComponent;
 
-	UPROPERTY(EditInstanceOnly, Category = "PickupActor")
+	UPROPERTY(EditInstanceOnly, Category = PickupActor)
 	TSubclassOf<APowerupActor> PowerupClass;
 
 	void Respawn();
@@ -37,10 +37,10 @@ protected:
 
 	APowerupActor* PowerupInstance;
 
-	UPROPERTY(EditInstanceOnly, Category = "PickupActor")
+	UPROPERTY(EditInstanceOnly, Category = PickupActor)
 	float CooldownDuration = 30.0f;
 
-	UPROPERTY(EditInstanceOnly, Category = "PickupActor")
+	UPROPERTY(EditInstanceOnly, Category = PickupActor)
 	float RespawnBoolDuration = 2.0f;
 
 	FTimerHandle TimerHandle_RespawnTimer;

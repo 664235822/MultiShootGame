@@ -25,6 +25,6 @@ public:
 
 	virtual void ProjectileInitialize(float Damage);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Projectile)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	float BaseDamage = 20.f;
 };

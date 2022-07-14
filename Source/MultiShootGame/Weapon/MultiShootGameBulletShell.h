@@ -5,36 +5,36 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "BulletShell.generated.h"
+#include "MultiShootGameBulletShell.generated.h"
 
 UCLASS()
-class MULTISHOOTGAME_API ABulletShell : public AActor
+class MULTISHOOTGAME_API AMultiShootGameBulletShell : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ABulletShell();
+	AMultiShootGameBulletShell();
 
 protected:
-	UPROPERTY(VisibleDefaultsOnly, Category="Components")
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UStaticMeshComponent* BulletShellComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	FTimerHandle TimerHandle;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	float DestroyDelay = 2.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	float MinInitialSpeed = 100.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	float MaxInitialSpeed = 300.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bullet Shell")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	FRotator ThrowDirection = FRotator(60.f, 180.f, 0);
 
 	void DestroyBulletShell();

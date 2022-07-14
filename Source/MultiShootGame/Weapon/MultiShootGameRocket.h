@@ -18,46 +18,43 @@ class MULTISHOOTGAME_API AMultiShootGameRocket : public AMultiShootGameProjectil
 	GENERATED_BODY()
 
 public:
-
 	AMultiShootGameRocket();
 
 protected:
-
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UStaticMeshComponent* RocketComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UParticleSystemComponent* ParticleSystemComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category="Rocket")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	UParticleSystem* ExplosionParticleSystem;
 
-	UPROPERTY(EditDefaultsOnly, Category="Rocket")
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	USoundCue* ExplosionSoundCue;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Rocket")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	TSubclassOf<UDamageType> DamageTypeClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Rocket")
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<UMatineeCameraShake> RocketCameraShakeClass;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	float DamageRadius = 1000.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Grenade")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	float ExplodedDelay = 2.0f;
 
 	FTimerHandle TimerHandle;
 
 	virtual void ProjectileInitialize(float Damage) override;
-	
+
 	void Explode();
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-			   const FHitResult& Hit);
-	
+	           const FHitResult& Hit);
 };

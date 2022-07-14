@@ -23,13 +23,13 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Health)
 	float DefaultHealth = 100.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
 	float CurrentHealth = DefaultHealth;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Health)
 	UAnimMontage* HitHeadMontage;
 
 	UFUNCTION(BlueprintCallable)
@@ -44,17 +44,17 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Health)
 	bool bDied = false;
 
 	float GetHealth() const;
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+	UPROPERTY(BlueprintAssignable, Category = Events)
 	FOnHealthChangedSignature OnHealthChanged;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Health)
 	uint8 TeamNumber = 0;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Health")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Health)
 	static bool IsFriendly(AActor* ActorA, AActor* ActorB);
 };

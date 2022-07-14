@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Camera/CameraComponent.h"
-#include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MultiShootGame/Component/HealthComponent.h"
@@ -36,28 +35,28 @@ protected:
 
 	void DeathDestroy();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* CameraComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USpringArmComponent* SpringArmComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UHealthComponent* HealthComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UAIPerceptionComponent* AIPerceptionComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Enemy)
 	TSubclassOf<AMultiShootGameEnemyWeapon> WeaponClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Enemy)
 	UAnimMontage* DeathMontage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Enemy)
 	float DeathDestroyDelay = 10.f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = Enemy)
 	FName WeaponSocketName = "WeaponSocket";
 
 	AMultiShootGameEnemyWeapon* CurrentWeapon;
@@ -66,20 +65,20 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
-	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	                     const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	virtual FVector GetPawnViewLocation() const override;
 
-	UFUNCTION(BlueprintCallable, Category = "Player")
+	UFUNCTION(BlueprintCallable, Category = Enemy)
 	void StartFire();
 
-	UFUNCTION(BlueprintCallable, Category = "Player")
+	UFUNCTION(BlueprintCallable, Category = Enemy)
 	void StopFire();
 };

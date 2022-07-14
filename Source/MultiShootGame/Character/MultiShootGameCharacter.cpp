@@ -595,7 +595,7 @@ void AMultiShootGameCharacter::ReloadShowClip(bool Enabled)
 		break;
 	}
 
-	TempWeapon->ReloadShowMagazine(Enabled);
+	TempWeapon->ReloadShowMagazineClip(Enabled);
 }
 
 void AMultiShootGameCharacter::ToggleMainWeapon()
@@ -862,7 +862,7 @@ void AMultiShootGameCharacter::Death()
 	GetMovementComponent()->SetActive(false);
 
 	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->SetAllBodiesPhysicsBlendWeight(0.4f);
+	GetMesh()->SetAllBodiesPhysicsBlendWeight(DeathRagdollWeight);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	GetMesh()->GetAnimInstance()->StopAllMontages(0);
 

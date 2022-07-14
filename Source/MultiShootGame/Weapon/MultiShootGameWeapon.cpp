@@ -2,7 +2,7 @@
 
 
 #include "MultiShootGameWeapon.h"
-#include "BulletShell.h"
+#include "MultiShootGameBulletShell.h"
 #include "MultiShootGameProjectile.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Components/AudioComponent.h"
@@ -139,7 +139,7 @@ void AMultiShootGameWeapon::Fire()
 			const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
 			const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
 
-			ABulletShell* BulletShell = GetWorld()->SpawnActor<ABulletShell>(
+			AMultiShootGameBulletShell* BulletShell = GetWorld()->SpawnActor<AMultiShootGameBulletShell>(
 				BulletShellClass, BulletShellLocation, BulletShellRotation);
 			BulletShell->SetOwner(this);
 			BulletShell->ThrowBulletShell();
@@ -192,7 +192,7 @@ void AMultiShootGameWeapon::EnablePhysicsSimulate()
 	WeaponMeshComponent->SetSimulatePhysics(true);
 }
 
-void AMultiShootGameWeapon::ReloadShowMagazine(bool Enabled)
+void AMultiShootGameWeapon::ReloadShowMagazineClip(bool Enabled)
 {
 	if (Enabled)
 	{
@@ -201,18 +201,18 @@ void AMultiShootGameWeapon::ReloadShowMagazine(bool Enabled)
 	else
 	{
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
-		if (WeaponInfo.MagazineMesh)
+		if (WeaponInfo.MagazineClipMesh)
 		{
 			FActorSpawnParameters SpawnParameters;
 			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			AMagazine* CurrentMagazine = GetWorld()->SpawnActor<AMagazine>(
-				MagazineClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
-			CurrentMagazine->SetOwner(this);
-			CurrentMagazine->AttachToComponent(WeaponMeshComponent,
+			AMultiShootGameMagazineClip* CurrentMagazineClip = GetWorld()->SpawnActor<AMultiShootGameMagazineClip>(
+				MagazineClipClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+			CurrentMagazineClip->SetOwner(this);
+			CurrentMagazineClip->AttachToComponent(WeaponMeshComponent,
 			                                   FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Magazine"));
 
-			CurrentMagazine->ThrowMagazine(WeaponInfo.MagazineMesh);
+			CurrentMagazineClip->ThrowMagazineClip(WeaponInfo.MagazineClipMesh);
 		}
 	}
 }

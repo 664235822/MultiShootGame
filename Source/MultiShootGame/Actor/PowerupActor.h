@@ -24,22 +24,22 @@ protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Component")
+    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = Components)
     USceneComponent* SceneComponent;
 
-    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Component")
+    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = Components)
     UStaticMeshComponent* PowerupMeshComponent;
 
-    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Component")
+    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = Components)
     UPointLightComponent* PointLightComponent;
 
-    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Component")
+    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = Components)
     URotatingMovementComponent* RotatingMovementComponent;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Powerup")
+    UPROPERTY(EditDefaultsOnly, Category = PowerupActor)
     float PowerupInterval = 0.0f;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Powerup")
+    UPROPERTY(EditDefaultsOnly, Category = PowerupActor)
     int32 TotalNumberOfTicks = 0;
 
     FTimerHandle TimerHandle_PowerupTick;
@@ -51,19 +51,19 @@ protected:
     
     bool bIsPowerupActive = false;
 
-    UFUNCTION(BlueprintImplementableEvent, Category = "Powerup")
+    UFUNCTION(BlueprintImplementableEvent, Category = PowerupActor)
     void OnPowerupStateChanged(bool bNewIsActive);
 
 public:
 
     void ActivatedPowerUp(AActor* OtherActor);
 
-    UFUNCTION(BlueprintImplementableEvent, Category = "Powerup")
+    UFUNCTION(BlueprintImplementableEvent, Category = PowerupActor)
     void OnActivated(AActor* OtherActor);
 
-    UFUNCTION(BlueprintImplementableEvent, Category = "Powerup")
+    UFUNCTION(BlueprintImplementableEvent, Category = PowerupActor)
     void OnPowerupTicked();
 
-    UFUNCTION(BlueprintImplementableEvent, Category = "Powerup")
+    UFUNCTION(BlueprintImplementableEvent, Category = PowerupActor)
     void OnExpired();
 };

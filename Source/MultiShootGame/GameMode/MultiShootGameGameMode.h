@@ -24,7 +24,7 @@ protected:
 	// Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Game Mode")
+	UFUNCTION(BlueprintImplementableEvent, Category = GameMode)
 	void SpawnNewBot();
 
 	void SpawnBotTimerElapsed();
@@ -45,7 +45,7 @@ protected:
 
 	int32 WaveCount;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Game Mode")
+	UPROPERTY(EditDefaultsOnly, Category = GameMode)
 	float TimeBetweenWaves = 2.0f;
 
 	void CheckWaveState();
@@ -60,7 +60,7 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	UPROPERTY(BlueprintAssignable, Category = "Game Mode")
+	UPROPERTY(BlueprintAssignable, Category = GameMode)
 	FOnActorKilled OnActorKilled;
 };
 

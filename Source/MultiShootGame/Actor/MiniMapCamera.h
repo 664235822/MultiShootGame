@@ -19,13 +19,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Component")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USceneComponent* SceneComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Component")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USceneCaptureComponent2D* MinimapCameraComponent2D;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="MinimapCamera")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = MinimapCamera)
 	float CameraHeight = 1000.f;
 
 public:

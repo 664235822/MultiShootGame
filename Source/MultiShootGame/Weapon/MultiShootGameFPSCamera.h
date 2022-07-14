@@ -23,15 +23,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* CameraComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	float ZoomedFOV = 40.0f;
 
 	float DefaultFOV;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.1f, ClampMax = 100.0f))
+	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0.1f, ClampMax = 100.0f))
 	float ZoomInterpSpeed = 20.0f;;
 
 public:

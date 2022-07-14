@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BulletShell.h"
+#include "MultiShootGameBulletShell.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
-ABulletShell::ABulletShell()
+AMultiShootGameBulletShell::AMultiShootGameBulletShell()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,16 +18,16 @@ ABulletShell::ABulletShell()
 	ProjectileMovementComponent->SetAutoActivate(false);
 }
 
-void ABulletShell::DestroyBulletShell()
+void AMultiShootGameBulletShell::DestroyBulletShell()
 {
 	Destroy();
 }
 
-void ABulletShell::ThrowBulletShell()
+void AMultiShootGameBulletShell::ThrowBulletShell()
 {
 	ProjectileMovementComponent->Velocity = (GetActorRotation() + ThrowDirection).Vector() *
 		UKismetMathLibrary::RandomFloatInRange(MinInitialSpeed, MaxInitialSpeed);
 	ProjectileMovementComponent->Activate();
 
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &ABulletShell::DestroyBulletShell, DestroyDelay);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameBulletShell::DestroyBulletShell, DestroyDelay);
 }

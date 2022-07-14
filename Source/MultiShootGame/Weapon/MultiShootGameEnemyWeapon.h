@@ -26,31 +26,31 @@ protected:
 
     void DestroyWeapon();
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
     USkeletalMeshComponent* WeaponMeshComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
     UAudioComponent* AudioComponent;
     
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
     TSubclassOf<UDamageType> DamageType;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
     float BaseDamage = 5.0f;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
     float DestroyDelay = 10.0f;
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
     FName MuzzleSocketName = "Muzzle";
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
     FName TracerTargetName = "Target";
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
     UParticleSystem* MuzzleEffect;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
     UParticleSystem* TracerEffect;
 
     FTimerHandle TimerHandle;
@@ -59,12 +59,12 @@ protected:
 
     float LastFireTime;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, Category = Weapon)
     float RateOfFire = 600.0f;
 
     float TimeBetweenShots;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
+    UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0.0f))
     float BulletSpread = 1.0f;
 
 public:

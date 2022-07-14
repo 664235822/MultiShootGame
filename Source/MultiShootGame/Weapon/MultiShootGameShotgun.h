@@ -23,43 +23,43 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	USceneComponent* RootSceneComponent;
 	
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UBoxComponent* CollisionComponent1;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UBoxComponent* CollisionComponent2;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UBoxComponent* CollisionComponent3;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UBoxComponent* CollisionComponent4;
 
-	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	UPROPERTY(VisibleDefaultsOnly, Category = Components)
 	UHitEffectComponent* HitEffectComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement1;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement2;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement3;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Components, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement4;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	TSubclassOf<UDamageType> DamageTypeClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	UMaterialInterface* BulletDecalMaterial;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	FVector BulletDecalSize;
 	
 	UFUNCTION()
