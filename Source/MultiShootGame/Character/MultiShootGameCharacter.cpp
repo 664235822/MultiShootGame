@@ -874,6 +874,13 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
                                                const UDamageType* DamageType, AController* InstigatedBy,
                                                AActor* DamageCauser)
 {
+	if (Health == 100.f)
+	{
+		return;
+	}
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(HitCameraShakeClass);
+
 	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
 		Death();

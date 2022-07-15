@@ -190,6 +190,9 @@ protected:
 	TSubclassOf<UMatineeCameraShake> KnifeCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
+	TSubclassOf<UMatineeCameraShake> HitCameraShakeClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* WeaponOutAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
