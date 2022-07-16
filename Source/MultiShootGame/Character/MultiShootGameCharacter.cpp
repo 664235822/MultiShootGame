@@ -858,6 +858,8 @@ void AMultiShootGameCharacter::Death()
 
 	EndAction();
 
+	ToggleUseControlRotation(true);
+	
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMovementComponent()->SetActive(false);
