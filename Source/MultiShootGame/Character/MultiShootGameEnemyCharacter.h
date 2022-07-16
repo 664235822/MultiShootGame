@@ -42,6 +42,9 @@ protected:
 	USpringArmComponent* SpringArmComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	UAudioComponent* DeathAudioComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UHealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)

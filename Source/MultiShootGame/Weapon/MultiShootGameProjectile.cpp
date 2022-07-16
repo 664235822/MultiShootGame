@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
+#include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 
@@ -56,6 +57,7 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		if (SurfaceType == SURFACE_HEAD)
 		{
 			BaseDamage *= 2.5f;
+			Cast<AMultiShootGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->OnHeadshot();
 		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,

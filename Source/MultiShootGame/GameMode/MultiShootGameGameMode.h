@@ -19,7 +19,7 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
-    virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = GameMode)
 	void SpawnNewBot();
@@ -43,18 +43,34 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	int NumberOfBots;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	int WaveCount;
 
+	UPROPERTY(BlueprintReadOnly)
+	int Score;
+
+	UPROPERTY(BlueprintReadOnly)
+	int KillCount;
+
 	UPROPERTY(EditDefaultsOnly, Category = GameMode)
 	float TimeBetweenWaves = 2.0f;
+
+	float CurrentShowSight = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = GameMode)
+	float ShowSightDelay = 1.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bShowSight = false;
 
 	void CheckWaveState();
 
 	void CheckAnyPlayerAlive();
 
 	void CheckNumberOfBots();
+
+	void CheckShowSight(float DeltaSeconds);
 
 	void SetWaveState(EWaveState NewState) const;
 
@@ -64,9 +80,9 @@ protected:
 	void RespawnDeadPlayers();
 
 public:
-
 	virtual void Tick(float DeltaSeconds) override;
+
+	void OnEnemyKilled();
+
+	void OnHeadshot();
 };
-
-
-

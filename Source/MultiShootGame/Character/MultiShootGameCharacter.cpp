@@ -49,6 +49,10 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	FPSCameraSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("FPSCameraSceneComponent"));
 	FPSCameraSceneComponent->SetupAttachment(RootComponent);
 
+	DeathAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("DeathAudioComponent"));
+	DeathAudioComponent->SetupAttachment(RootComponent);
+	DeathAudioComponent->SetAutoActivate(false);
+
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
 	HitEffectComponent = CreateDefaultSubobject<UHitEffectComponent>(TEXT("HitEfectComponent"));
@@ -64,12 +68,12 @@ void AMultiShootGameCharacter::BeginPlay()
 
 	GrenadeCount = MaxGrenadeCount;
 
-	CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
-	CurrentGameUserWidget->AddToViewport();
-
 	CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
 	CurrentSniperUserWidget->AddToViewport();
 	CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
+
+	CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
+	CurrentGameUserWidget->AddToViewport();
 
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
 
@@ -868,6 +872,8 @@ void AMultiShootGameCharacter::Death()
 	CurrentMainWeapon->EnablePhysicsSimulate();
 	CurrentSecondWeapon->EnablePhysicsSimulate();
 	CurrentThirdWeapon->EnablePhysicsSimulate();
+
+	DeathAudioComponent->Play();
 }
 
 void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,

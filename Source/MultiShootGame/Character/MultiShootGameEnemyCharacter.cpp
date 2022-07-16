@@ -4,9 +4,11 @@
 #include "MultiShootGameEnemyCharacter.h"
 #include "AIController.h"
 #include "MultiShootGameCharacter.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
 
 // Sets default values
 AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
@@ -20,6 +22,10 @@ AMultiShootGameEnemyCharacter::AMultiShootGameEnemyCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	DeathAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("DeathAudioComponent"));
+	DeathAudioComponent->SetupAttachment(RootComponent);
+	DeathAudioComponent->SetAutoActivate(false);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 
@@ -138,6 +144,10 @@ void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHeal
 		DetachFromControllerPendingDestroy();
 		PlayAnimMontage(DeathMontage);
 		CurrentWeapon->EnablePhysicsSimulate();
+
+		DeathAudioComponent->Play();
+
+		Cast<AMultiShootGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->OnEnemyKilled();
 
 		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameEnemyCharacter::DeathDestroy,
 		                                DeathDestroyDelay);
