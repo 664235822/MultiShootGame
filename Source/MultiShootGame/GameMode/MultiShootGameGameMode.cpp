@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MultiShootGameGameMode.h"
-
 #include "MultiShootGameGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
@@ -115,6 +114,12 @@ void AMultiShootGameGameMode::CheckWaveState()
 
 void AMultiShootGameGameMode::CheckAnyPlayerAlive()
 {
+	if (Cast<AMultiShootGameCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->GetHealthComponent()->bDied)
+	{
+		GameOver();
+		return;
+	}
+
 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 	{
 		APlayerController* PlayerController = Iterator->Get();
@@ -133,13 +138,37 @@ void AMultiShootGameGameMode::CheckAnyPlayerAlive()
 	GameOver();
 }
 
-void AMultiShootGameGameMode::SetWaveState(EWaveState NewState)
+void AMultiShootGameGameMode::CheckNumberOfBots()
+{
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMultiShootGameEnemyCharacter::StaticClass(), OutActors);
+	int Count = 0;
+	for (int i = 0; i < OutActors.Num(); i++)
+	{
+		AMultiShootGameEnemyCharacter* EnemyCharacter = Cast<AMultiShootGameEnemyCharacter>(OutActors[i]);
+		if (Cast<UHealthComponent>(EnemyCharacter->GetComponentByClass(UHealthComponent::StaticClass()))->bDied)
+		{
+			continue;
+		}
+		Count++;
+	}
+	NumberOfBots = Count;
+}
+
+void AMultiShootGameGameMode::SetWaveState(EWaveState NewState) const
 {
 	AMultiShootGameGameState* MyGameState = GetGameState<AMultiShootGameGameState>();
 	if (ensureAlways(MyGameState))
 	{
 		MyGameState->SetWaveState(NewState);
 	}
+}
+
+EWaveState AMultiShootGameGameMode::GetWaveState() const
+{
+	const AMultiShootGameGameState* MyGameState = GetGameState<AMultiShootGameGameState>();
+
+	return MyGameState->GetWaveState();
 }
 
 void AMultiShootGameGameMode::RespawnDeadPlayers()
@@ -158,7 +187,7 @@ void AMultiShootGameGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (Cast<AMultiShootGameCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->GetHealthComponent()->bDied)
+	if (GetWaveState() == EWaveState::GameOver)
 	{
 		return;
 	}
@@ -166,4 +195,6 @@ void AMultiShootGameGameMode::Tick(float DeltaSeconds)
 	CheckWaveState();
 
 	CheckAnyPlayerAlive();
+
+	CheckNumberOfBots();
 }

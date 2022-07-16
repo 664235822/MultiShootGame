@@ -7,9 +7,6 @@
 #include "MultiShootGame/Enum/EWaveState.h"
 #include "MultiShootGameGameMode.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnActorKilled, AActor*, VictimActor, AActor*, KillerActor, AController*,
-											   KillerController);
-
 UCLASS(minimalapi)
 class AMultiShootGameGameMode : public AGameModeBase
 {
@@ -41,9 +38,14 @@ protected:
 
 	FTimerHandle TimerHandle_NextWaveStart;
 
-	int32 NumberOfBotsToSpawn;
+	UPROPERTY(BlueprintReadOnly)
+	int NumberOfBotsToSpawn;
 
-	int32 WaveCount;
+	UPROPERTY(BlueprintReadOnly)
+	int NumberOfBots;
+	
+	UPROPERTY(BlueprintReadOnly)
+	int WaveCount;
 
 	UPROPERTY(EditDefaultsOnly, Category = GameMode)
 	float TimeBetweenWaves = 2.0f;
@@ -52,16 +54,18 @@ protected:
 
 	void CheckAnyPlayerAlive();
 
-	void SetWaveState(EWaveState NewState);
+	void CheckNumberOfBots();
+
+	void SetWaveState(EWaveState NewState) const;
+
+	UFUNCTION(BlueprintCallable)
+	EWaveState GetWaveState() const;
 
 	void RespawnDeadPlayers();
 
 public:
 
 	virtual void Tick(float DeltaSeconds) override;
-
-	UPROPERTY(BlueprintAssignable, Category = GameMode)
-	FOnActorKilled OnActorKilled;
 };
 
 

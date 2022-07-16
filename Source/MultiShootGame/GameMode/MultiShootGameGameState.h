@@ -16,12 +16,11 @@ class MULTISHOOTGAME_API AMultiShootGameGameState : public AGameStateBase
 	GENERATED_BODY()
 
 protected:
-	UFUNCTION(BlueprintImplementableEvent, Category = GameState)
-	void WaveStateChanged(EWaveState NewState, EWaveState OldState);
-
 	UPROPERTY(BlueprintReadOnly, Category = GameState)
 	EWaveState WaveState;
 
 public:
 	void SetWaveState(EWaveState NewWaveState);
+
+	EWaveState GetWaveState() const;
 };
