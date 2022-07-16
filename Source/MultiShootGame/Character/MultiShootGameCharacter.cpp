@@ -80,8 +80,6 @@ void AMultiShootGameCharacter::BeginPlay()
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	SpawnActorLocation = GetActorLocation();
-
 	CurrentMainWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(MainWeaponClass, FVector::ZeroVector,
 	                                                                  FRotator::ZeroRotator,
 	                                                                  SpawnParameters);

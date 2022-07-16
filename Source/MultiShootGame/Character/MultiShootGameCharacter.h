@@ -297,13 +297,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	int GrenadeCount;
 
-	FVector SpawnActorLocation;
-
+	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
 
+	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentSniperUserWidget;
-
-	AMultiShootGameEnemyCharacter* TargetTakeDownCharacter;
 
 public:
 	// Called every frame
