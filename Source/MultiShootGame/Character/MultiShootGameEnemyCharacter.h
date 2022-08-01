@@ -70,6 +70,9 @@ protected:
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 	                     const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
+	UFUNCTION()
+	void OnHeadShot();
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

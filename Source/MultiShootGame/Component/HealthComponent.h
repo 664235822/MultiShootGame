@@ -15,6 +15,8 @@ class MULTISHOOTGAME_API UHealthComponent : public UActorComponent
 	                                             float, Health, float, HealthDelta, const class UDamageType*,
 	                                             DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHeadShotSignature);
+
 public:
 	// Sets default values for this component's properties
 	UHealthComponent();
@@ -51,6 +53,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = Events)
 	FOnHealthChangedSignature OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = Events)
+	FOnHeadShotSignature OnHeadShot;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Health)
 	uint8 TeamNumber = 0;

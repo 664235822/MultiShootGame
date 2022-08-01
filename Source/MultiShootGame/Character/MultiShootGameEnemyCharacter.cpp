@@ -38,6 +38,7 @@ void AMultiShootGameEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnHealthChanged);
+	HealthComponent->OnHeadShot.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnHeadShot);
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -110,6 +111,14 @@ void AMultiShootGameEnemyCharacter::StopFire()
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->StopFire();
+	}
+}
+
+void AMultiShootGameEnemyCharacter::OnHeadShot()
+{
+	if (!HealthComponent->bDied)
+	{
+		Cast<AMultiShootGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->OnHeadshot();
 	}
 }
 
