@@ -126,6 +126,9 @@ void AMultiShootGameShotgun::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 		if (SurfaceType == SURFACE_HEAD)
 		{
 			BaseDamage *= 2.5f;
+			
+			Cast<UHealthComponent>(OtherActor->GetComponentByClass(UHealthComponent::StaticClass()))->OnHeadShot.
+				Broadcast();
 		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,
