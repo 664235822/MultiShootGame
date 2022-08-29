@@ -33,20 +33,20 @@ bool AMultiShootGameFPSCamera::BulletCheck(AMultiShootGameCharacter* MyOwner)
 	switch (MyOwner->GetWeaponMode())
 	{
 	case EWeaponMode::MainWeapon:
-		if (MyOwner->CurrentMainWeapon->WeaponInfo.BulletNumber == 0 &&
-			MyOwner->CurrentMainWeapon->WeaponInfo.MaxBulletNumber == 0)
+		if (MyOwner->GetCurrentMainWeapon()->WeaponInfo.BulletNumber == 0 &&
+			MyOwner->GetCurrentMainWeapon()->WeaponInfo.MaxBulletNumber == 0)
 		{
 			return true;
 		}
 	case EWeaponMode::SecondWeapon:
-		if (MyOwner->CurrentSecondWeapon->WeaponInfo.BulletNumber == 0 &&
-			MyOwner->CurrentSecondWeapon->WeaponInfo.MaxBulletNumber == 0)
+		if (MyOwner->GetCurrentSecondWeapon()->WeaponInfo.BulletNumber == 0 &&
+			MyOwner->GetCurrentSecondWeapon()->WeaponInfo.MaxBulletNumber == 0)
 		{
 			return true;
 		}
 	case EWeaponMode::ThirdWeapon:
-		if (MyOwner->CurrentThirdWeapon->WeaponInfo.BulletNumber == 0 &&
-			MyOwner->CurrentThirdWeapon->WeaponInfo.MaxBulletNumber == 0)
+		if (MyOwner->GetCurrentThirdWeapon()->WeaponInfo.BulletNumber == 0 &&
+			MyOwner->GetCurrentThirdWeapon()->WeaponInfo.MaxBulletNumber == 0)
 		{
 			return true;
 		}
@@ -59,9 +59,9 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 	switch (MyOwner->GetWeaponMode())
 	{
 	case EWeaponMode::MainWeapon:
-		if (MyOwner->CurrentMainWeapon->WeaponInfo.BulletNumber > 0)
+		if (MyOwner->GetCurrentMainWeapon()->WeaponInfo.BulletNumber > 0)
 		{
-			MyOwner->CurrentMainWeapon->WeaponInfo.BulletNumber--;
+			MyOwner->GetCurrentMainWeapon()->WeaponInfo.BulletNumber--;
 		}
 		else
 		{
@@ -69,9 +69,9 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 		}
 		break;
 	case EWeaponMode::SecondWeapon:
-		if (MyOwner->CurrentSecondWeapon->WeaponInfo.BulletNumber > 0)
+		if (MyOwner->GetCurrentSecondWeapon()->WeaponInfo.BulletNumber > 0)
 		{
-			MyOwner->CurrentSecondWeapon->WeaponInfo.BulletNumber--;
+			MyOwner->GetCurrentSecondWeapon()->WeaponInfo.BulletNumber--;
 		}
 		else
 		{
@@ -79,20 +79,15 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 		}
 		break;
 	case EWeaponMode::ThirdWeapon:
-		if (MyOwner->CurrentThirdWeapon->WeaponInfo.BulletNumber > 0)
+		if (MyOwner->GetCurrentThirdWeapon()->WeaponInfo.BulletNumber > 0)
 		{
-			MyOwner->CurrentThirdWeapon->WeaponInfo.BulletNumber--;
+			MyOwner->GetCurrentThirdWeapon()->WeaponInfo.BulletNumber--;
 		}
 		else
 		{
 			MyOwner->BeginReload();
 		}
 	}
-}
-
-UCameraComponent* AMultiShootGameFPSCamera::GetCameraComponent() const
-{
-	return CameraComponent;
 }
 
 void AMultiShootGameFPSCamera::SetWeaponInfo(const AMultiShootGameWeapon* Weapon)

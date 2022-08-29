@@ -101,7 +101,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FillUpWeaponBullet();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void Death();
 
@@ -298,6 +298,18 @@ protected:
 	int GrenadeCount;
 
 	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentMainWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentSecondWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameWeapon* CurrentThirdWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameFPSCamera* CurrentFPSCamera;
+
+	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -312,27 +324,30 @@ public:
 
 	void BeginReload();
 
-	USceneComponent* GetFPSCameraSceneComponent() const;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE AMultiShootGameWeapon* GetCurrentMainWeapon() const { return CurrentMainWeapon; }
 
-	UCameraComponent* GetCameraComponent() const;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE AMultiShootGameWeapon* GetCurrentSecondWeapon() const { return CurrentSecondWeapon; }
 
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentMainWeapon;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE AMultiShootGameWeapon* GetCurrentThirdWeapon() const { return CurrentThirdWeapon; }
 
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentSecondWeapon;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE AMultiShootGameFPSCamera* GetCurrentFPSCamera() const { return CurrentFPSCamera; }
 
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameWeapon* CurrentThirdWeapon;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE USceneComponent* GetFPSCameraSceneComponent() const { return FPSCameraSceneComponent; }
 
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameFPSCamera* CurrentFPSCamera;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 
-	bool GetAimed() const;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
-	EWeaponMode GetWeaponMode() const;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE bool GetAimed() const { return bAimed; }
 
-	void SetEnableMovement(bool Value);
-
-	UHealthComponent* GetHealthComponent() const;
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE EWeaponMode GetWeaponMode() const { return WeaponMode; }
 };

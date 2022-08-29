@@ -55,11 +55,6 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
-float UHealthComponent::GetHealth() const
-{
-	return CurrentHealth;
-}
-
 void UHealthComponent::Heal(float HealAmount)
 {
 	if (HealAmount <= 0 || CurrentHealth <= 0)

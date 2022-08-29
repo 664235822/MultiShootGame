@@ -20,7 +20,9 @@ protected:
 	EWaveState WaveState;
 
 public:
+	UFUNCTION(BlueprintCallable, Category = GameState)
 	void SetWaveState(EWaveState NewWaveState);
 
-	EWaveState GetWaveState() const;
+	UFUNCTION(BlueprintPure, Category = GameState)
+	FORCEINLINE EWaveState GetWaveState() const { return WaveState; }
 };

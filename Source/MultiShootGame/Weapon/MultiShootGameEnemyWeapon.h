@@ -10,68 +10,67 @@
 UCLASS()
 class MULTISHOOTGAME_API AMultiShootGameEnemyWeapon : public AActor
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    // Sets default values for this actor's properties
-    AMultiShootGameEnemyWeapon();
+	// Sets default values for this actor's properties
+	AMultiShootGameEnemyWeapon();
 
 protected:
-    // Called when the game starts or when spawned
-    virtual void BeginPlay() override;
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
-    virtual void Fire();
+	virtual void Fire();
 
-    void PlayFireEffect(FVector TraceEndPoint);
+	void PlayFireEffect(FVector TraceEndPoint);
 
-    void DestroyWeapon();
+	void DestroyWeapon();
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
-    USkeletalMeshComponent* WeaponMeshComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	USkeletalMeshComponent* WeaponMeshComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
-    UAudioComponent* AudioComponent;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-    TSubclassOf<UDamageType> DamageType;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	UAudioComponent* AudioComponent;
 
-    UPROPERTY(EditDefaultsOnly, Category = Weapon)
-    float BaseDamage = 5.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	TSubclassOf<UDamageType> DamageType;
 
-    UPROPERTY(EditDefaultsOnly, Category = Weapon)
-    float DestroyDelay = 10.0f;
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	float BaseDamage = 5.0f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-    FName MuzzleSocketName = "Muzzle";
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	float DestroyDelay = 10.0f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-    FName TracerTargetName = "Target";
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	FName MuzzleSocketName = "Muzzle";
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-    UParticleSystem* MuzzleEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	FName TracerTargetName = "Target";
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-    UParticleSystem* TracerEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UParticleSystem* MuzzleEffect;
 
-    FTimerHandle TimerHandle;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UParticleSystem* TracerEffect;
 
-    FTimerHandle DestroyTimerHandle;
+	FTimerHandle TimerHandle;
 
-    float LastFireTime;
+	FTimerHandle DestroyTimerHandle;
 
-    UPROPERTY(EditDefaultsOnly, Category = Weapon)
-    float RateOfFire = 600.0f;
+	float LastFireTime;
 
-    float TimeBetweenShots;
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	float RateOfFire = 600.0f;
 
-    UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0.0f))
-    float BulletSpread = 1.0f;
+	float TimeBetweenShots;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0.0f))
+	float BulletSpread = 1.0f;
 
 public:
+	void StartFire();
 
-    void StartFire();
+	void StopFire();
 
-    void StopFire();
-
-    void EnablePhysicsSimulate();
+	void EnablePhysicsSimulate();
 };

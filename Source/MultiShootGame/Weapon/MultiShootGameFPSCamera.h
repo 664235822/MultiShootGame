@@ -41,8 +41,10 @@ public:
 	virtual bool BulletCheck(AMultiShootGameCharacter* MyOwner) override;
 
 	virtual void BulletFire(AMultiShootGameCharacter* MyOwner) override;
-	
-	UCameraComponent* GetCameraComponent() const;
 
+	UFUNCTION(BlueprintPure, Category = Weapon)
+	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetWeaponInfo(const AMultiShootGameWeapon* Weapon);
 };

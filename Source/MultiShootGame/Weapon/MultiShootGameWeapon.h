@@ -27,7 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual bool BulletCheck(AMultiShootGameCharacter* MyOwner);
-	
+
 	virtual void BulletFire(AMultiShootGameCharacter* MyOwner);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
@@ -78,7 +78,7 @@ public:
 	void StopFire();
 
 	void FireOfDelay();
-	
+
 	void EnablePhysicsSimulate();
 
 	void ReloadShowMagazineClip(bool Enabled);
@@ -86,11 +86,13 @@ public:
 	void BulletReload();
 
 	void FillUpBullet();
-	
-	USkeletalMeshComponent* GetWeaponMeshComponent() const;
 
-	UAudioComponent* GetAudioComponent() const;
-	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FWeaponInfo WeaponInfo;
+
+	UFUNCTION(BlueprintPure, Category = Weapon)
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMeshComponent() const { return WeaponMeshComponent; }
+
+	UFUNCTION(BlueprintPure, Category = Weapon)
+	FORCEINLINE UAudioComponent* GetAudioComponent() const { return AudioComponent; }
 };

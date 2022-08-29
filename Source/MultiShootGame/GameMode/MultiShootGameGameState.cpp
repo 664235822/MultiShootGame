@@ -8,8 +8,3 @@ void AMultiShootGameGameState::SetWaveState(EWaveState NewWaveState)
 	const EWaveState OldState = WaveState;
 	WaveState = NewWaveState;
 }
-
-EWaveState AMultiShootGameGameState::GetWaveState() const
-{
-	return WaveState;
-}

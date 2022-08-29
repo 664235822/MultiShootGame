@@ -93,8 +93,8 @@ void AMultiShootGameWeapon::Fire()
 
 		if (MyOwner->GetAimed())
 		{
-			EyeLocation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentLocation();
-			EyeRotation = MyOwner->CurrentFPSCamera->GetCameraComponent()->GetComponentRotation();
+			EyeLocation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentLocation();
+			EyeRotation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentRotation();
 		}
 		else
 		{
@@ -275,14 +275,4 @@ void AMultiShootGameWeapon::FillUpBullet()
 {
 	WeaponInfo.BulletNumber = WeaponInfo.FillUpBulletNumber;
 	WeaponInfo.MaxBulletNumber = WeaponInfo.FillUpMaxBulletNumber;
-}
-
-UAudioComponent* AMultiShootGameWeapon::GetAudioComponent() const
-{
-	return AudioComponent;
-}
-
-USkeletalMeshComponent* AMultiShootGameWeapon::GetWeaponMeshComponent() const
-{
-	return WeaponMeshComponent;
 }

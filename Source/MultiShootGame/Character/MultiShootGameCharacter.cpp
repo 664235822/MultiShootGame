@@ -976,33 +976,3 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// Bind knife attack
 	PlayerInputComponent->BindAction("KnifeAttack", IE_Pressed, this, &AMultiShootGameCharacter::KnifeAttack);
 }
-
-USceneComponent* AMultiShootGameCharacter::GetFPSCameraSceneComponent() const
-{
-	return FPSCameraSceneComponent;
-}
-
-UCameraComponent* AMultiShootGameCharacter::GetCameraComponent() const
-{
-	return CameraComponent;
-}
-
-bool AMultiShootGameCharacter::GetAimed() const
-{
-	return bAimed;
-}
-
-EWeaponMode AMultiShootGameCharacter::GetWeaponMode() const
-{
-	return WeaponMode;
-}
-
-void AMultiShootGameCharacter::SetEnableMovement(bool Value)
-{
-	bEnableMovement = Value;
-}
-
-UHealthComponent* AMultiShootGameCharacter::GetHealthComponent() const
-{
-	return HealthComponent;
-}

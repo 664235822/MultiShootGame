@@ -49,7 +49,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Health)
 	bool bDied = false;
 
-	float GetHealth() const;
+	UFUNCTION(BlueprintPure, Category = Health)
+	FORCEINLINE float GetHealth() const { return CurrentHealth; }
 
 	UPROPERTY(BlueprintAssignable, Category = Events)
 	FOnHealthChangedSignature OnHealthChanged;
