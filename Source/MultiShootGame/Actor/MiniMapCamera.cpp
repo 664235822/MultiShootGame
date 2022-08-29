@@ -32,12 +32,17 @@ void AMiniMapCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector Position = UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation();
-	Position += FVector(0, 0, CameraHeight);
+	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
-	FRotator Rotation = UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetControlRotation();
-	Rotation = FRotator(0, Rotation.Yaw, 0);
+	if (PlayerPawn) {
+		FVector Position = PlayerPawn->GetActorLocation();
+		Position += FVector(0, 0, CameraHeight);
 
-	SetActorLocation(Position);
-	SetActorRotation(Rotation);
+		FRotator Rotation = PlayerPawn->GetControlRotation();
+		Rotation = FRotator(0, Rotation.Yaw, 0);
+
+		SetActorLocation(Position);
+		SetActorRotation(Rotation);
+	}
+	
 }
