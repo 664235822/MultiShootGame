@@ -68,12 +68,15 @@ void AMultiShootGameCharacter::BeginPlay()
 
 	GrenadeCount = MaxGrenadeCount;
 
-	CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
-	CurrentSniperUserWidget->AddToViewport();
-	CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
+	if (IsLocallyControlled())
+	{
+		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
+		CurrentSniperUserWidget->AddToViewport();
+		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
 
-	CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
-	CurrentGameUserWidget->AddToViewport();
+		CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
+		CurrentGameUserWidget->AddToViewport();
+	}
 
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
 
@@ -859,7 +862,7 @@ void AMultiShootGameCharacter::Death()
 	EndAction();
 
 	ToggleUseControlRotation(true);
-	
+
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMovementComponent()->SetActive(false);
