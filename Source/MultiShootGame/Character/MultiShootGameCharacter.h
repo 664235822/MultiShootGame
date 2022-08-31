@@ -29,6 +29,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Destroyed() override;
+
 	void StartFire();
 
 	void StopFire();
@@ -240,9 +242,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	float DeathRagdollWeight = 0.3;
 
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameGrenade* CurrentGrenade;
-
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -311,6 +310,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameGrenade* CurrentGrenade;
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;

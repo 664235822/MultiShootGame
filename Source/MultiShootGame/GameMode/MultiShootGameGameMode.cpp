@@ -114,10 +114,15 @@ void AMultiShootGameGameMode::CheckWaveState()
 
 void AMultiShootGameGameMode::CheckAnyPlayerAlive()
 {
-	if (Cast<AMultiShootGameCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->GetHealthComponent()->bDied)
+	const AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(
+		UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (Character)
 	{
-		GameOver();
-		return;
+		if (Character->GetHealthComponent()->bDied)
+		{
+			GameOver();
+			return;
+		}
 	}
 
 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)

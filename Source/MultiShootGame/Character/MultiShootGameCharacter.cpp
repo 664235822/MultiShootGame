@@ -55,6 +55,10 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	DeathAudioComponent->SetAutoActivate(false);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
+	}
 
 	HitEffectComponent = CreateDefaultSubobject<UHitEffectComponent>(TEXT("HitEfectComponent"));
 }
@@ -78,8 +82,6 @@ void AMultiShootGameCharacter::BeginPlay()
 		CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
 		CurrentGameUserWidget->AddToViewport();
 	}
-
-	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -132,8 +134,19 @@ void AMultiShootGameCharacter::BeginPlay()
 	if (CurrentGrenade)
 	{
 		CurrentGrenade->SetOwner(this);
-		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		CurrentGrenade->AttachToComponent(GrenadeSceneComponent,
+		                                  FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
+}
+
+void AMultiShootGameCharacter::Destroyed()
+{
+	CurrentMainWeapon->Destroy();
+	CurrentSecondWeapon->Destroy();
+	CurrentThirdWeapon->Destroy();
+	CurrentFPSCamera->Destroy();
+	
+	Super::Destroyed();
 }
 
 void AMultiShootGameCharacter::StartFire()
