@@ -257,6 +257,9 @@ protected:
 
 	void HandleWalkSpeed();
 
+	UFUNCTION(Server, Reliable)
+	void HandleWalkSpeed_Server(float Speed);
+
 	UFUNCTION(BlueprintCallable)
 	void AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon);
 
@@ -321,6 +324,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void BeginReload();
 

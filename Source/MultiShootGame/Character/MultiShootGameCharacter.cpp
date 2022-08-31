@@ -16,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Net/UnrealNetwork.h"
 
 AMultiShootGameCharacter::AMultiShootGameCharacter()
 {
@@ -827,12 +828,21 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 {
 	if (bFastRun)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::SecondWeapon ? 600.f : 500.f;
+		const float Speed = WeaponMode != EWeaponMode::SecondWeapon ? 600.f : 500.f;
+		GetCharacterMovement()->MaxWalkSpeed = Speed;
+		HandleWalkSpeed_Server(Speed);
 	}
 	else
 	{
-		GetCharacterMovement()->MaxWalkSpeed = WeaponMode != EWeaponMode::SecondWeapon ? 300.f : 250.f;
+		const float Speed = WeaponMode != EWeaponMode::SecondWeapon ? 300.f : 250.f;
+		GetCharacterMovement()->MaxWalkSpeed = Speed;
+		HandleWalkSpeed_Server(Speed);
 	}
+}
+
+void AMultiShootGameCharacter::HandleWalkSpeed_Server_Implementation(float Speed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
 void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon)
@@ -978,4 +988,9 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	// Bind knife attack
 	PlayerInputComponent->BindAction("KnifeAttack", IE_Pressed, this, &AMultiShootGameCharacter::KnifeAttack);
+}
+
+void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
