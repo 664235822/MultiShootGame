@@ -145,7 +145,7 @@ void AMultiShootGameCharacter::Destroyed()
 	CurrentSecondWeapon->Destroy();
 	CurrentThirdWeapon->Destroy();
 	CurrentFPSCamera->Destroy();
-	
+
 	Super::Destroyed();
 }
 
@@ -637,6 +637,7 @@ void AMultiShootGameCharacter::ToggleMainWeapon()
 	CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
 
 	bUseControllerRotationYaw = false;
+	UseControlRotationYaw_Server(false);
 
 	HandleWalkSpeed();
 
@@ -664,6 +665,7 @@ void AMultiShootGameCharacter::ToggleSecondWeapon()
 	CurrentFPSCamera->SetWeaponInfo(CurrentSecondWeapon);
 
 	bUseControllerRotationYaw = true;
+	UseControlRotationYaw_Server(true);
 
 	HandleWalkSpeed();
 
@@ -691,6 +693,7 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 	CurrentFPSCamera->SetWeaponInfo(CurrentThirdWeapon);
 
 	bUseControllerRotationYaw = true;
+	UseControlRotationYaw_Server(true);
 
 	HandleWalkSpeed();
 
@@ -858,6 +861,11 @@ void AMultiShootGameCharacter::HandleWalkSpeed_Server_Implementation(float Speed
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
+void AMultiShootGameCharacter::UseControlRotationYaw_Server_Implementation(bool Enable)
+{
+	bUseControllerRotationYaw = Enable;
+}
+
 void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon)
 {
 	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -872,10 +880,12 @@ void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, 
 
 void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)
 {
-	if (WeaponMode == EWeaponMode::MainWeapon)
-	{
-		bUseControlRotation = Enabled;
-	}
+	bUseControlRotation = Enabled;
+}
+
+void AMultiShootGameCharacter::SetActorRotation_Server_Implementation(FRotator Rotator)
+{
+	SetActorRotation(Rotator);
 }
 
 void AMultiShootGameCharacter::Death()
@@ -940,12 +950,12 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 	}
 
-	if (WeaponMode == EWeaponMode::MainWeapon && (bUseControlRotation ||
-		(!bUseControlRotation && GetMovementComponent()->Velocity.Size() != 0)))
+	if (bUseControlRotation || !bUseControlRotation && GetMovementComponent()->Velocity.Size() != 0)
 	{
 		const FRotator TargetRotation = FRotator(0, GetControlRotation().Yaw, 0);
 		const FRotator Rotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 15);
 		SetActorRotation(Rotation);
+		SetActorRotation_Server(Rotation);
 	}
 }
 

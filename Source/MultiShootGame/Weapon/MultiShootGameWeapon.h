@@ -8,7 +8,6 @@
 #include "GameFramework/Pawn.h"
 #include "MultiShootGame/Enum/EWeaponMode.h"
 #include "MultiShootGame/Struct/WeaponInfo.h"
-#include "Sound/SoundCue.h"
 #include "MultiShootGameWeapon.generated.h"
 
 class AMultiShootGameCharacter;

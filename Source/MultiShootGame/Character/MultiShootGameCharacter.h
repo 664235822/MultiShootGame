@@ -259,6 +259,12 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void HandleWalkSpeed_Server(float Speed);
 
+	UFUNCTION(Server, Unreliable)
+	void SetActorRotation_Server(FRotator Rotator);
+
+	UFUNCTION(Server, Reliable)
+	void UseControlRotationYaw_Server(bool Enable);
+
 	UFUNCTION(BlueprintCallable)
 	void AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon);
 
