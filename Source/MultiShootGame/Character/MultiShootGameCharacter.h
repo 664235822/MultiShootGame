@@ -246,8 +246,6 @@ protected:
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
 	                     const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-	void ToggleUseControlRotation(bool Enabled);
-
 	UFUNCTION(BlueprintCallable)
 	bool CheckStatus(bool CheckAimed, bool CheckThrowGrenade);
 
@@ -258,12 +256,6 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void HandleWalkSpeed_Server(float Speed);
-
-	UFUNCTION(Server, Unreliable)
-	void SetActorRotation_Server(FRotator Rotator);
-
-	UFUNCTION(Server, Reliable)
-	void UseControlRotationYaw_Server(bool Enable);
 
 	UFUNCTION(BlueprintCallable)
 	void AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon);
@@ -296,8 +288,6 @@ protected:
 	bool bSpawnGrenade = false;
 
 	bool bKnifeAttack = false;
-
-	bool bUseControlRotation = false;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bEnableMovement = true;

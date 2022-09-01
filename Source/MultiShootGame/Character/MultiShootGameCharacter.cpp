@@ -53,6 +53,8 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	DeathAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("DeathAudioComponent"));
 	DeathAudioComponent->SetupAttachment(RootComponent);
 	DeathAudioComponent->SetAutoActivate(false);
+	
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	if (GetLocalRole() == ROLE_Authority)
@@ -141,6 +143,11 @@ void AMultiShootGameCharacter::BeginPlay()
 
 void AMultiShootGameCharacter::Destroyed()
 {
+	if (!CurrentMainWeapon || !CurrentSecondWeapon || !CurrentThirdWeapon || !CurrentFPSCamera)
+	{
+		return;
+	}
+
 	CurrentMainWeapon->Destroy();
 	CurrentSecondWeapon->Destroy();
 	CurrentThirdWeapon->Destroy();
@@ -157,8 +164,6 @@ void AMultiShootGameCharacter::StartFire()
 	}
 
 	bFired = true;
-
-	ToggleUseControlRotation(true);
 
 	if (!bAimed)
 	{
@@ -210,8 +215,6 @@ void AMultiShootGameCharacter::StopFire()
 {
 	bFired = false;
 
-	ToggleUseControlRotation(false);
-
 	if (WeaponMode == EWeaponMode::MainWeapon)
 	{
 		if (CurrentMainWeapon)
@@ -239,7 +242,7 @@ void AMultiShootGameCharacter::MoveForward(float Value)
 	{
 		if (bAimed)
 		{
-			UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(MovementCameraShakeClass);
+			Cast<APlayerController>(GetController())->ClientStartCameraShake(MovementCameraShakeClass);
 		}
 	}
 }
@@ -255,7 +258,7 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 
 	if (bAimed && Value != 0)
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(MovementCameraShakeClass);
+		Cast<APlayerController>(GetController())->ClientStartCameraShake(MovementCameraShakeClass);
 	}
 }
 
@@ -277,18 +280,14 @@ void AMultiShootGameCharacter::BeginCrouch()
 {
 	Crouch();
 
-	ToggleUseControlRotation(true);
-
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
+	Cast<APlayerController>(GetController())->ClientStopCameraShake(FPSCameraShakeClass);
 }
 
 void AMultiShootGameCharacter::EndCrouch()
 {
 	UnCrouch();
 
-	ToggleUseControlRotation(false);
-
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
+	Cast<APlayerController>(GetController())->ClientStartCameraShake(FPSCameraShakeClass);
 }
 
 void AMultiShootGameCharacter::ToggleCrouch()
@@ -312,11 +311,9 @@ void AMultiShootGameCharacter::BeginAim()
 
 	bAimed = true;
 
-	ToggleUseControlRotation(true);
-
 	SpringArmComponent->SocketOffset = FVector::ZeroVector;
 
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
 
 	CurrentFPSCamera->SetActorHiddenInGame(false);
@@ -327,7 +324,7 @@ void AMultiShootGameCharacter::BeginAim()
 
 	if (!GetCharacterMovement()->IsCrouching())
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(FPSCameraShakeClass);
+		Cast<APlayerController>(GetController())->ClientStartCameraShake(FPSCameraShakeClass);
 	}
 
 	if (WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture)
@@ -347,11 +344,9 @@ void AMultiShootGameCharacter::EndAim()
 {
 	bAimed = false;
 
-	ToggleUseControlRotation(false);
-
 	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
 
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	PlayerController->SetViewTargetWithBlend(this, 0.1f);
 
 	CurrentFPSCamera->SetActorHiddenInGame(true);
@@ -362,7 +357,7 @@ void AMultiShootGameCharacter::EndAim()
 
 	if (!GetCharacterMovement()->IsCrouching())
 	{
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStopCameraShake(FPSCameraShakeClass);
+		Cast<APlayerController>(GetController())->ClientStopCameraShake(FPSCameraShakeClass);
 	}
 
 	if (CurrentSecondWeapon->WeaponInfo.AimTexture)
@@ -387,8 +382,6 @@ void AMultiShootGameCharacter::BeginReload()
 	}
 
 	bReloading = true;
-
-	ToggleUseControlRotation(true);
 
 	EndAction();
 
@@ -443,8 +436,6 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 		return;
 	}
 
-	ToggleUseControlRotation(true);
-
 	EndAction();
 
 	bBeginThrowGrenade = true;
@@ -459,8 +450,6 @@ void AMultiShootGameCharacter::EndThrowGrenade()
 	bToggleWeapon = true;
 
 	PlayAnimMontage(WeaponOutAnimMontage);
-
-	ToggleUseControlRotation(false);
 }
 
 void AMultiShootGameCharacter::ThrowGrenade()
@@ -593,8 +582,6 @@ void AMultiShootGameCharacter::EndReload()
 	}
 
 	bSecondWeaponReloading = false;
-
-	ToggleUseControlRotation(false);
 }
 
 void AMultiShootGameCharacter::ReloadShowClip(bool Enabled)
@@ -636,9 +623,6 @@ void AMultiShootGameCharacter::ToggleMainWeapon()
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
 
-	bUseControllerRotationYaw = false;
-	UseControlRotationYaw_Server(false);
-
 	HandleWalkSpeed();
 
 	PlayAnimMontage(WeaponOutAnimMontage);
@@ -664,9 +648,6 @@ void AMultiShootGameCharacter::ToggleSecondWeapon()
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentSecondWeapon);
 
-	bUseControllerRotationYaw = true;
-	UseControlRotationYaw_Server(true);
-
 	HandleWalkSpeed();
 
 	PlayAnimMontage(WeaponOutAnimMontage);
@@ -691,9 +672,6 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 	WeaponMode = EWeaponMode::ThirdWeapon;
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentThirdWeapon);
-
-	bUseControllerRotationYaw = true;
-	UseControlRotationYaw_Server(true);
 
 	HandleWalkSpeed();
 
@@ -779,7 +757,7 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 
 void AMultiShootGameCharacter::Hit()
 {
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(KnifeCameraShakeClass);
+	Cast<APlayerController>(GetController())->ClientStartCameraShake(KnifeCameraShakeClass);
 
 	const FVector HitLocation = KnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName);
 	const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
@@ -861,11 +839,6 @@ void AMultiShootGameCharacter::HandleWalkSpeed_Server_Implementation(float Speed
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
-void AMultiShootGameCharacter::UseControlRotationYaw_Server_Implementation(bool Enable)
-{
-	bUseControllerRotationYaw = Enable;
-}
-
 void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon)
 {
 	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -878,23 +851,11 @@ void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, 
 	                                             ThirdWeapon ? ThirdWeaponSocketName : BackThirdWeaponSocketName);
 }
 
-void AMultiShootGameCharacter::ToggleUseControlRotation(bool Enabled)
-{
-	bUseControlRotation = Enabled;
-}
-
-void AMultiShootGameCharacter::SetActorRotation_Server_Implementation(FRotator Rotator)
-{
-	SetActorRotation(Rotator);
-}
-
 void AMultiShootGameCharacter::Death()
 {
 	HealthComponent->bDied = true;
 
 	EndAction();
-
-	ToggleUseControlRotation(true);
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -921,7 +882,7 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
 		return;
 	}
 
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->ClientStartCameraShake(HitCameraShakeClass);
+	Cast<APlayerController>(GetController())->ClientStartCameraShake(HitCameraShakeClass);
 
 	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
@@ -948,14 +909,6 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 		const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
 
 		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
-	}
-
-	if (bUseControlRotation || !bUseControlRotation && GetMovementComponent()->Velocity.Size() != 0)
-	{
-		const FRotator TargetRotation = FRotator(0, GetControlRotation().Yaw, 0);
-		const FRotator Rotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 15);
-		SetActorRotation(Rotation);
-		SetActorRotation_Server(Rotation);
 	}
 }
 
