@@ -53,7 +53,7 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	DeathAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("DeathAudioComponent"));
 	DeathAudioComponent->SetupAttachment(RootComponent);
 	DeathAudioComponent->SetAutoActivate(false);
-	
+
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -820,18 +820,28 @@ void AMultiShootGameCharacter::EndAction()
 
 void AMultiShootGameCharacter::HandleWalkSpeed()
 {
+	float Speed = 300.f;
 	if (bFastRun)
 	{
-		const float Speed = WeaponMode != EWeaponMode::SecondWeapon ? 600.f : 500.f;
-		GetCharacterMovement()->MaxWalkSpeed = Speed;
-		HandleWalkSpeed_Server(Speed);
+		if (WeaponMode != EWeaponMode::SecondWeapon)
+		{
+			Speed = 600.f;
+		}
+		else
+		{
+			Speed = 500.f;
+		}
 	}
 	else
 	{
-		const float Speed = WeaponMode != EWeaponMode::SecondWeapon ? 300.f : 250.f;
-		GetCharacterMovement()->MaxWalkSpeed = Speed;
-		HandleWalkSpeed_Server(Speed);
+		if (WeaponMode == EWeaponMode::SecondWeapon)
+		{
+			Speed = 250.F;
+		}
 	}
+
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
+	HandleWalkSpeed_Server(Speed);
 }
 
 void AMultiShootGameCharacter::HandleWalkSpeed_Server_Implementation(float Speed)
