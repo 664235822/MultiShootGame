@@ -16,6 +16,7 @@ AMultiShootGameWeapon::AMultiShootGameWeapon()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bOnlyRelevantToOwner = true;
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponmeshComponent"));
 	WeaponMeshComponent->SetupAttachment(RootComponent);
@@ -210,7 +211,8 @@ void AMultiShootGameWeapon::ReloadShowMagazineClip(bool Enabled)
 				MagazineClipClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
 			CurrentMagazineClip->SetOwner(this);
 			CurrentMagazineClip->AttachToComponent(WeaponMeshComponent,
-			                                   FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Magazine"));
+			                                       FAttachmentTransformRules::SnapToTargetIncludingScale,
+			                                       FName("Magazine"));
 
 			CurrentMagazineClip->ThrowMagazineClip(WeaponInfo.MagazineClipMesh);
 		}
