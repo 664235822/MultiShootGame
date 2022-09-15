@@ -390,18 +390,18 @@ void AMultiShootGameCharacter::BeginReload()
 	case EWeaponMode::MainWeapon:
 		if (CurrentMainWeapon->WeaponInfo.MaxBulletNumber > 0)
 		{
-			PlayAnimMontage(ReloadAnimMontage);
+			PlayAnimMontage_Server(ReloadAnimMontage);
 		}
 	case EWeaponMode::SecondWeapon:
 		if (CurrentSecondWeapon->WeaponInfo.MaxBulletNumber > 0)
 		{
-			PlayAnimMontage(ReloadAnimMontage);
+			PlayAnimMontage_Server(ReloadAnimMontage);
 		}
 		break;
 	case EWeaponMode::ThirdWeapon:
 		if (CurrentThirdWeapon->WeaponInfo.MaxBulletNumber > 0)
 		{
-			PlayAnimMontage(ThirdWeaponReloadAnimMontage);
+			PlayAnimMontage_Server(ThirdWeaponReloadAnimMontage);
 		}
 		break;
 	}
@@ -421,7 +421,7 @@ void AMultiShootGameCharacter::BeginSecondWeaponReload()
 	const FLatentActionInfo LatentActionInfo;
 	UKismetSystemLibrary::Delay(GetWorld(), 0.5f, LatentActionInfo);
 
-	PlayAnimMontage(SecondWeaponReloadAnimMontage);
+	PlayAnimMontage_Server(SecondWeaponReloadAnimMontage);
 }
 
 void AMultiShootGameCharacter::BeginThrowGrenade()
@@ -442,14 +442,14 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 
 	AttachWeapon(false, false, false);
 
-	PlayAnimMontage(ThrowGrenadeAnimMontage);
+	PlayAnimMontage_Server(ThrowGrenadeAnimMontage);
 }
 
 void AMultiShootGameCharacter::EndThrowGrenade()
 {
 	bToggleWeapon = true;
 
-	PlayAnimMontage(WeaponOutAnimMontage);
+	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
 
 void AMultiShootGameCharacter::ThrowGrenade()
@@ -478,7 +478,7 @@ void AMultiShootGameCharacter::ThrowGrenade()
 		SpawnGrenade();
 	}
 
-	PlayAnimMontage(ThrowGrenadeAnimMontage, 1, FName("Throw"));
+	PlayAnimMontage_Server(ThrowGrenadeAnimMontage, 1, FName("Throw"));
 }
 
 void AMultiShootGameCharacter::ThrowGrenadeOut()
@@ -527,7 +527,7 @@ void AMultiShootGameCharacter::KnifeAttack()
 	EndAction();
 
 	GetCharacterMovement()->SetMovementMode(MOVE_None);
-	PlayAnimMontage(KnifeAttackAnimMontage, 2.0f);
+	PlayAnimMontage_Server(KnifeAttackAnimMontage, 2.0f);
 }
 
 void AMultiShootGameCharacter::BeginKnifeAttack()
@@ -549,7 +549,7 @@ void AMultiShootGameCharacter::EndKnifeAttack()
 
 	KnifeSkeletalMeshComponent->SetVisibility(false);
 
-	PlayAnimMontage(WeaponOutAnimMontage);
+	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
 
 void AMultiShootGameCharacter::EndReload()
@@ -625,7 +625,7 @@ void AMultiShootGameCharacter::ToggleMainWeapon()
 
 	HandleWalkSpeed();
 
-	PlayAnimMontage(WeaponOutAnimMontage);
+	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
 
 void AMultiShootGameCharacter::ToggleSecondWeapon()
@@ -650,7 +650,7 @@ void AMultiShootGameCharacter::ToggleSecondWeapon()
 
 	HandleWalkSpeed();
 
-	PlayAnimMontage(WeaponOutAnimMontage);
+	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
 
 void AMultiShootGameCharacter::ToggleThirdWeapon()
@@ -675,7 +675,7 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 
 	HandleWalkSpeed();
 
-	PlayAnimMontage(WeaponOutAnimMontage);
+	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
 
 void AMultiShootGameCharacter::ToggleWeaponUp()
@@ -859,6 +859,18 @@ void AMultiShootGameCharacter::AttachWeapon(bool MainWeapon, bool SecondWeapon, 
 
 	ThirdWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 	                                             ThirdWeapon ? ThirdWeaponSocketName : BackThirdWeaponSocketName);
+}
+
+void AMultiShootGameCharacter::PlayAnimMontage_Multicast_Implementation(UAnimMontage* AnimMontage,
+                                                                        float InPlayRate, FName StartSectionName)
+{
+	PlayAnimMontage(AnimMontage, InPlayRate, StartSectionName);
+}
+
+void AMultiShootGameCharacter::PlayAnimMontage_Server_Implementation(
+	UAnimMontage* AnimMontage, float InPlayRate, FName StartSectionName)
+{
+	PlayAnimMontage_Multicast(AnimMontage, InPlayRate, StartSectionName);
 }
 
 void AMultiShootGameCharacter::Death()

@@ -259,6 +259,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon);
+	
+	UFUNCTION(Server, Reliable)
+	void PlayAnimMontage_Server(UAnimMontage* AnimMontage, float InPlayRate = 1,
+	                                     FName StartSectionName = NAME_None);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void PlayAnimMontage_Multicast(UAnimMontage* AnimMontage, float InPlayRate = 1,
+										 FName StartSectionName = NAME_None);
 
 	bool bFired = false;
 
