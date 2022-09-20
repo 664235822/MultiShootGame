@@ -221,7 +221,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
-	UPROPERTY(BlueprintReadOnly, Category = Character)
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = Character)
 	EWeaponMode WeaponMode = EWeaponMode::MainWeapon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
@@ -257,16 +257,28 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void HandleWalkSpeed_Server(float Speed);
 
-	UFUNCTION(BlueprintCallable)
-	void AttachWeapon(bool MainWeapon, bool SecondWeapon, bool ThirdWeapon);
-	
+	UFUNCTION(Server, Reliable)
+	void HandleWeaponMode_Server(EWeaponMode CurrentWeaponMode);
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void AttachWeapon_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void AttachWeapon_MultiCast();
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void PutBackWeapon_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void PutBackWeapon_MultiCast();
+
 	UFUNCTION(Server, Reliable)
 	void PlayAnimMontage_Server(UAnimMontage* AnimMontage, float InPlayRate = 1,
-	                                     FName StartSectionName = NAME_None);
+	                            FName StartSectionName = NAME_None);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void PlayAnimMontage_Multicast(UAnimMontage* AnimMontage, float InPlayRate = 1,
-										 FName StartSectionName = NAME_None);
+	                               FName StartSectionName = NAME_None);
 
 	bool bFired = false;
 
