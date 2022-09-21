@@ -8,6 +8,7 @@ AMultiShootGameMagazineClip::AMultiShootGameMagazineClip()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bOnlyRelevantToOwner = true;
 
 	MagazineClipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MagazineMeshComponent"));
 	RootComponent = MagazineClipMeshComponent;
