@@ -76,11 +76,20 @@ protected:
 
 	void KnifeAttack();
 
-	UFUNCTION(BlueprintCallable)
-	void BeginKnifeAttack();
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void BeginKnifeAttack_Server();
 
-	UFUNCTION(BlueprintCallable)
-	void EndKnifeAttack();
+	UFUNCTION(NetMulticast, Reliable)
+	void BeginKnifeAttack_Multicast();
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void EndKnifeAttack_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void EndKnifeAttack_Multicast();
+
+	UFUNCTION(Server, Reliable)
+	void HandleKnifeAttack_Server(bool CurrentKnifeAttack);
 
 	void ToggleMainWeapon();
 
@@ -298,7 +307,7 @@ protected:
 	bool bReloading = false;
 
 	bool bSecondWeaponReloading = false;
-
+	
 	bool bToggleWeapon = false;
 
 	bool bBeginThrowGrenade = false;
@@ -307,6 +316,7 @@ protected:
 
 	bool bSpawnGrenade = false;
 
+	UPROPERTY(Replicated)
 	bool bKnifeAttack = false;
 
 	UPROPERTY(BlueprintReadWrite)

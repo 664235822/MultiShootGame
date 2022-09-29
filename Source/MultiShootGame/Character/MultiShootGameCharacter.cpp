@@ -526,30 +526,51 @@ void AMultiShootGameCharacter::KnifeAttack()
 
 	EndAction();
 
-	GetCharacterMovement()->SetMovementMode(MOVE_None);
+	HandleKnifeAttack_Server(true);
+
 	PlayAnimMontage_Server(KnifeAttackAnimMontage, 2.0f);
 }
 
-void AMultiShootGameCharacter::BeginKnifeAttack()
+
+void AMultiShootGameCharacter::BeginKnifeAttack_Server_Implementation()
 {
-	bKnifeAttack = true;
+	GetCharacterMovement()->SetMovementMode(MOVE_None);
 
-	PutBackWeapon_Server();
-
-	KnifeSkeletalMeshComponent->SetVisibility(true);
+	BeginKnifeAttack_Multicast();
 }
 
-void AMultiShootGameCharacter::EndKnifeAttack()
+void AMultiShootGameCharacter::BeginKnifeAttack_Multicast_Implementation()
+{
+	if (bKnifeAttack)
+	{
+		KnifeSkeletalMeshComponent->SetVisibility(true);
+
+		PutBackWeapon_Server();
+	}
+}
+
+void AMultiShootGameCharacter::EndKnifeAttack_Server_Implementation()
 {
 	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 
-	bKnifeAttack = false;
+	EndKnifeAttack_Multicast();
+}
 
-	bToggleWeapon = true;
+void AMultiShootGameCharacter::EndKnifeAttack_Multicast_Implementation()
+{
+	if (bKnifeAttack)
+	{
+		bToggleWeapon = true;
+		
+		KnifeSkeletalMeshComponent->SetVisibility(false);
 
-	KnifeSkeletalMeshComponent->SetVisibility(false);
+		PlayAnimMontage_Server(WeaponOutAnimMontage);
+	}
+}
 
-	PlayAnimMontage_Server(WeaponOutAnimMontage);
+void AMultiShootGameCharacter::HandleKnifeAttack_Server_Implementation(bool CurrentKnifeAttack)
+{
+	bKnifeAttack = CurrentKnifeAttack;
 }
 
 void AMultiShootGameCharacter::EndReload()
@@ -724,6 +745,8 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 	bThrowingGrenade = false;
 
 	bSpawnGrenade = false;
+
+	HandleKnifeAttack_Server(false);
 }
 
 void AMultiShootGameCharacter::Hit()
@@ -846,8 +869,8 @@ void AMultiShootGameCharacter::AttachWeapon_MultiCast_Implementation()
 			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, BackThirdWeaponSocketName);
 
 		UKismetSystemLibrary::MoveComponentTo(MainWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
-		                                      true,
-		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+		                                      true, true, 0.2f, false, EMoveComponentAction::Type::Move,
+		                                      LatentActionInfo);
 
 		break;
 	case EWeaponMode::SecondWeapon:
@@ -859,8 +882,8 @@ void AMultiShootGameCharacter::AttachWeapon_MultiCast_Implementation()
 			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, BackThirdWeaponSocketName);
 
 		UKismetSystemLibrary::MoveComponentTo(SecondWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
-		                                      true,
-		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+		                                      true, true, 0.2f, false, EMoveComponentAction::Type::Move,
+		                                      LatentActionInfo);
 
 		break;
 	case EWeaponMode::ThirdWeapon:
@@ -872,8 +895,8 @@ void AMultiShootGameCharacter::AttachWeapon_MultiCast_Implementation()
 			GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
 
 		UKismetSystemLibrary::MoveComponentTo(ThirdWeaponSceneComponent, FVector::ZeroVector, FRotator::ZeroRotator,
-		                                      true,
-		                                      true, 0.2f, false, EMoveComponentAction::Type::Move, LatentActionInfo);
+		                                      true, true, 0.2f, false, EMoveComponentAction::Type::Move,
+		                                      LatentActionInfo);
 
 		break;
 	}
@@ -894,16 +917,17 @@ void AMultiShootGameCharacter::PutBackWeapon_MultiCast_Implementation()
 		GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, BackThirdWeaponSocketName);
 }
 
+
+void AMultiShootGameCharacter::PlayAnimMontage_Server_Implementation(UAnimMontage* AnimMontage, float InPlayRate,
+                                                                     FName StartSectionName)
+{
+	PlayAnimMontage_Multicast(AnimMontage, InPlayRate, StartSectionName);
+}
+
 void AMultiShootGameCharacter::PlayAnimMontage_Multicast_Implementation(UAnimMontage* AnimMontage,
                                                                         float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate, StartSectionName);
-}
-
-void AMultiShootGameCharacter::PlayAnimMontage_Server_Implementation(
-	UAnimMontage* AnimMontage, float InPlayRate, FName StartSectionName)
-{
-	PlayAnimMontage_Multicast(AnimMontage, InPlayRate, StartSectionName);
 }
 
 void AMultiShootGameCharacter::Death()
@@ -1026,4 +1050,5 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMultiShootGameCharacter, WeaponMode);
+	DOREPLIFETIME(AMultiShootGameCharacter, bKnifeAttack);
 }
