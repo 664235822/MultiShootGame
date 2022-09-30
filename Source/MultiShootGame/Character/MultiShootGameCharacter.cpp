@@ -30,12 +30,15 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 
 	MainWeaponSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("MainWeaponSceneComponent"));
 	MainWeaponSceneComponent->SetupAttachment(GetMesh(), MainWeaponSocketName);
+	MainWeaponSceneComponent->SetIsReplicated(true);
 
 	SecondWeaponSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SecondWeaponSceneComponent"));
 	SecondWeaponSceneComponent->SetupAttachment(GetMesh(), BackSecondWeaponSocketName);
+	SecondWeaponSceneComponent->SetIsReplicated(true);
 
 	ThirdWeaponSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ThirdWeaponSceneComponent"));
 	ThirdWeaponSceneComponent->SetupAttachment(GetMesh(), BackThirdWeaponSocketName);
+	ThirdWeaponSceneComponent->SetIsReplicated(true);
 
 	GrenadeSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("GrenadeSceneComponent"));
 	GrenadeSceneComponent->SetupAttachment(GetMesh(), GrenadeSocketName);
@@ -43,6 +46,7 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	KnifeSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("KnifeSkeletalMeshComponent"));
 	KnifeSkeletalMeshComponent->SetupAttachment(GetMesh(), KnifeSocketName);
 	KnifeSkeletalMeshComponent->SetVisibility(false);
+	KnifeSkeletalMeshComponent->SetIsReplicated(true);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
@@ -447,11 +451,6 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 
 void AMultiShootGameCharacter::EndThrowGrenade_Server_Implementation()
 {
-	EndThrowGrenade_Multicast();
-}
-
-void AMultiShootGameCharacter::EndThrowGrenade_Multicast_Implementation()
-{
 	if (bBeginThrowGrenade || bThrowingGrenade)
 	{
 		bToggleWeapon = true;
@@ -490,11 +489,6 @@ void AMultiShootGameCharacter::ThrowGrenade()
 }
 
 void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation()
-{
-	ThrowGrenadeOut_Multicast();
-}
-
-void AMultiShootGameCharacter::ThrowGrenadeOut_Multicast_Implementation()
 {
 	if (bSpawnGrenade && CurrentGrenade)
 	{
@@ -540,21 +534,6 @@ void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
 	}
 }
 
-void AMultiShootGameCharacter::HandleSpawnGrenade_Server_Implementation(bool CurrentSpawnGrenade)
-{
-	bSpawnGrenade = CurrentSpawnGrenade;
-}
-
-void AMultiShootGameCharacter::HandleBeginThrowGrenade_Server_Implementation(bool CurrentBeginThrowGrenade)
-{
-	bBeginThrowGrenade = CurrentBeginThrowGrenade;
-}
-
-void AMultiShootGameCharacter::HandleThrowingGrenade_Server_Implementation(bool CurrentThrowingGrenade)
-{
-	bThrowingGrenade = CurrentThrowingGrenade;
-}
-
 void AMultiShootGameCharacter::KnifeAttack()
 {
 	if (!CheckStatus(false, true))
@@ -569,18 +548,12 @@ void AMultiShootGameCharacter::KnifeAttack()
 	PlayAnimMontage_Server(KnifeAttackAnimMontage, 2.0f);
 }
 
-
 void AMultiShootGameCharacter::BeginKnifeAttack_Server_Implementation()
-{
-	GetCharacterMovement()->SetMovementMode(MOVE_None);
-
-	BeginKnifeAttack_Multicast();
-}
-
-void AMultiShootGameCharacter::BeginKnifeAttack_Multicast_Implementation()
 {
 	if (bKnifeAttack)
 	{
+		GetCharacterMovement()->SetMovementMode(MOVE_None);
+
 		KnifeSkeletalMeshComponent->SetVisibility(true);
 
 		PutBackWeapon_Server();
@@ -589,26 +562,16 @@ void AMultiShootGameCharacter::BeginKnifeAttack_Multicast_Implementation()
 
 void AMultiShootGameCharacter::EndKnifeAttack_Server_Implementation()
 {
-	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-
-	EndKnifeAttack_Multicast();
-}
-
-void AMultiShootGameCharacter::EndKnifeAttack_Multicast_Implementation()
-{
 	if (bKnifeAttack)
 	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+
 		bToggleWeapon = true;
 
 		KnifeSkeletalMeshComponent->SetVisibility(false);
 
 		PlayAnimMontage_Server(WeaponOutAnimMontage);
 	}
-}
-
-void AMultiShootGameCharacter::HandleKnifeAttack_Server_Implementation(bool CurrentKnifeAttack)
-{
-	bKnifeAttack = CurrentKnifeAttack;
 }
 
 void AMultiShootGameCharacter::EndReload()
@@ -876,22 +839,37 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 	HandleWalkSpeed_Server(Speed);
 }
 
-void AMultiShootGameCharacter::HandleWeaponMode_Server_Implementation(EWeaponMode CurrentWeaponMode)
-{
-	WeaponMode = CurrentWeaponMode;
-}
-
 void AMultiShootGameCharacter::HandleWalkSpeed_Server_Implementation(float Speed)
 {
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
-void AMultiShootGameCharacter::AttachWeapon_Server_Implementation()
+void AMultiShootGameCharacter::HandleWeaponMode_Server_Implementation(EWeaponMode CurrentWeaponMode)
 {
-	AttachWeapon_MultiCast();
+	WeaponMode = CurrentWeaponMode;
 }
 
-void AMultiShootGameCharacter::AttachWeapon_MultiCast_Implementation()
+void AMultiShootGameCharacter::HandleSpawnGrenade_Server_Implementation(bool CurrentSpawnGrenade)
+{
+	bSpawnGrenade = CurrentSpawnGrenade;
+}
+
+void AMultiShootGameCharacter::HandleBeginThrowGrenade_Server_Implementation(bool CurrentBeginThrowGrenade)
+{
+	bBeginThrowGrenade = CurrentBeginThrowGrenade;
+}
+
+void AMultiShootGameCharacter::HandleThrowingGrenade_Server_Implementation(bool CurrentThrowingGrenade)
+{
+	bThrowingGrenade = CurrentThrowingGrenade;
+}
+
+void AMultiShootGameCharacter::HandleKnifeAttack_Server_Implementation(bool CurrentKnifeAttack)
+{
+	bKnifeAttack = CurrentKnifeAttack;
+}
+
+void AMultiShootGameCharacter::AttachWeapon_Server_Implementation()
 {
 	FLatentActionInfo LatentActionInfo;
 	LatentActionInfo.CallbackTarget = this;
@@ -942,11 +920,6 @@ void AMultiShootGameCharacter::AttachWeapon_MultiCast_Implementation()
 
 void AMultiShootGameCharacter::PutBackWeapon_Server_Implementation()
 {
-	PutBackWeapon_MultiCast();
-}
-
-void AMultiShootGameCharacter::PutBackWeapon_MultiCast_Implementation()
-{
 	MainWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 	                                            BackMainWeaponSocketName);
 	SecondWeaponSceneComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
@@ -954,7 +927,6 @@ void AMultiShootGameCharacter::PutBackWeapon_MultiCast_Implementation()
 	ThirdWeaponSceneComponent->AttachToComponent(
 		GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, BackThirdWeaponSocketName);
 }
-
 
 void AMultiShootGameCharacter::PlayAnimMontage_Server_Implementation(UAnimMontage* AnimMontage, float InPlayRate,
                                                                      FName StartSectionName)

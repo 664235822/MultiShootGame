@@ -55,6 +55,10 @@ protected:
 
 	void BeginSecondWeaponReload();
 
+public:
+	void BeginReload();
+
+protected:
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
@@ -63,51 +67,27 @@ protected:
 
 	void BeginThrowGrenade();
 
-	UFUNCTION(Server,Reliable,BlueprintCallable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void EndThrowGrenade_Server();
-
-	UFUNCTION(NetMulticast,Reliable)
-	void EndThrowGrenade_Multicast();
 
 	void ThrowGrenade();
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ThrowGrenadeOut_Server();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void ThrowGrenadeOut_Multicast();
-
 	UFUNCTION(BlueprintCallable)
 	void SpawnGrenade();
-	
+
 	UFUNCTION(Server, Reliable)
 	void SpawnGrenade_Server();
-
-	UFUNCTION(Server, Reliable)
-	void HandleBeginThrowGrenade_Server(bool CurrentBeginThrowGrenade);
-
-	UFUNCTION(Server, Reliable)
-	void HandleThrowingGrenade_Server(bool CurrentThrowingGrenade);
-
-	UFUNCTION(Server, Reliable)
-	void HandleSpawnGrenade_Server(bool CurrentSpawnGrenade);
 
 	void KnifeAttack();
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void BeginKnifeAttack_Server();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void BeginKnifeAttack_Multicast();
-
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void EndKnifeAttack_Server();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void EndKnifeAttack_Multicast();
-
-	UFUNCTION(Server, Reliable)
-	void HandleKnifeAttack_Server(bool CurrentKnifeAttack);
 
 	void ToggleMainWeapon();
 
@@ -287,17 +267,23 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void HandleWeaponMode_Server(EWeaponMode CurrentWeaponMode);
 
+	UFUNCTION(Server, Reliable)
+	void HandleBeginThrowGrenade_Server(bool CurrentBeginThrowGrenade);
+
+	UFUNCTION(Server, Reliable)
+	void HandleThrowingGrenade_Server(bool CurrentThrowingGrenade);
+
+	UFUNCTION(Server, Reliable)
+	void HandleSpawnGrenade_Server(bool CurrentSpawnGrenade);
+
+	UFUNCTION(Server, Reliable)
+	void HandleKnifeAttack_Server(bool CurrentKnifeAttack);
+
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void AttachWeapon_Server();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void AttachWeapon_MultiCast();
-
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void PutBackWeapon_Server();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void PutBackWeapon_MultiCast();
 
 	UFUNCTION(Server, Reliable)
 	void PlayAnimMontage_Server(UAnimMontage* AnimMontage, float InPlayRate = 1,
@@ -375,8 +361,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	void BeginReload();
 
 	UFUNCTION(BlueprintPure, Category = Character)
 	FORCEINLINE AMultiShootGameWeapon* GetCurrentMainWeapon() const { return CurrentMainWeapon; }
