@@ -438,18 +438,26 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 
 	EndAction();
 
-	bBeginThrowGrenade = true;
+	HandleBeginThrowGrenade_Server(true);
 
 	PutBackWeapon_Server();
 
 	PlayAnimMontage_Server(ThrowGrenadeAnimMontage);
 }
 
-void AMultiShootGameCharacter::EndThrowGrenade()
+void AMultiShootGameCharacter::EndThrowGrenade_Server_Implementation()
 {
-	bToggleWeapon = true;
+	EndThrowGrenade_Multicast();
+}
 
-	PlayAnimMontage_Server(WeaponOutAnimMontage);
+void AMultiShootGameCharacter::EndThrowGrenade_Multicast_Implementation()
+{
+	if (bBeginThrowGrenade || bThrowingGrenade)
+	{
+		bToggleWeapon = true;
+
+		PlayAnimMontage_Server(WeaponOutAnimMontage);
+	}
 }
 
 void AMultiShootGameCharacter::ThrowGrenade()
@@ -466,7 +474,7 @@ void AMultiShootGameCharacter::ThrowGrenade()
 
 	EndAction();
 
-	bThrowingGrenade = true;
+	HandleThrowingGrenade_Server(true);
 
 	if (!bBeginThrowGrenade)
 	{
@@ -481,40 +489,70 @@ void AMultiShootGameCharacter::ThrowGrenade()
 	PlayAnimMontage_Server(ThrowGrenadeAnimMontage, 1, FName("Throw"));
 }
 
-void AMultiShootGameCharacter::ThrowGrenadeOut()
+void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation()
 {
-	const FVector StartLocation = GrenadeSceneComponent->GetComponentLocation();
+	ThrowGrenadeOut_Multicast();
+}
 
-	const FVector CameraLocation = CameraComponent->GetComponentLocation();
-	const FRotator CameraRotation = CameraComponent->GetComponentRotation();
-	const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 3000.f;
+void AMultiShootGameCharacter::ThrowGrenadeOut_Multicast_Implementation()
+{
+	if (bSpawnGrenade && CurrentGrenade)
+	{
+		const FVector StartLocation = GrenadeSceneComponent->GetComponentLocation();
 
-	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+		const FVector CameraLocation = CameraComponent->GetComponentLocation();
+		const FRotator CameraRotation = CameraComponent->GetComponentRotation();
+		const FVector TargetLocation = CameraLocation + CameraRotation.Vector() * 3000.f;
 
-	CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	CurrentGrenade->ThrowGrenade(LookAtRotation, bFastRun || bJump);
+		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
-	GrenadeCount = FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount);
+		CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		CurrentGrenade->ThrowGrenade(LookAtRotation, bFastRun || bJump);
+
+		GrenadeCount = FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount);
+	}
 }
 
 void AMultiShootGameCharacter::SpawnGrenade()
 {
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnGrenade_Server();
 
-	CurrentGrenade = GetWorld()->SpawnActor<AMultiShootGameGrenade>(GrenadeClass, FVector::ZeroVector,
-	                                                                FRotator::ZeroRotator, SpawnParameters);
+	HandleBeginThrowGrenade_Server(true);
+	HandleSpawnGrenade_Server(true);
+}
 
-	if (CurrentGrenade)
+void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
+{
+	if (bBeginThrowGrenade || bThrowingGrenade)
 	{
-		CurrentGrenade->BaseDamage = GrenadeDamage;
-		CurrentGrenade->SetOwner(this);
-		CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		CurrentGrenade = GetWorld()->SpawnActor<AMultiShootGameGrenade>(GrenadeClass, FVector::ZeroVector,
+		                                                                FRotator::ZeroRotator, SpawnParameters);
+
+		if (CurrentGrenade)
+		{
+			CurrentGrenade->BaseDamage = GrenadeDamage;
+			CurrentGrenade->SetOwner(this);
+			CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		}
 	}
+}
 
-	bBeginThrowGrenade = true;
+void AMultiShootGameCharacter::HandleSpawnGrenade_Server_Implementation(bool CurrentSpawnGrenade)
+{
+	bSpawnGrenade = CurrentSpawnGrenade;
+}
 
-	bSpawnGrenade = true;
+void AMultiShootGameCharacter::HandleBeginThrowGrenade_Server_Implementation(bool CurrentBeginThrowGrenade)
+{
+	bBeginThrowGrenade = CurrentBeginThrowGrenade;
+}
+
+void AMultiShootGameCharacter::HandleThrowingGrenade_Server_Implementation(bool CurrentThrowingGrenade)
+{
+	bThrowingGrenade = CurrentThrowingGrenade;
 }
 
 void AMultiShootGameCharacter::KnifeAttack()
@@ -740,12 +778,9 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 {
 	bToggleWeapon = false;
 
-	bBeginThrowGrenade = false;
-
-	bThrowingGrenade = false;
-
-	bSpawnGrenade = false;
-
+	HandleBeginThrowGrenade_Server(false);
+	HandleThrowingGrenade_Server(false);
+	HandleSpawnGrenade_Server(false);
 	HandleKnifeAttack_Server(false);
 }
 
@@ -1054,4 +1089,7 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 
 	DOREPLIFETIME(AMultiShootGameCharacter, WeaponMode);
 	DOREPLIFETIME(AMultiShootGameCharacter, bKnifeAttack);
+	DOREPLIFETIME(AMultiShootGameCharacter, bBeginThrowGrenade);
+	DOREPLIFETIME(AMultiShootGameCharacter, bThrowingGrenade);
+	DOREPLIFETIME(AMultiShootGameCharacter, bSpawnGrenade);
 }

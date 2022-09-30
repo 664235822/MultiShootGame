@@ -63,16 +63,34 @@ protected:
 
 	void BeginThrowGrenade();
 
-	UFUNCTION(BlueprintCallable)
-	void EndThrowGrenade();
+	UFUNCTION(Server,Reliable,BlueprintCallable)
+	void EndThrowGrenade_Server();
+
+	UFUNCTION(NetMulticast,Reliable)
+	void EndThrowGrenade_Multicast();
 
 	void ThrowGrenade();
 
-	UFUNCTION(BlueprintCallable)
-	void ThrowGrenadeOut();
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ThrowGrenadeOut_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ThrowGrenadeOut_Multicast();
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnGrenade();
+	
+	UFUNCTION(Server, Reliable)
+	void SpawnGrenade_Server();
+
+	UFUNCTION(Server, Reliable)
+	void HandleBeginThrowGrenade_Server(bool CurrentBeginThrowGrenade);
+
+	UFUNCTION(Server, Reliable)
+	void HandleThrowingGrenade_Server(bool CurrentThrowingGrenade);
+
+	UFUNCTION(Server, Reliable)
+	void HandleSpawnGrenade_Server(bool CurrentSpawnGrenade);
 
 	void KnifeAttack();
 
@@ -307,13 +325,16 @@ protected:
 	bool bReloading = false;
 
 	bool bSecondWeaponReloading = false;
-	
+
 	bool bToggleWeapon = false;
 
+	UPROPERTY(Replicated)
 	bool bBeginThrowGrenade = false;
 
+	UPROPERTY(Replicated)
 	bool bThrowingGrenade = false;
 
+	UPROPERTY(Replicated)
 	bool bSpawnGrenade = false;
 
 	UPROPERTY(Replicated)
@@ -337,7 +358,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;
 
 	UPROPERTY(BlueprintReadOnly)
