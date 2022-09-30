@@ -561,7 +561,7 @@ void AMultiShootGameCharacter::EndKnifeAttack_Multicast_Implementation()
 	if (bKnifeAttack)
 	{
 		bToggleWeapon = true;
-		
+
 		KnifeSkeletalMeshComponent->SetVisibility(false);
 
 		PlayAnimMontage_Server(WeaponOutAnimMontage);
@@ -751,21 +751,24 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 
 void AMultiShootGameCharacter::Hit()
 {
-	Cast<APlayerController>(GetController())->ClientStartCameraShake(KnifeCameraShakeClass);
-
-	const FVector HitLocation = KnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName);
-	const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
-	FHitResult HitResult;
-	const TArray<AActor*> IgnoreActors;
-	if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), HitLocation, HitLocation, 50.f, TraceType_Weapon, false,
-	                                            IgnoreActors, EDrawDebugTrace::None, HitResult, true))
+	if (bKnifeAttack)
 	{
-		const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+		Cast<APlayerController>(GetController())->ClientStartCameraShake(KnifeCameraShakeClass);
 
-		UGameplayStatics::ApplyDamage(HitResult.GetActor(), KnifeDamage, GetInstigatorController(), this,
-		                              DamageTypeClass);
+		const FVector HitLocation = KnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName);
+		const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
+		FHitResult HitResult;
+		const TArray<AActor*> IgnoreActors;
+		if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), HitLocation, HitLocation, 50.f, TraceType_Weapon, false,
+		                                            IgnoreActors, EDrawDebugTrace::None, HitResult, true))
+		{
+			const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
 
-		HitEffectComponent->PlayHitEffect(SurfaceType, HitLocation, HitRotation);
+			UGameplayStatics::ApplyDamage(HitResult.GetActor(), KnifeDamage, GetInstigatorController(), this,
+			                              DamageTypeClass);
+
+			HitEffectComponent->PlayHitEffect(SurfaceType, HitLocation, HitRotation);
+		}
 	}
 }
 
