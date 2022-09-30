@@ -442,7 +442,7 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 
 	EndAction();
 
-	HandleBeginThrowGrenade_Server(true);
+	SetBeginThrowGrenade_Server(true);
 
 	PutBackWeapon_Server();
 
@@ -473,7 +473,7 @@ void AMultiShootGameCharacter::ThrowGrenade()
 
 	EndAction();
 
-	HandleThrowingGrenade_Server(true);
+	SetThrowingGrenade_Server(true);
 
 	if (!bBeginThrowGrenade)
 	{
@@ -511,8 +511,8 @@ void AMultiShootGameCharacter::SpawnGrenade()
 {
 	SpawnGrenade_Server();
 
-	HandleBeginThrowGrenade_Server(true);
-	HandleSpawnGrenade_Server(true);
+	SetBeginThrowGrenade_Server(true);
+	SetSpawnGrenade_Server(true);
 }
 
 void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
@@ -543,7 +543,7 @@ void AMultiShootGameCharacter::KnifeAttack()
 
 	EndAction();
 
-	HandleKnifeAttack_Server(true);
+	SetKnifeAttack_Server(true);
 
 	PlayAnimMontage_Server(KnifeAttackAnimMontage, 2.0f);
 }
@@ -641,7 +641,7 @@ void AMultiShootGameCharacter::ToggleMainWeapon()
 
 	EndAction();
 
-	HandleWeaponMode_Server(EWeaponMode::MainWeapon);
+	SetWeaponMode_Server(EWeaponMode::MainWeapon);
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
 
@@ -666,7 +666,7 @@ void AMultiShootGameCharacter::ToggleSecondWeapon()
 
 	EndAction();
 
-	HandleWeaponMode_Server(EWeaponMode::SecondWeapon);
+	SetWeaponMode_Server(EWeaponMode::SecondWeapon);
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentSecondWeapon);
 
@@ -691,7 +691,7 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 
 	EndAction();
 
-	HandleWeaponMode_Server(EWeaponMode::ThirdWeapon);
+	SetWeaponMode_Server(EWeaponMode::ThirdWeapon);
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentThirdWeapon);
 
@@ -741,10 +741,10 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 {
 	bToggleWeapon = false;
 
-	HandleBeginThrowGrenade_Server(false);
-	HandleThrowingGrenade_Server(false);
-	HandleSpawnGrenade_Server(false);
-	HandleKnifeAttack_Server(false);
+	SetBeginThrowGrenade_Server(false);
+	SetThrowingGrenade_Server(false);
+	SetSpawnGrenade_Server(false);
+	SetKnifeAttack_Server(false);
 }
 
 void AMultiShootGameCharacter::Hit()
@@ -836,37 +836,37 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
-	HandleWalkSpeed_Server(Speed);
+	SetWalkSpeed_Server(Speed);
 }
 
-void AMultiShootGameCharacter::HandleWalkSpeed_Server_Implementation(float Speed)
+void AMultiShootGameCharacter::SetWalkSpeed_Server_Implementation(float Value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = Speed;
+	GetCharacterMovement()->MaxWalkSpeed = Value;
 }
 
-void AMultiShootGameCharacter::HandleWeaponMode_Server_Implementation(EWeaponMode CurrentWeaponMode)
+void AMultiShootGameCharacter::SetWeaponMode_Server_Implementation(EWeaponMode Value)
 {
-	WeaponMode = CurrentWeaponMode;
+	WeaponMode = Value;
 }
 
-void AMultiShootGameCharacter::HandleSpawnGrenade_Server_Implementation(bool CurrentSpawnGrenade)
+void AMultiShootGameCharacter::SetBeginThrowGrenade_Server_Implementation(bool Value)
 {
-	bSpawnGrenade = CurrentSpawnGrenade;
+	bBeginThrowGrenade = Value;
 }
 
-void AMultiShootGameCharacter::HandleBeginThrowGrenade_Server_Implementation(bool CurrentBeginThrowGrenade)
+void AMultiShootGameCharacter::SetThrowingGrenade_Server_Implementation(bool Value)
 {
-	bBeginThrowGrenade = CurrentBeginThrowGrenade;
+	bThrowingGrenade = Value;
 }
 
-void AMultiShootGameCharacter::HandleThrowingGrenade_Server_Implementation(bool CurrentThrowingGrenade)
+void AMultiShootGameCharacter::SetSpawnGrenade_Server_Implementation(bool Value)
 {
-	bThrowingGrenade = CurrentThrowingGrenade;
+	bSpawnGrenade = Value;
 }
 
-void AMultiShootGameCharacter::HandleKnifeAttack_Server_Implementation(bool CurrentKnifeAttack)
+void AMultiShootGameCharacter::SetKnifeAttack_Server_Implementation(bool Value)
 {
-	bKnifeAttack = CurrentKnifeAttack;
+	bKnifeAttack = Value;
 }
 
 void AMultiShootGameCharacter::AttachWeapon_Server_Implementation()

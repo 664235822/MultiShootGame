@@ -262,22 +262,22 @@ protected:
 	void HandleWalkSpeed();
 
 	UFUNCTION(Server, Reliable)
-	void HandleWalkSpeed_Server(float Speed);
+	void SetWalkSpeed_Server(float Value);
 
 	UFUNCTION(Server, Reliable)
-	void HandleWeaponMode_Server(EWeaponMode CurrentWeaponMode);
+	void SetWeaponMode_Server(EWeaponMode Value);
 
 	UFUNCTION(Server, Reliable)
-	void HandleBeginThrowGrenade_Server(bool CurrentBeginThrowGrenade);
+	void SetBeginThrowGrenade_Server(bool Value);
 
 	UFUNCTION(Server, Reliable)
-	void HandleThrowingGrenade_Server(bool CurrentThrowingGrenade);
+	void SetThrowingGrenade_Server(bool Value);
 
 	UFUNCTION(Server, Reliable)
-	void HandleSpawnGrenade_Server(bool CurrentSpawnGrenade);
+	void SetSpawnGrenade_Server(bool Value);
 
 	UFUNCTION(Server, Reliable)
-	void HandleKnifeAttack_Server(bool CurrentKnifeAttack);
+	void SetKnifeAttack_Server(bool Value);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void AttachWeapon_Server();
