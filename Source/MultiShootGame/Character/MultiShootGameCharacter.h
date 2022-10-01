@@ -72,16 +72,10 @@ protected:
 
 	void ThrowGrenade();
 
-	UFUNCTION(BlueprintCallable)
-	void ThrowGrenadeOut();
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ThrowGrenadeOut_Server();
 
-	UFUNCTION(Server, Reliable)
-	void ThrowGrenadeOut_Server(FRotator Direction, bool MultiThrow);
-
-	UFUNCTION(BlueprintCallable)
-	void SpawnGrenade();
-
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void SpawnGrenade_Server();
 
 	void KnifeAttack();

@@ -482,13 +482,13 @@ void AMultiShootGameCharacter::ThrowGrenade()
 
 	if (!bSpawnGrenade)
 	{
-		SpawnGrenade();
+		SpawnGrenade_Server();
 	}
 
 	PlayAnimMontage_Server(ThrowGrenadeAnimMontage, 1, FName("Throw"));
 }
 
-void AMultiShootGameCharacter::ThrowGrenadeOut()
+void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation()
 {
 	if (bSpawnGrenade && CurrentGrenade)
 	{
@@ -500,24 +500,11 @@ void AMultiShootGameCharacter::ThrowGrenadeOut()
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
-		ThrowGrenadeOut_Server(LookAtRotation, bFastRun || bJump);
+		CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		CurrentGrenade->ThrowGrenade_Server(LookAtRotation, bFastRun || bJump);
 
 		GrenadeCount = FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount);
 	}
-}
-
-void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation(FRotator Direction, bool MultiThrow)
-{
-	CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	CurrentGrenade->ThrowGrenade_Server(Direction, MultiThrow);
-}
-
-void AMultiShootGameCharacter::SpawnGrenade()
-{
-	SpawnGrenade_Server();
-
-	SetBeginThrowGrenade_Server(true);
-	SetSpawnGrenade_Server(true);
 }
 
 void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
@@ -537,6 +524,9 @@ void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
 			CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		}
 	}
+
+	SetBeginThrowGrenade_Server(true);
+	SetSpawnGrenade_Server(true);
 }
 
 void AMultiShootGameCharacter::KnifeAttack()
