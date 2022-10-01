@@ -449,7 +449,7 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 	PlayAnimMontage_Server(ThrowGrenadeAnimMontage);
 }
 
-void AMultiShootGameCharacter::EndThrowGrenade_Server_Implementation()
+void AMultiShootGameCharacter::EndThrowGrenade()
 {
 	if (bBeginThrowGrenade || bThrowingGrenade)
 	{
@@ -482,13 +482,13 @@ void AMultiShootGameCharacter::ThrowGrenade()
 
 	if (!bSpawnGrenade)
 	{
-		SpawnGrenade_Server();
+		SpawnGrenade();
 	}
 
 	PlayAnimMontage_Server(ThrowGrenadeAnimMontage, 1, FName("Throw"));
 }
 
-void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation()
+void AMultiShootGameCharacter::ThrowGrenadeOut()
 {
 	if (bSpawnGrenade && CurrentGrenade)
 	{
@@ -500,11 +500,24 @@ void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation()
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
-		CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		CurrentGrenade->ThrowGrenade_Server(LookAtRotation, bFastRun || bJump);
+		ThrowGrenadeOut_Server(LookAtRotation, bFastRun || bJump);
 
-		GrenadeCount = FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount);
+		SetGrenadeCount_Server(FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount));
 	}
+}
+
+void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation(FRotator Direction, bool MultiThrow)
+{
+	CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	CurrentGrenade->ThrowGrenade_Server(Direction, MultiThrow);
+}
+
+void AMultiShootGameCharacter::SpawnGrenade()
+{
+	SpawnGrenade_Server();
+
+	SetBeginThrowGrenade_Server(true);
+	SetSpawnGrenade_Server(true);
 }
 
 void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
@@ -524,9 +537,6 @@ void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
 			CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		}
 	}
-
-	SetBeginThrowGrenade_Server(true);
-	SetSpawnGrenade_Server(true);
 }
 
 void AMultiShootGameCharacter::KnifeAttack()
@@ -868,6 +878,11 @@ void AMultiShootGameCharacter::SetKnifeAttack_Server_Implementation(bool Value)
 	bKnifeAttack = Value;
 }
 
+void AMultiShootGameCharacter::SetGrenadeCount_Server_Implementation(int Value)
+{
+	GrenadeCount = Value;
+}
+
 void AMultiShootGameCharacter::AttachWeapon_Server_Implementation()
 {
 	FLatentActionInfo LatentActionInfo;
@@ -1063,4 +1078,5 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, bBeginThrowGrenade);
 	DOREPLIFETIME(AMultiShootGameCharacter, bThrowingGrenade);
 	DOREPLIFETIME(AMultiShootGameCharacter, bSpawnGrenade);
+	DOREPLIFETIME(AMultiShootGameCharacter, GrenadeCount);
 }

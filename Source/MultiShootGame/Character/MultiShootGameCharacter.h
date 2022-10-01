@@ -67,15 +67,21 @@ protected:
 
 	void BeginThrowGrenade();
 
-	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void EndThrowGrenade_Server();
+	UFUNCTION( BlueprintCallable)
+	void EndThrowGrenade();
 
 	void ThrowGrenade();
 
-	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ThrowGrenadeOut_Server();
+	UFUNCTION(BlueprintCallable)
+	void ThrowGrenadeOut();
 
-	UFUNCTION(Server, Reliable, BlueprintCallable)
+	UFUNCTION(Server, Reliable)
+	void ThrowGrenadeOut_Server(FRotator Direction, bool MultiThrow);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnGrenade();
+	
+	UFUNCTION(Server, Reliable)
 	void SpawnGrenade_Server();
 
 	void KnifeAttack();
@@ -276,6 +282,9 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void SetKnifeAttack_Server(bool Value);
 
+	UFUNCTION(Server, Reliable)
+	void SetGrenadeCount_Server(int Value);
+
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void AttachWeapon_Server();
 
@@ -326,7 +335,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	bool bEnableMovement = true;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	int GrenadeCount;
 
 	UPROPERTY(BlueprintReadOnly)
