@@ -46,8 +46,6 @@ protected:
 
 	FTimerHandle TimerHandle;
 
-	void Explode();
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	float DamageRadius = 1000.f;
 
@@ -57,11 +55,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	FRotator ThrowRotatorPlus = FRotator(20.f, 0, 0);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void ThrowGrenade_Multicast();
+
+	void Explode();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Explode_Multicast();
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void ThrowGrenade(FRotator Direction, bool MultiPly);
+	UFUNCTION(Server, Reliable)
+	void ThrowGrenade_Server(FRotator Direction, bool MultiThrow);
 
 	virtual void ProjectileInitialize(float Damage) override;
 };

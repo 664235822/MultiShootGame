@@ -488,7 +488,7 @@ void AMultiShootGameCharacter::ThrowGrenade()
 	PlayAnimMontage_Server(ThrowGrenadeAnimMontage, 1, FName("Throw"));
 }
 
-void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation()
+void AMultiShootGameCharacter::ThrowGrenadeOut()
 {
 	if (bSpawnGrenade && CurrentGrenade)
 	{
@@ -500,11 +500,16 @@ void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation()
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
-		CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		CurrentGrenade->ThrowGrenade(LookAtRotation, bFastRun || bJump);
+		ThrowGrenadeOut_Server(LookAtRotation, bFastRun || bJump);
 
 		GrenadeCount = FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount);
 	}
+}
+
+void AMultiShootGameCharacter::ThrowGrenadeOut_Server_Implementation(FRotator Direction, bool MultiThrow)
+{
+	CurrentGrenade->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	CurrentGrenade->ThrowGrenade_Server(Direction, MultiThrow);
 }
 
 void AMultiShootGameCharacter::SpawnGrenade()
@@ -751,7 +756,11 @@ void AMultiShootGameCharacter::Hit()
 {
 	if (bKnifeAttack)
 	{
-		Cast<APlayerController>(GetController())->ClientStartCameraShake(KnifeCameraShakeClass);
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		if (PlayerController)
+		{
+			PlayerController->ClientStartCameraShake(KnifeCameraShakeClass);
+		}
 
 		const FVector HitLocation = KnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName);
 		const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
