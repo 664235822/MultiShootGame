@@ -59,6 +59,7 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	DeathAudioComponent->SetAutoActivate(false);
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->SetIsReplicated(true);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	if (GetLocalRole() == ROLE_Authority)

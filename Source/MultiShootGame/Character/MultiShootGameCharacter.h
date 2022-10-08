@@ -53,12 +53,12 @@ protected:
 
 	void EndAim();
 
-	void BeginSecondWeaponReload();
-
 public:
 	void BeginReload();
 
 protected:
+	void BeginSecondWeaponReload();
+
 	UFUNCTION(BlueprintCallable)
 	void EndReload();
 
