@@ -792,7 +792,7 @@ void AMultiShootGameCharacter::FillUpWeaponBullet()
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
 	if (HealthComponent->bDied || bDetectingClimb || bReloading || bToggleWeapon || bSecondWeaponReloading ||
-		bThrowingGrenade || bKnifeAttack)
+ 		bThrowingGrenade || bKnifeAttack)
 	{
 		return false;
 	}
@@ -955,6 +955,11 @@ void AMultiShootGameCharacter::PlayAnimMontage_Multicast_Implementation(UAnimMon
 	PlayAnimMontage(AnimMontage, InPlayRate, StartSectionName);
 }
 
+void AMultiShootGameCharacter::StopAnimMontage_Multicast_Implementation(UAnimMontage* AnimMontage)
+{
+	StopAnimMontage(AnimMontage);
+}
+
 void AMultiShootGameCharacter::Death()
 {
 	HealthComponent->bDied = true;
@@ -1080,4 +1085,5 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, bThrowingGrenade);
 	DOREPLIFETIME(AMultiShootGameCharacter, bSpawnGrenade);
 	DOREPLIFETIME(AMultiShootGameCharacter, GrenadeCount);
+	DOREPLIFETIME(AMultiShootGameCharacter, bDetectingClimb);
 }

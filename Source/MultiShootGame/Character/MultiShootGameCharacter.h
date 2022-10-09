@@ -67,7 +67,7 @@ protected:
 
 	void BeginThrowGrenade();
 
-	UFUNCTION( BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 	void EndThrowGrenade();
 
 	void ThrowGrenade();
@@ -80,7 +80,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnGrenade();
-	
+
 	UFUNCTION(Server, Reliable)
 	void SpawnGrenade_Server();
 
@@ -295,9 +295,12 @@ protected:
 	void PlayAnimMontage_Server(UAnimMontage* AnimMontage, float InPlayRate = 1,
 	                            FName StartSectionName = NAME_None);
 
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
 	void PlayAnimMontage_Multicast(UAnimMontage* AnimMontage, float InPlayRate = 1,
 	                               FName StartSectionName = NAME_None);
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void StopAnimMontage_Multicast(UAnimMontage* AnimMontage);
 
 	bool bFired = false;
 
@@ -308,7 +311,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bMoving = false;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Replicated)
 	bool bDetectingClimb = false;
 
 	UPROPERTY(BlueprintReadOnly)
