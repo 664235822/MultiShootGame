@@ -41,6 +41,7 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = false;
 	ProjectileMovement->ProjectileGravityScale = 0;
+	ProjectileMovement->SetIsReplicated(true);
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 4.0f;

@@ -67,10 +67,18 @@ protected:
 
 	bool Loop = false;
 
+	UPROPERTY(Replicated)
+	AMultiShootGameProjectileBase* CurrentProjectile;
+
+	UFUNCTION(Server, Reliable)
+	void Fire_Server(FVector MuzzleLocation, FRotator ShotTargetDirection);
+
 	void ShakeCamera();
 
 public:
-	void Fire();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	virtual void Fire();
 
 	void StartFire();
 
@@ -86,7 +94,7 @@ public:
 
 	void FillUpBullet();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FWeaponInfo WeaponInfo;
 
 	UFUNCTION(BlueprintPure, Category = Weapon)

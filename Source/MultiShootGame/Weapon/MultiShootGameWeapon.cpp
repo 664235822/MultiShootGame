@@ -2,7 +2,6 @@
 
 
 #include "MultiShootGameWeapon.h"
-#include "MultiShootGameBulletShell.h"
 #include "MultiShootGameProjectile.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Components/AudioComponent.h"
@@ -10,6 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "MultiShootGame/SaveGame/ChooseWeaponSaveGame.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AMultiShootGameWeapon::AMultiShootGameWeapon()
@@ -58,6 +58,55 @@ void AMultiShootGameWeapon::BeginPlay()
 	TimeBetweenShots = 60.0f / WeaponInfo.RateOfFire;
 }
 
+void AMultiShootGameWeapon::Fire()
+{
+	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+	if (MyOwner)
+	{
+		FVector EyeLocation = MyOwner->GetCameraComponent()->GetComponentLocation();
+		FRotator EyeRotation = MyOwner->GetCameraComponent()->GetComponentRotation();
+
+		FVector ShotDirection = EyeRotation.Vector();
+
+		const float HalfRad = FMath::DegreesToRadians(WeaponInfo.BulletSpread);
+		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
+
+		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
+
+		if (MuzzleEffect)
+		{
+			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
+		}
+
+		if (WeaponInfo.Projectile_Replicate_Class)
+		{
+			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
+
+			Fire_Server(MuzzleLocation, ShotTargetDirection);
+		}
+
+		ShakeCamera();
+
+		BulletFire(MyOwner);
+
+		AudioComponent->Play();
+
+		LastFireTime = GetWorld()->TimeSeconds;
+	}
+}
+
+void AMultiShootGameWeapon::Fire_Server_Implementation(FVector MuzzleLocation, FRotator ShotTargetDirection)
+{
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectile>(
+		WeaponInfo.Projectile_Replicate_Class, MuzzleLocation, ShotTargetDirection, SpawnParameters);
+	CurrentProjectile->SetOwner(GetOwner());
+	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+}
+
 void AMultiShootGameWeapon::ShakeCamera()
 {
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
@@ -78,82 +127,11 @@ void AMultiShootGameWeapon::ShakeCamera()
 	}
 }
 
-void AMultiShootGameWeapon::Fire()
+void AMultiShootGameWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	if (BulletCheck(MyOwner))
-	{
-		return;
-	}
-
-	if (MyOwner)
-	{
-		FVector EyeLocation;
-		FRotator EyeRotation;
-
-		if (MyOwner->GetAimed())
-		{
-			EyeLocation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentLocation();
-			EyeRotation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentRotation();
-		}
-		else
-		{
-			EyeLocation = MyOwner->GetCameraComponent()->GetComponentLocation();
-			EyeRotation = MyOwner->GetCameraComponent()->GetComponentRotation();
-		}
-
-		FVector ShotDirection = EyeRotation.Vector();
-
-		const float HalfRad = FMath::DegreesToRadians(WeaponInfo.BulletSpread);
-		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
-
-		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
-
-		if (Cast<AMultiShootGameFPSCamera>(this))
-		{
-			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(EyeLocation, TraceEnd);
-
-			const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
-
-			Cast<AMultiShootGameCharacter>(GetOwner())->GetFPSCameraSceneComponent()->SetWorldRotation(TargetRotation);
-		}
-
-		if (MuzzleEffect)
-		{
-			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
-		}
-
-		if (WeaponInfo.ProjectileClass)
-		{
-			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
-			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
-
-			AMultiShootGameProjectileBase* Projectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
-				WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection);
-			Projectile->SetOwner(GetOwner());
-			Projectile->ProjectileInitialize(WeaponInfo.BaseDamage);
-		}
-
-		if (MyOwner->GetWeaponMode() != EWeaponMode::SecondWeapon && BulletShellClass)
-		{
-			const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
-			const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
-
-			AMultiShootGameBulletShell* BulletShell = GetWorld()->SpawnActor<AMultiShootGameBulletShell>(
-				BulletShellClass, BulletShellLocation, BulletShellRotation);
-			BulletShell->SetOwner(this);
-			BulletShell->ThrowBulletShell();
-		}
-
-		ShakeCamera();
-
-		BulletFire(MyOwner);
-
-		AudioComponent->Play();
-
-		LastFireTime = GetWorld()->TimeSeconds;
-	}
+	DOREPLIFETIME(AMultiShootGameWeapon, WeaponInfo);
 }
 
 void AMultiShootGameWeapon::StartFire()

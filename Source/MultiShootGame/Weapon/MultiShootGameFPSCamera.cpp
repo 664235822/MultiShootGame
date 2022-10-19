@@ -4,6 +4,7 @@
 #include "MultiShootGameFPSCamera.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 
 AMultiShootGameFPSCamera::AMultiShootGameFPSCamera()
@@ -26,6 +27,63 @@ void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 	const float TargetFOV = WeaponInfo.AimTexture ? ZoomedFOV : DefaultFOV;
 	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
 	CameraComponent->SetFieldOfView(CurrentFOV);
+}
+
+void AMultiShootGameFPSCamera::Fire()
+{
+	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+
+	if (BulletCheck(MyOwner))
+	{
+		return;
+	}
+
+	if (MyOwner)
+	{
+		FVector EyeLocation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentLocation();
+		FRotator EyeRotation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentRotation();
+
+		FVector ShotDirection = EyeRotation.Vector();
+
+		const float HalfRad = FMath::DegreesToRadians(WeaponInfo.BulletSpread);
+		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
+
+		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
+
+		if (Cast<AMultiShootGameFPSCamera>(this))
+		{
+			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(EyeLocation, TraceEnd);
+
+			const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
+
+			Cast<AMultiShootGameCharacter>(GetOwner())->GetFPSCameraSceneComponent()->SetWorldRotation(
+				TargetRotation);
+		}
+
+		if (MuzzleEffect)
+		{
+			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
+		}
+
+		if (WeaponInfo.Projectile_NoReplicate_Class)
+		{
+			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
+
+			CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
+				WeaponInfo.Projectile_NoReplicate_Class, MuzzleLocation, ShotTargetDirection);
+			CurrentProjectile->SetOwner(GetOwner());
+			CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+		}
+
+		ShakeCamera();
+
+		BulletFire(MyOwner);
+
+		AudioComponent->Play();
+
+		LastFireTime = GetWorld()->TimeSeconds;
+	}
 }
 
 bool AMultiShootGameFPSCamera::BulletCheck(AMultiShootGameCharacter* MyOwner)

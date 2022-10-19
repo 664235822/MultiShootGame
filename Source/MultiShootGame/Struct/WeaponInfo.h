@@ -29,7 +29,10 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	UStaticMesh* MagazineClipMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
-	TSubclassOf<AMultiShootGameProjectileBase> ProjectileClass;
+	TSubclassOf<AMultiShootGameProjectileBase> Projectile_Replicate_Class;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
+	TSubclassOf<AMultiShootGameProjectileBase> Projectile_NoReplicate_Class;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;

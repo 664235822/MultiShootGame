@@ -32,11 +32,13 @@ protected:
 	float DefaultFOV;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0.1f, ClampMax = 100.0f))
-	float ZoomInterpSpeed = 20.0f;;
+	float ZoomInterpSpeed = 20.0f;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void Fire() override;
 
 	virtual bool BulletCheck(AMultiShootGameCharacter* MyOwner) override;
 
