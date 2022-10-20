@@ -10,6 +10,7 @@ AMultiShootGameProjectileBase::AMultiShootGameProjectileBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
+	bAlwaysRelevant = true;
 	SetReplicateMovement(true);
 }
 

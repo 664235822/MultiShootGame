@@ -91,6 +91,8 @@ void AMultiShootGameCharacter::BeginPlay()
 	}
 
 	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+	SpawnParameters.Instigator = GetInstigator();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	CurrentMainWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(MainWeaponClass, FVector::ZeroVector,
@@ -108,41 +110,32 @@ void AMultiShootGameCharacter::BeginPlay()
 
 	if (CurrentMainWeapon)
 	{
-		CurrentMainWeapon->SetOwner(this);
+		CurrentMainWeapon->Controller = GetController();
 		CurrentMainWeapon->AttachToComponent(MainWeaponSceneComponent,
 		                                     FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentSecondWeapon)
 	{
-		CurrentSecondWeapon->SetOwner(this);
+		CurrentSecondWeapon->Controller = GetController();
 		CurrentSecondWeapon->AttachToComponent(SecondWeaponSceneComponent,
 		                                       FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentThirdWeapon)
 	{
-		CurrentThirdWeapon->SetOwner(this);
+		CurrentThirdWeapon->Controller = GetController();
 		CurrentThirdWeapon->AttachToComponent(ThirdWeaponSceneComponent,
 		                                      FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentFPSCamera)
 	{
-		CurrentFPSCamera->SetOwner(this);
+		CurrentFPSCamera->Controller = GetController();
 		CurrentFPSCamera->AttachToComponent(FPSCameraSceneComponent,
 		                                    FAttachmentTransformRules::SnapToTargetIncludingScale);
-
 		CurrentFPSCamera->SetActorHiddenInGame(true);
-
 		CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
-	}
-
-	if (CurrentGrenade)
-	{
-		CurrentGrenade->SetOwner(this);
-		CurrentGrenade->AttachToComponent(GrenadeSceneComponent,
-		                                  FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 }
 
@@ -526,6 +519,8 @@ void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
 	if (bBeginThrowGrenade || bThrowingGrenade)
 	{
 		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = this;
+		SpawnParameters.Instigator = GetInstigator();
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		CurrentGrenade = GetWorld()->SpawnActor<AMultiShootGameGrenade>(GrenadeClass, FVector::ZeroVector,
@@ -534,7 +529,6 @@ void AMultiShootGameCharacter::SpawnGrenade_Server_Implementation()
 		if (CurrentGrenade)
 		{
 			CurrentGrenade->BaseDamage = GrenadeDamage;
-			CurrentGrenade->SetOwner(this);
 			CurrentGrenade->AttachToComponent(GrenadeSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		}
 	}
@@ -792,7 +786,7 @@ void AMultiShootGameCharacter::FillUpWeaponBullet()
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
 	if (HealthComponent->bDied || bDetectingClimb || bReloading || bToggleWeapon || bSecondWeaponReloading ||
- 		bThrowingGrenade || bKnifeAttack)
+		bThrowingGrenade || bKnifeAttack)
 	{
 		return false;
 	}
