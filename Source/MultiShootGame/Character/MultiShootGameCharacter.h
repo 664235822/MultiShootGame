@@ -353,7 +353,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;
 
 	UPROPERTY(BlueprintReadOnly)

@@ -67,7 +67,6 @@ protected:
 
 	bool Loop = false;
 
-	UPROPERTY(Replicated)
 	AMultiShootGameProjectileBase* CurrentProjectile;
 
 	UFUNCTION(Server, Reliable)
