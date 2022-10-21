@@ -367,6 +367,28 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentFPSCamera->StopFire();
 }
 
+void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation,
+                                                          FRotator ShotTargetDirection)
+{
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+	SpawnParameters.Instigator = GetInstigator();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
+		WeaponInfo.Projectile_Replicate_Class, MuzzleLocation, ShotTargetDirection, SpawnParameters);
+	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+
+	Fire_Multicast(MuzzleLocation);
+}
+
+void AMultiShootGameCharacter::Fire_Multicast_Implementation(FVector MuzzleLocation)
+{
+	if (MuzzleEffect)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleEffect, MuzzleLocation);
+	}
+}
 
 void AMultiShootGameCharacter::BeginReload()
 {

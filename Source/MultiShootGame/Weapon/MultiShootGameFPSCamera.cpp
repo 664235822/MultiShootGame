@@ -70,7 +70,7 @@ void AMultiShootGameFPSCamera::Fire()
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
 
-			CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
+			AMultiShootGameProjectileBase* CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
 				WeaponInfo.Projectile_NoReplicate_Class, MuzzleLocation, ShotTargetDirection);
 			CurrentProjectile->SetOwner(GetOwner());
 			CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);

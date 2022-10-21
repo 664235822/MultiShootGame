@@ -73,17 +73,12 @@ void AMultiShootGameWeapon::Fire()
 
 		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
 
-		if (MuzzleEffect)
-		{
-			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
-		}
-
 		if (WeaponInfo.Projectile_Replicate_Class)
 		{
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
 
-			Fire_Server(MuzzleLocation, ShotTargetDirection);
+			MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection);
 		}
 
 		ShakeCamera();
@@ -94,18 +89,6 @@ void AMultiShootGameWeapon::Fire()
 
 		LastFireTime = GetWorld()->TimeSeconds;
 	}
-}
-
-void AMultiShootGameWeapon::Fire_Server_Implementation(FVector MuzzleLocation, FRotator ShotTargetDirection)
-{
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.Owner = GetOwner();
-	SpawnParameters.Instigator = GetInstigator();
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
-		WeaponInfo.Projectile_Replicate_Class, MuzzleLocation, ShotTargetDirection, SpawnParameters);
-	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 }
 
 void AMultiShootGameWeapon::ShakeCamera()

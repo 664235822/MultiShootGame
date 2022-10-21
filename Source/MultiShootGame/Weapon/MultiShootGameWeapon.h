@@ -51,9 +51,6 @@ protected:
 	EWeaponMode CurrentWeaponMode;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-	UParticleSystem* MuzzleEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	TSubclassOf<AMultiShootGameBulletShell> BulletShellClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
@@ -66,11 +63,6 @@ protected:
 	float TimeBetweenShots;
 
 	bool Loop = false;
-
-	AMultiShootGameProjectileBase* CurrentProjectile;
-
-	UFUNCTION(Server, Reliable)
-	void Fire_Server(FVector MuzzleLocation, FRotator ShotTargetDirection);
 
 	void ShakeCamera();
 

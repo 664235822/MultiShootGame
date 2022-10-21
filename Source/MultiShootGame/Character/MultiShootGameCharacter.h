@@ -54,6 +54,12 @@ protected:
 	void EndAim();
 
 public:
+	UFUNCTION(Server, Unreliable)
+	void Fire_Server(FWeaponInfo WeaponInfo, FVector MuzzleLocation, FRotator ShotTargetDirection);
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void Fire_Multicast(FVector MuzzleLocation);
+
 	void BeginReload();
 
 protected:
@@ -164,6 +170,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UDamageType> DamageTypeClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
+	UParticleSystem* MuzzleEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	FName MainWeaponSocketName = "MainWeaponSocket";
@@ -352,6 +361,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameProjectileBase* CurrentProjectile;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;
