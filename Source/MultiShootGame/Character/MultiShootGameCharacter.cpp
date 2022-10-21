@@ -110,28 +110,24 @@ void AMultiShootGameCharacter::BeginPlay()
 
 	if (CurrentMainWeapon)
 	{
-		CurrentMainWeapon->Controller = GetController();
 		CurrentMainWeapon->AttachToComponent(MainWeaponSceneComponent,
 		                                     FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentSecondWeapon)
 	{
-		CurrentSecondWeapon->Controller = GetController();
 		CurrentSecondWeapon->AttachToComponent(SecondWeaponSceneComponent,
 		                                       FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentThirdWeapon)
 	{
-		CurrentThirdWeapon->Controller = GetController();
 		CurrentThirdWeapon->AttachToComponent(ThirdWeaponSceneComponent,
 		                                      FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	if (CurrentFPSCamera)
 	{
-		CurrentFPSCamera->Controller = GetController();
 		CurrentFPSCamera->AttachToComponent(FPSCameraSceneComponent,
 		                                    FAttachmentTransformRules::SnapToTargetIncludingScale);
 		CurrentFPSCamera->SetActorHiddenInGame(true);
