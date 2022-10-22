@@ -32,9 +32,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USkeletalMeshComponent* WeaponMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
-	UAudioComponent* AudioComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FName MuzzleSocketName = "Muzzle";
 
@@ -90,7 +87,4 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = Weapon)
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMeshComponent() const { return WeaponMeshComponent; }
-
-	UFUNCTION(BlueprintPure, Category = Weapon)
-	FORCEINLINE UAudioComponent* GetAudioComponent() const { return AudioComponent; }
 };

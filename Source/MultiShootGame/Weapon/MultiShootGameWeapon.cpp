@@ -21,10 +21,6 @@ AMultiShootGameWeapon::AMultiShootGameWeapon()
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponmeshComponent"));
 	WeaponMeshComponent->SetupAttachment(RootComponent);
 	WeaponMeshComponent->SetCastHiddenShadow(true);
-
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AudioComponent->SetupAttachment(RootComponent);
-	AudioComponent->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned
@@ -90,8 +86,6 @@ void AMultiShootGameWeapon::Fire()
 		ShakeCamera();
 
 		BulletFire(MyOwner);
-
-		AudioComponent->Play();
 
 		LastFireTime = GetWorld()->TimeSeconds;
 	}

@@ -58,7 +58,7 @@ public:
 	void Fire_Server(FWeaponInfo WeaponInfo, FVector MuzzleLocation, FRotator ShotTargetDirection);
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void Fire_Multicast(FVector MuzzleLocation);
+	void Fire_Multicast(FWeaponInfo WeaponInfo, FVector MuzzleLocation);
 
 	void BeginReload();
 
@@ -218,7 +218,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* AimedAnimMontage;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* WeaponOutAnimMontage;
 

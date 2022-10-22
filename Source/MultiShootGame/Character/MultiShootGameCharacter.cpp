@@ -386,14 +386,15 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 		WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection, SpawnParameters);
 	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 
-	Fire_Multicast(MuzzleLocation);
+	Fire_Multicast(WeaponInfo, MuzzleLocation);
 }
 
-void AMultiShootGameCharacter::Fire_Multicast_Implementation(FVector MuzzleLocation)
+void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation)
 {
 	if (MuzzleEffect)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleEffect, MuzzleLocation);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponInfo.FireSoundCue, MuzzleLocation);
 	}
 }
 

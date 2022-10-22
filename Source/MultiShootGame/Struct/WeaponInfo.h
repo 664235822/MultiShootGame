@@ -6,6 +6,7 @@
 #include "MatineeCameraShake.h"
 #include "../Weapon/MultiShootGameProjectileBase.h"
 #include "Engine/DataTable.h"
+#include "Sound/SoundCue.h"
 #include "WeaponInfo.generated.h"
 
 /**
@@ -29,11 +30,14 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	UStaticMesh* MagazineClipMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
+	USoundCue* FireSoundCue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	TSubclassOf<AMultiShootGameProjectileBase> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	TSubclassOf<UMatineeCameraShake> FireCameraShake;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	float BaseDamage;
 
