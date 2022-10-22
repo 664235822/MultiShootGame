@@ -73,7 +73,7 @@ void AMultiShootGameWeapon::Fire()
 
 		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
 
-		if (WeaponInfo.Projectile_Replicate_Class)
+		if (WeaponInfo.ProjectileClass)
 		{
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);

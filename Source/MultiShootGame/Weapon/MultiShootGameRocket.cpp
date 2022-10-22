@@ -26,9 +26,7 @@ AMultiShootGameRocket::AMultiShootGameRocket()
 
 void AMultiShootGameRocket::Explode()
 {
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticleSystem, GetActorLocation());
-	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSoundCue, GetActorLocation());
-	UGameplayStatics::PlayWorldCameraShake(GetWorld(), RocketCameraShakeClass, GetActorLocation(), 0, DamageRadius);
+	Explode_Multicast();
 
 	const TArray<AActor*> IgnoreActors;
 
@@ -36,6 +34,13 @@ void AMultiShootGameRocket::Explode()
 	                                    IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
 
 	Destroy();
+}
+
+void AMultiShootGameRocket::Explode_Multicast_Implementation()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticleSystem, GetActorLocation());
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSoundCue, GetActorLocation());
+	UGameplayStatics::PlayWorldCameraShake(GetWorld(), RocketCameraShakeClass, GetActorLocation(), 0, DamageRadius);
 }
 
 void AMultiShootGameRocket::ProjectileInitialize(float Damage)

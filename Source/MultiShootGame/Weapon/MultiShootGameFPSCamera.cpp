@@ -65,13 +65,13 @@ void AMultiShootGameFPSCamera::Fire()
 			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
 		}
 
-		if (WeaponInfo.Projectile_NoReplicate_Class)
+		if (WeaponInfo.ProjectileClass)
 		{
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
 
 			AMultiShootGameProjectileBase* CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
-				WeaponInfo.Projectile_NoReplicate_Class, MuzzleLocation, ShotTargetDirection);
+				WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection);
 			CurrentProjectile->SetOwner(GetOwner());
 			CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 		}

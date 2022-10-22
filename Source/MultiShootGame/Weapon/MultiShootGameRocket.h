@@ -54,6 +54,9 @@ protected:
 
 	void Explode();
 
+	UFUNCTION(NetMulticast,Reliable)
+	void Explode_Multicast();
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	           const FHitResult& Hit);

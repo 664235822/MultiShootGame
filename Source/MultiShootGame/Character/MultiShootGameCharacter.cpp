@@ -376,7 +376,7 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
-		WeaponInfo.Projectile_Replicate_Class, MuzzleLocation, ShotTargetDirection, SpawnParameters);
+		WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection, SpawnParameters);
 	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 
 	Fire_Multicast(MuzzleLocation);
