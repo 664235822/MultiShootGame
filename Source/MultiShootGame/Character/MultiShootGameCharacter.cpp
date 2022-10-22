@@ -386,15 +386,37 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 		WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection, SpawnParameters);
 	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 
-	Fire_Multicast(WeaponInfo, MuzzleLocation);
+	Fire_Multicast(WeaponInfo);
 }
 
-void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation)
+void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponInfo)
 {
-	if (MuzzleEffect)
+	FVector MuzzleLocation;
+	
+	switch (WeaponMode)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleEffect, MuzzleLocation);
+	case EWeaponMode::MainWeapon:
+		MuzzleLocation = CurrentMainWeapon->GetWeaponMeshComponent()->GetSocketLocation(MuzzleSocketName);
+		break;
+	case EWeaponMode::SecondWeapon:
+		MuzzleLocation = CurrentSecondWeapon->GetWeaponMeshComponent()->GetSocketLocation(MuzzleSocketName);
+		break;
+	case EWeaponMode::ThirdWeapon:
+		MuzzleLocation = CurrentThirdWeapon->GetWeaponMeshComponent()->GetSocketLocation(MuzzleSocketName);
+		break;
+	}
+	
+	if (WeaponInfo.FireSoundCue)
+	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponInfo.FireSoundCue, MuzzleLocation);
+	}
+
+	if (WeaponInfo.MuzzleEffect)
+	{
+		if(bAimed && !IsLocallyControlled() || !bAimed)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
+		}
 	}
 }
 

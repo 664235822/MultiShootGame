@@ -58,7 +58,7 @@ public:
 	void Fire_Server(FWeaponInfo WeaponInfo, FVector MuzzleLocation, FRotator ShotTargetDirection);
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void Fire_Multicast(FWeaponInfo WeaponInfo, FVector MuzzleLocation);
+	void Fire_Multicast(FWeaponInfo WeaponInfo);
 
 	void BeginReload();
 
@@ -171,9 +171,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UDamageType> DamageTypeClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
-	UParticleSystem* MuzzleEffect;
-
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	FName MainWeaponSocketName = "MainWeaponSocket";
 
@@ -191,6 +188,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	FName BackThirdWeaponSocketName = "BackThirdWeaponSocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = Character)
+	FName MuzzleSocketName = "Muzzle";
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	FName GrenadeSocketName = "GrenadeSocket";

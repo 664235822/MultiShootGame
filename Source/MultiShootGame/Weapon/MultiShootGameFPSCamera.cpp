@@ -58,6 +58,12 @@ void AMultiShootGameFPSCamera::Fire()
 		if (WeaponInfo.ProjectileClass)
 		{
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+
+			if (WeaponInfo.MuzzleEffect)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
+			}
+			
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
 
 			MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection);

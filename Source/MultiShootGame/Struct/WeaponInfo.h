@@ -32,6 +32,9 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	USoundCue* FireSoundCue;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
+	UParticleSystem* MuzzleEffect;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	TSubclassOf<AMultiShootGameProjectileBase> ProjectileClass;
 
