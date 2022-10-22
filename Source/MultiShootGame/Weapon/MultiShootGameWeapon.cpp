@@ -61,6 +61,12 @@ void AMultiShootGameWeapon::BeginPlay()
 void AMultiShootGameWeapon::Fire()
 {
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+
+	if (BulletCheck(MyOwner))
+	{
+		return;
+	}
+
 	if (MyOwner)
 	{
 		FVector EyeLocation = MyOwner->GetCameraComponent()->GetComponentLocation();
