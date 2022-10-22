@@ -69,8 +69,8 @@ void AMultiShootGameWeapon::Fire()
 
 	if (MyOwner)
 	{
-		FVector EyeLocation = MyOwner->GetCameraComponent()->GetComponentLocation();
-		FRotator EyeRotation = MyOwner->GetCameraComponent()->GetComponentRotation();
+		const FVector EyeLocation = MyOwner->GetCameraComponent()->GetComponentLocation();
+		const FRotator EyeRotation = MyOwner->GetCameraComponent()->GetComponentRotation();
 
 		FVector ShotDirection = EyeRotation.Vector();
 

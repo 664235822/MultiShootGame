@@ -60,9 +60,6 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void Fire_Multicast(FVector MuzzleLocation);
 
-	UFUNCTION(Client, Unreliable)
-	void Fire_Client(AMultiShootGameProjectileBase* CurrentProjectile);
-
 	void BeginReload();
 
 protected:
@@ -220,6 +217,9 @@ protected:
 	TSubclassOf<UMatineeCameraShake> HitCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
+	UAnimMontage* AimedAnimMontage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* WeaponOutAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
@@ -303,15 +303,18 @@ protected:
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void PutBackWeapon_Server();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void PlayAnimMontage_Server(UAnimMontage* AnimMontage, float InPlayRate = 1,
 	                            FName StartSectionName = NAME_None);
 
-	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	UFUNCTION(NetMulticast, Reliable)
 	void PlayAnimMontage_Multicast(UAnimMontage* AnimMontage, float InPlayRate = 1,
 	                               FName StartSectionName = NAME_None);
 
-	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void StopAnimMontage_Server(UAnimMontage* AnimMontage);
+
+	UFUNCTION(NetMulticast, Reliable)
 	void StopAnimMontage_Multicast(UAnimMontage* AnimMontage);
 
 	bool bFired = false;
@@ -323,7 +326,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bMoving = false;
 
-	UPROPERTY(BlueprintReadWrite, Replicated)
+	UPROPERTY(Replicated, BlueprintReadWrite)
 	bool bDetectingClimb = false;
 
 	UPROPERTY(BlueprintReadOnly)

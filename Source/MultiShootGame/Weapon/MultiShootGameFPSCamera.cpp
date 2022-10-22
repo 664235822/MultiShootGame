@@ -50,30 +50,17 @@ void AMultiShootGameFPSCamera::Fire()
 
 		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
 
-		if (Cast<AMultiShootGameFPSCamera>(this))
-		{
-			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(EyeLocation, TraceEnd);
+		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(EyeLocation, TraceEnd);
+		const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
 
-			const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
-
-			Cast<AMultiShootGameCharacter>(GetOwner())->GetFPSCameraSceneComponent()->SetWorldRotation(
-				TargetRotation);
-		}
-
-		if (MuzzleEffect)
-		{
-			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
-		}
-
+		MyOwner->GetFPSCameraSceneComponent()->SetWorldRotation(TargetRotation);
+		
 		if (WeaponInfo.ProjectileClass)
 		{
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
 
-			AMultiShootGameProjectileBase* CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
-				WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection);
-			CurrentProjectile->SetOwner(GetOwner());
-			CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+			MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection);
 		}
 
 		ShakeCamera();

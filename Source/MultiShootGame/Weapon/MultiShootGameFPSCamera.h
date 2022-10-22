@@ -26,9 +26,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* CameraComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-	UParticleSystem* MuzzleEffect;
-
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	float ZoomedFOV = 40.0f;
 

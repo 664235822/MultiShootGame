@@ -202,29 +202,6 @@ void AMultiShootGameCharacter::StartFire()
 				break;
 			}
 		}
-
-		switch (WeaponMode)
-		{
-		case EWeaponMode::MainWeapon:
-			if (CurrentMainWeapon)
-			{
-				CurrentMainWeapon->StartFire();
-			}
-			break;
-		case EWeaponMode::SecondWeapon:
-			if (CurrentSecondWeapon)
-			{
-				CurrentSecondWeapon->Fire();
-				BeginSecondWeaponReload();
-			}
-			break;
-		case EWeaponMode::ThirdWeapon:
-			if (CurrentThirdWeapon)
-			{
-				CurrentThirdWeapon->FireOfDelay();
-			}
-			break;
-		}
 	}
 }
 
@@ -358,6 +335,8 @@ void AMultiShootGameCharacter::BeginAim()
 	{
 		CurrentMainWeapon->StopFire();
 	}
+
+	PlayAnimMontage_Server(AimedAnimMontage);
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -391,6 +370,8 @@ void AMultiShootGameCharacter::EndAim()
 	}
 
 	CurrentFPSCamera->StopFire();
+
+	StopAnimMontage_Server(AimedAnimMontage);
 }
 
 void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation,
@@ -406,22 +387,13 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 
 	Fire_Multicast(MuzzleLocation);
-	Fire_Client(CurrentProjectile);
 }
 
 void AMultiShootGameCharacter::Fire_Multicast_Implementation(FVector MuzzleLocation)
 {
-	if (MuzzleEffect && !bAimed)
+	if (MuzzleEffect)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleEffect, MuzzleLocation);
-	}
-}
-
-void AMultiShootGameCharacter::Fire_Client_Implementation(AMultiShootGameProjectileBase* CurrentProjectile)
-{
-	if (CurrentProjectile && bAimed)
-	{
-		CurrentProjectile->SetActorHiddenInGame(true);
 	}
 }
 
@@ -1000,6 +972,11 @@ void AMultiShootGameCharacter::PlayAnimMontage_Multicast_Implementation(UAnimMon
                                                                         float InPlayRate, FName StartSectionName)
 {
 	PlayAnimMontage(AnimMontage, InPlayRate, StartSectionName);
+}
+
+void AMultiShootGameCharacter::StopAnimMontage_Server_Implementation(UAnimMontage* AnimMontage)
+{
+	StopAnimMontage_Multicast(AnimMontage);
 }
 
 void AMultiShootGameCharacter::StopAnimMontage_Multicast_Implementation(UAnimMontage* AnimMontage)
