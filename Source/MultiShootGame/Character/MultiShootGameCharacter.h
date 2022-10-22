@@ -57,8 +57,11 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void Fire_Server(FWeaponInfo WeaponInfo, FVector MuzzleLocation, FRotator ShotTargetDirection);
 
-	UFUNCTION(NetMulticast,Unreliable)
+	UFUNCTION(NetMulticast, Unreliable)
 	void Fire_Multicast(FVector MuzzleLocation);
+
+	UFUNCTION(Client, Unreliable)
+	void Fire_Client(AMultiShootGameProjectileBase* CurrentProjectile);
 
 	void BeginReload();
 
@@ -361,9 +364,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameFPSCamera* CurrentFPSCamera;
-
-	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameProjectileBase* CurrentProjectile;
 
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameGrenade* CurrentGrenade;

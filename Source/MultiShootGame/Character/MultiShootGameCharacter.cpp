@@ -202,6 +202,29 @@ void AMultiShootGameCharacter::StartFire()
 				break;
 			}
 		}
+
+		switch (WeaponMode)
+		{
+		case EWeaponMode::MainWeapon:
+			if (CurrentMainWeapon)
+			{
+				CurrentMainWeapon->StartFire();
+			}
+			break;
+		case EWeaponMode::SecondWeapon:
+			if (CurrentSecondWeapon)
+			{
+				CurrentSecondWeapon->Fire();
+				BeginSecondWeaponReload();
+			}
+			break;
+		case EWeaponMode::ThirdWeapon:
+			if (CurrentThirdWeapon)
+			{
+				CurrentThirdWeapon->FireOfDelay();
+			}
+			break;
+		}
 	}
 }
 
@@ -331,7 +354,10 @@ void AMultiShootGameCharacter::BeginAim()
 		CurrentFPSCamera->StartFire();
 	}
 
-	CurrentMainWeapon->StopFire();
+	if (IsLocallyControlled())
+	{
+		CurrentMainWeapon->StopFire();
+	}
 }
 
 void AMultiShootGameCharacter::EndAim()
@@ -375,18 +401,27 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 	SpawnParameters.Instigator = GetInstigator();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
+	AMultiShootGameProjectileBase* CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
 		WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection, SpawnParameters);
 	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 
 	Fire_Multicast(MuzzleLocation);
+	Fire_Client(CurrentProjectile);
 }
 
 void AMultiShootGameCharacter::Fire_Multicast_Implementation(FVector MuzzleLocation)
 {
-	if (MuzzleEffect)
+	if (MuzzleEffect && !bAimed)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleEffect, MuzzleLocation);
+	}
+}
+
+void AMultiShootGameCharacter::Fire_Client_Implementation(AMultiShootGameProjectileBase* CurrentProjectile)
+{
+	if (CurrentProjectile && bAimed)
+	{
+		CurrentProjectile->SetActorHiddenInGame(true);
 	}
 }
 
