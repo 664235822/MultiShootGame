@@ -2,6 +2,7 @@
 
 
 #include "MultiShootGameServerGameMode.h"
+#include "MultiShootGame/Character/MultiShootGameCharacter.h"
 
 AMultiShootGameServerGameMode::AMultiShootGameServerGameMode(): Super()
 {

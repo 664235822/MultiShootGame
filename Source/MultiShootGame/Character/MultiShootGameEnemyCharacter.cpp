@@ -43,13 +43,14 @@ void AMultiShootGameEnemyCharacter::BeginPlay()
 	HealthComponent->OnHeadShot.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnHeadShot);
 
 	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+	SpawnParameters.Instigator = GetInstigator();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	CurrentWeapon = GetWorld()->SpawnActor<AMultiShootGameEnemyWeapon>(
 		WeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
 	if (CurrentWeapon)
 	{
-		CurrentWeapon->SetOwner(this);
 		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 		                                 WeaponSocketName);
 	}

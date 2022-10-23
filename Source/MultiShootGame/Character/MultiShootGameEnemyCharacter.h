@@ -6,10 +6,9 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/GameMode.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MultiShootGame/Component/HealthComponent.h"
-#include "MultiShootGame/GameMode/MultiShootGameGameInstance.h"
-#include "MultiShootGame/GameMode/MultiShootGameGameModeBase.h"
 #include "MultiShootGame/Weapon/MultiShootGameEnemyWeapon.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "MultiShootGameEnemyCharacter.generated.h"
@@ -68,10 +67,7 @@ protected:
 	AMultiShootGameEnemyWeapon* CurrentWeapon;
 
 	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameGameModeBase* CurrentGameMode;
-
-	UPROPERTY(BlueprintReadOnly)
-	UMultiShootGameGameInstance* CurrentGameInstance;
+	AGameMode* CurrentGameMode;
 
 	FTimerHandle TimerHandle;
 

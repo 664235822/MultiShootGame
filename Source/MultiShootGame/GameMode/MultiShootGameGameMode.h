@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MultiShootGameGameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "MultiShootGame/Enum/EWaveState.h"
 #include "MultiShootGameGameMode.generated.h"
 
 UCLASS(minimalapi)
-class AMultiShootGameGameMode : public AMultiShootGameGameModeBase
+class AMultiShootGameGameMode : public AGameMode
 {
 	GENERATED_BODY()
 

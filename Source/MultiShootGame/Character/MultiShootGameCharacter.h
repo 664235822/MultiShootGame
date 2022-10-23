@@ -130,6 +130,9 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void Death_Multicast();
 
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void Reborn_Server();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USpringArmComponent* SpringArmComponent;
 
@@ -177,6 +180,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UDamageType> DamageTypeClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
+	TSubclassOf<AActor> PlayerStartClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
+	TSubclassOf<AActor> CharacterClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	FName MainWeaponSocketName = "MainWeaponSocket";
@@ -384,7 +393,7 @@ protected:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int DeathCount;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentMainWeapon;
 
@@ -401,10 +410,7 @@ protected:
 	AMultiShootGameGrenade* CurrentGrenade;
 
 	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGameGameModeBase* CurrentGameMode;
-
-	UPROPERTY(BlueprintReadOnly)
-	UMultiShootGameGameInstance* CurrentGameInstance;
+	AGameMode* CurrentGameMode;
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
@@ -421,12 +427,12 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(Server,Reliable)
+	UFUNCTION(Server, Reliable)
 	void OnEnemyKilled_Server();
 
-	UFUNCTION(Server,Reliable)
+	UFUNCTION(Server, Reliable)
 	void OnHeadshot_Server();
-	
+
 	void OnDeath();
 
 	UFUNCTION(BlueprintPure, Category = Character)

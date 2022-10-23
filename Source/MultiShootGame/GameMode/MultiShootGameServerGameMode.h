@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MultiShootGameGameInstance.h"
-#include "MultiShootGameGameModeBase.h"
 #include "GameFramework/GameMode.h"
 #include "MultiShootGameServerGameMode.generated.h"
 
@@ -12,7 +10,7 @@
  * 
  */
 UCLASS()
-class MULTISHOOTGAME_API AMultiShootGameServerGameMode : public AMultiShootGameGameModeBase
+class MULTISHOOTGAME_API AMultiShootGameServerGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
@@ -20,5 +18,4 @@ public:
 	AMultiShootGameServerGameMode();
 
 	virtual void StartPlay() override;
-	
 };

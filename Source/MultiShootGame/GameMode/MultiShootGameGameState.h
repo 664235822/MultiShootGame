@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameStateBase.h"
+#include "GameFramework/GameState.h"
 #include "MultiShootGame/Enum/EWaveState.h"
 #include "MultiShootGameGameState.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class MULTISHOOTGAME_API AMultiShootGameGameState : public AGameStateBase
+class MULTISHOOTGAME_API AMultiShootGameGameState : public AGameState
 {
 	GENERATED_BODY()
 

@@ -78,8 +78,7 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentGameMode = Cast<AMultiShootGameGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	CurrentGameInstance = Cast<UMultiShootGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	CurrentGameMode = Cast<AGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
 		CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
@@ -852,6 +851,19 @@ void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
 	{
 		Character->OnHeadshot_Server();
 	}
+}
+
+void AMultiShootGameCharacter::Reborn_Server_Implementation()
+{
+	TArray<AActor*> OutActorArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PlayerStartClass, OutActorArray);
+	const AActor* OutActor = OutActorArray[UKismetMathLibrary::RandomInteger(OutActorArray.Max())];
+	const FTransform Transform = OutActor->GetActorTransform();
+
+	AMultiShootGameCharacter* Character = GetWorld()->SpawnActor<AMultiShootGameCharacter>(CharacterClass, Transform);
+	GetController()->Possess(Character);
+
+	Destroy(true);
 }
 
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
