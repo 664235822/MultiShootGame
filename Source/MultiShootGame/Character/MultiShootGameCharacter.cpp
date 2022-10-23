@@ -67,6 +67,7 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
+		HealthComponent->OnHeadShot.AddDynamic(this, &AMultiShootGameCharacter::HeadShot);
 	}
 
 	HitEffectComponent = CreateDefaultSubobject<UHitEffectComponent>(TEXT("HitEfectComponent"));
@@ -843,6 +844,40 @@ void AMultiShootGameCharacter::FillUpWeaponBullet()
 	GrenadeCount = MaxGrenadeCount;
 }
 
+void AMultiShootGameCharacter::EnemyKilled_Multicast_Implementation(AActor* DamageCauser)
+{
+	if (DamageCauser == this)
+	{
+		OnEnemyKilled();
+	}
+}
+
+void AMultiShootGameCharacter::EnemyKilled_Server_Implementation(AActor* DamageCauser)
+{
+	EnemyKilled_Multicast(DamageCauser);
+}
+
+void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
+{
+	if (!HealthComponent->bDied)
+	{
+		HeadShot_Server(DamageCauser);
+	}
+}
+
+void AMultiShootGameCharacter::HeadShot_Multicast_Implementation(AActor* DamageCauser)
+{
+	if (DamageCauser == this)
+	{
+		OnHeadshot();
+	}
+}
+
+void AMultiShootGameCharacter::HeadShot_Server_Implementation(AActor* DamageCauser)
+{
+	HeadShot_Multicast(DamageCauser);
+}
+
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
 {
 	if (HealthComponent->bDied || bDetectingClimb || bReloading || bToggleWeapon || bSecondWeaponReloading ||
@@ -901,6 +936,22 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 	SetWalkSpeed_Server(Speed);
+}
+
+void AMultiShootGameCharacter::CheckShowSight(float DeltaSeconds)
+{
+	if (bShowSight)
+	{
+		if (CurrentShowSight < ShowSightDelay)
+		{
+			CurrentShowSight += DeltaSeconds;
+		}
+		else
+		{
+			bShowSight = false;
+			CurrentShowSight = 0.f;
+		}
+	}
 }
 
 void AMultiShootGameCharacter::SetWalkSpeed_Server_Implementation(float Value)
@@ -1059,6 +1110,9 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
 
 	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
+		OnDeath();
+
+		EnemyKilled_Server(DamageCauser);
 		Death_Server();
 	}
 }
@@ -1083,6 +1137,8 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 
 		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 	}
+
+	CheckShowSight(DeltaTime);
 }
 
 void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -1150,4 +1206,26 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, bSpawnGrenade);
 	DOREPLIFETIME(AMultiShootGameCharacter, GrenadeCount);
 	DOREPLIFETIME(AMultiShootGameCharacter, bDetectingClimb);
+	DOREPLIFETIME(AMultiShootGameCharacter, bShowSight);
+	DOREPLIFETIME(AMultiShootGameCharacter, Score);
+	DOREPLIFETIME(AMultiShootGameCharacter, KillCount);
+	DOREPLIFETIME(AMultiShootGameCharacter, DeathCount);
+}
+
+void AMultiShootGameCharacter::OnEnemyKilled()
+{
+	Score += 50;
+	KillCount++;
+	bShowSight = true;
+	CurrentShowSight = 0.f;
+}
+
+void AMultiShootGameCharacter::OnHeadshot()
+{
+	Score += 25;
+}
+
+void AMultiShootGameCharacter::OnDeath()
+{
+	DeathCount++;
 }

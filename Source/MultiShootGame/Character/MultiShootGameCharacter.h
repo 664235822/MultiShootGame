@@ -121,6 +121,21 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void FillUpWeaponBullet();
 
+	UFUNCTION(Server, Reliable)
+	void EnemyKilled_Server(AActor* DamageCauser);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void EnemyKilled_Multicast(AActor* DamageCauser);
+
+	UFUNCTION()
+	void HeadShot(AActor* DamageCauser);
+
+	UFUNCTION(Server, Unreliable)
+	void HeadShot_Server(AActor* DamageCauser);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void HeadShot_Multicast(AActor* DamageCauser);
+
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Death_Server();
 
@@ -240,13 +255,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* KnifeAttackAnimMontage;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> GameUserWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> ServerGameUserWidgetClass;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
@@ -324,6 +339,16 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void StopAnimMontage_Multicast(UAnimMontage* AnimMontage);
 
+	void CheckShowSight(float DeltaSeconds);
+
+	float CurrentShowSight = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = GameMode)
+	float ShowSightDelay = 1.f;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	bool bShowSight = false;
+
 	bool bFired = false;
 
 	bool bFastRun = false;
@@ -363,6 +388,15 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int GrenadeCount;
 
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int Score;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int KillCount;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int DeathCount;
+	
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentMainWeapon;
 
@@ -386,7 +420,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentSniperUserWidget;
 
@@ -398,6 +432,12 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	void OnEnemyKilled();
+
+	void OnHeadshot();
+
+	void OnDeath();
 
 	UFUNCTION(BlueprintPure, Category = Character)
 	FORCEINLINE AMultiShootGameWeapon* GetCurrentMainWeapon() const { return CurrentMainWeapon; }

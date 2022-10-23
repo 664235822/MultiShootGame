@@ -18,36 +18,9 @@ public:
 	AMultiShootGameGameModeBase();
 
 	virtual void StartPlay() override;
-
-protected:
-	void CheckShowSight(float DeltaSeconds);
-
-	UFUNCTION(BlueprintCallable)
-	void Clear();
-
-	float CurrentShowSight = 0.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = GameMode)
-	float ShowSightDelay = 1.f;
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bShowSight = false;
-
-	UPROPERTY(BlueprintReadOnly)
-	int Score;
-
-	UPROPERTY(BlueprintReadOnly)
-	int KillCount;
-
-	UPROPERTY(BlueprintReadOnly)
-	int DeathCount;
-public:
+	
 	virtual void Tick(float DeltaSeconds) override;
 
-	void OnEnemyKilled();
-
-	void OnHeadshot();
-
-	void OnDeath();
+	
 	
 };

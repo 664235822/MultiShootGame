@@ -80,7 +80,7 @@ protected:
 	                     const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION()
-	void OnHeadShot();
+	void OnHeadShot(AActor* DamageCauser);
 
 public:
 	// Called every frame

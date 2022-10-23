@@ -116,11 +116,15 @@ void AMultiShootGameEnemyCharacter::StopFire()
 	}
 }
 
-void AMultiShootGameEnemyCharacter::OnHeadShot()
+void AMultiShootGameEnemyCharacter::OnHeadShot(AActor* DamageCauser)
 {
 	if (!HealthComponent->bDied)
 	{
-		Cast<AMultiShootGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->OnHeadshot();
+		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
+		if (Character)
+		{
+			Character->OnHeadshot();
+		}
 	}
 }
 
@@ -158,7 +162,11 @@ void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHeal
 
 		DeathAudioComponent->Play();
 
-		Cast<AMultiShootGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->OnEnemyKilled();
+		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
+		if (Character)
+		{
+			Character->OnEnemyKilled();
+		}
 
 		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameEnemyCharacter::DeathDestroy,
 		                                DeathDestroyDelay);

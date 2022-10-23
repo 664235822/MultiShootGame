@@ -15,7 +15,7 @@ class MULTISHOOTGAME_API UHealthComponent : public UActorComponent
 	                                             float, Health, float, HealthDelta, const class UDamageType*,
 	                                             DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHeadShotSignature);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHeadShotSignature, AActor*, DamageCauser);
 
 public:
 	// Sets default values for this component's properties

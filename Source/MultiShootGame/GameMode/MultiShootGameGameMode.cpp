@@ -205,6 +205,4 @@ void AMultiShootGameGameMode::Tick(float DeltaSeconds)
 	CheckAnyPlayerAlive();
 
 	CheckNumberOfBots();
-
-	CheckShowSight(DeltaSeconds);
 }
