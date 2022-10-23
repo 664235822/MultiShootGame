@@ -13,6 +13,7 @@
 #include "Components/InputComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
@@ -844,38 +845,13 @@ void AMultiShootGameCharacter::FillUpWeaponBullet()
 	GrenadeCount = MaxGrenadeCount;
 }
 
-void AMultiShootGameCharacter::EnemyKilled_Multicast_Implementation(AActor* DamageCauser)
-{
-	if (DamageCauser == this)
-	{
-		OnEnemyKilled();
-	}
-}
-
-void AMultiShootGameCharacter::EnemyKilled_Server_Implementation(AActor* DamageCauser)
-{
-	EnemyKilled_Multicast(DamageCauser);
-}
-
 void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
 {
-	if (!HealthComponent->bDied)
+	AMultiShootGameCharacter* Character=Cast<AMultiShootGameCharacter>(DamageCauser);
+	if(Character)
 	{
-		HeadShot_Server(DamageCauser);
+		Character->OnHeadshot_Server();
 	}
-}
-
-void AMultiShootGameCharacter::HeadShot_Multicast_Implementation(AActor* DamageCauser)
-{
-	if (DamageCauser == this)
-	{
-		OnHeadshot();
-	}
-}
-
-void AMultiShootGameCharacter::HeadShot_Server_Implementation(AActor* DamageCauser)
-{
-	HeadShot_Multicast(DamageCauser);
 }
 
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
@@ -1112,7 +1088,8 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
 	{
 		OnDeath();
 
-		EnemyKilled_Server(DamageCauser);
+		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
+		Character->OnEnemyKilled_Server();
 		Death_Server();
 	}
 }
@@ -1212,7 +1189,7 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, DeathCount);
 }
 
-void AMultiShootGameCharacter::OnEnemyKilled()
+void AMultiShootGameCharacter::OnEnemyKilled_Server_Implementation()
 {
 	Score += 50;
 	KillCount++;
@@ -1220,7 +1197,7 @@ void AMultiShootGameCharacter::OnEnemyKilled()
 	CurrentShowSight = 0.f;
 }
 
-void AMultiShootGameCharacter::OnHeadshot()
+void AMultiShootGameCharacter::OnHeadshot_Server_Implementation()
 {
 	Score += 25;
 }

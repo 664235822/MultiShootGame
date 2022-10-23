@@ -121,20 +121,8 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void FillUpWeaponBullet();
 
-	UFUNCTION(Server, Reliable)
-	void EnemyKilled_Server(AActor* DamageCauser);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void EnemyKilled_Multicast(AActor* DamageCauser);
-
 	UFUNCTION()
 	void HeadShot(AActor* DamageCauser);
-
-	UFUNCTION(Server, Unreliable)
-	void HeadShot_Server(AActor* DamageCauser);
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void HeadShot_Multicast(AActor* DamageCauser);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Death_Server();
@@ -433,10 +421,12 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void OnEnemyKilled();
+	UFUNCTION(Server,Reliable)
+	void OnEnemyKilled_Server();
 
-	void OnHeadshot();
-
+	UFUNCTION(Server,Reliable)
+	void OnHeadshot_Server();
+	
 	void OnDeath();
 
 	UFUNCTION(BlueprintPure, Category = Character)
