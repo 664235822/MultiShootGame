@@ -10,5 +10,5 @@
 #define SURFACE_WOOD SurfaceType4
 #define TraceType_Visibility TraceTypeQuery1
 #define TraceType_Camera TraceTypeQuery2
-#define TraceType_Weapon TraceTypeQuery3
-#define TraceType_EnemyWeapon TraceTypeQuery4
+#define TraceType_WeaponTrace TraceTypeQuery3
+#define TraceType_EnemyWeaponTrace TraceTypeQuery4

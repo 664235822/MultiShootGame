@@ -667,7 +667,7 @@ void AMultiShootGameCharacter::KnifeHit_Server_Implementation()
 		const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
 		FHitResult HitResult;
 		const TArray<AActor*> IgnoreActors;
-		if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), HitLocation, HitLocation, 50.f, TraceType_Weapon, false,
+		if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), HitLocation, HitLocation, 50.f, TraceType_WeaponTrace, false,
 		                                            IgnoreActors, EDrawDebugTrace::None, HitResult, true))
 		{
 			const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());

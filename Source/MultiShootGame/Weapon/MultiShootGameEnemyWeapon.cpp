@@ -60,7 +60,7 @@ void AMultiShootGameEnemyWeapon::Fire()
 		TArray<AActor*> IgnoreActors;
 		IgnoreActors.Add(GetOwner());
 		FHitResult HitResult;
-		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), EyeLocation, TraceEnd,TraceType_EnemyWeapon, false,
+		if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), EyeLocation, TraceEnd,TraceType_EnemyWeaponTrace, false,
 		                                          IgnoreActors, EDrawDebugTrace::None, HitResult, true))
 		{
 			AActor* HitActor = HitResult.GetActor();
