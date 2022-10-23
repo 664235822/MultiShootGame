@@ -62,6 +62,7 @@ AMultiShootGameCharacter::AMultiShootGameCharacter()
 	GetCharacterMovement()->SetIsReplicated(true);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	HealthComponent->SetIsReplicated(true);
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameCharacter::OnHealthChanged);
@@ -392,7 +393,7 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponInfo)
 {
 	FVector MuzzleLocation;
-	
+
 	switch (WeaponMode)
 	{
 	case EWeaponMode::MainWeapon:
@@ -405,7 +406,7 @@ void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponI
 		MuzzleLocation = CurrentThirdWeapon->GetWeaponMeshComponent()->GetSocketLocation(MuzzleSocketName);
 		break;
 	}
-	
+
 	if (WeaponInfo.FireSoundCue)
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponInfo.FireSoundCue, MuzzleLocation);
@@ -413,7 +414,7 @@ void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponI
 
 	if (WeaponInfo.MuzzleEffect)
 	{
-		if(bAimed && !IsLocallyControlled() || !bAimed)
+		if (bAimed && !IsLocallyControlled() || !bAimed)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
 		}

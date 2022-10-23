@@ -17,7 +17,11 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
 	CollisionComponent->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameProjectile::OnHit);
+	CollisionComponent->SetIsReplicated(true);
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		CollisionComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameProjectile::OnHit);
+	}
 	// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it

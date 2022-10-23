@@ -8,7 +8,11 @@
 AMultiShootGameRocket::AMultiShootGameRocket()
 {
 	RocketComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RocketComponnet"));
-	RocketComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameRocket::OnHit);
+	RocketComponent->SetIsReplicated(true);
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		RocketComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameRocket::OnHit);
+	}
 	RootComponent = RocketComponent;
 
 	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystem"));

@@ -47,8 +47,8 @@ void AMultiShootGameGrenade::Explode()
 
 	const TArray<AActor*> IgnoreActors;
 
-	//UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageTypeClass,
-	//									IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageTypeClass,
+										IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
 
 	Destroy();
 }

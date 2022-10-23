@@ -18,7 +18,11 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	CollisionComponent1 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent1"));
 	CollisionComponent1->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent1->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComponent1->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	CollisionComponent1->SetIsReplicated(true);
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		CollisionComponent1->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	}
 	// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
@@ -42,7 +46,11 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	CollisionComponent2 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent2"));
 	CollisionComponent2->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent2->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComponent2->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	CollisionComponent2->SetIsReplicated(true);
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		CollisionComponent2->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	}
 	// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
@@ -66,7 +74,11 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	CollisionComponent3 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent3"));
 	CollisionComponent3->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent3->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComponent3->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	CollisionComponent3->SetIsReplicated(true);
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		CollisionComponent3->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	}
 	// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
@@ -90,7 +102,11 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	CollisionComponent4 = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent4"));
 	CollisionComponent4->InitBoxExtent(FVector(5.f, 5.f, 5.f));
 	CollisionComponent4->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComponent4->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	CollisionComponent4->SetIsReplicated(true);
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		CollisionComponent4->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+	}
 	// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
@@ -126,7 +142,7 @@ void AMultiShootGameShotgun::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 		if (SurfaceType == SURFACE_HEAD)
 		{
 			BaseDamage *= 2.5f;
-			
+
 			Cast<UHealthComponent>(OtherActor->GetComponentByClass(UHealthComponent::StaticClass()))->OnHeadShot.
 				Broadcast();
 		}

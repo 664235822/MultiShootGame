@@ -28,7 +28,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Health)
 	float DefaultHealth = 100.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health)
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Health)
 	float CurrentHealth = DefaultHealth;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Health)
@@ -45,6 +45,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Health)
 	bool bDied = false;
