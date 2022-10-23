@@ -847,8 +847,8 @@ void AMultiShootGameCharacter::FillUpWeaponBullet()
 
 void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
 {
-	AMultiShootGameCharacter* Character=Cast<AMultiShootGameCharacter>(DamageCauser);
-	if(Character)
+	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
+	if (Character)
 	{
 		Character->OnHeadshot_Server();
 	}
