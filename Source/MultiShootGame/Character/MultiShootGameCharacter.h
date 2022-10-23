@@ -11,7 +11,6 @@
 #include "MultiShootGame/Enum//EWeaponMode.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGame/Component//HitEffectComponent.h"
-#include "MultiShootGame/GameMode/MultiShootGameServerGameMode.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
 #include "MultiShootGame/Weapon/MultiShootGameFPSCamera.h"
 #include "MultiShootGame/Weapon/MultiShootGameWeapon.h"
@@ -385,15 +384,6 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int GrenadeCount;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	int Score;
-
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	int KillCount;
-
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	int DeathCount;
-
 	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentMainWeapon;
 
@@ -410,7 +400,7 @@ protected:
 	AMultiShootGameGrenade* CurrentGrenade;
 
 	UPROPERTY(BlueprintReadOnly)
-	AGameMode* CurrentGameMode;
+	AGameModeBase* CurrentGameMode;
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
@@ -427,6 +417,15 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int Score;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int KillCount;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int DeathCount;
+	
 	UFUNCTION(Server, Reliable)
 	void OnEnemyKilled_Server();
 

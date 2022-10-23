@@ -7,15 +7,16 @@
 #include "MultiShootGame/Weapon/MultiShootGameProjectile.h"
 #include "AnimGraphRuntime/Public/KismetAnimationLibrary.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Microsoft/AllowMicrosoftPlatformTypes.h"
 #include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Net/UnrealNetwork.h"
@@ -78,17 +79,28 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentGameMode = Cast<AGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	CurrentGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
-		CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
+		if (IsLocallyControlled())
+		{
+			CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
+		}
 	}
 	else
 	{
-		CurrentGameUserWidget = CreateWidget(GetWorld(), ServerGameUserWidgetClass);
+		if (IsLocallyControlled())
+		{
+			CurrentGameUserWidget = CreateWidget(GetWorld(), ServerGameUserWidgetClass);
+		}
 	}
 
-	CurrentGameUserWidget->AddToViewport();
+	if (IsLocallyControlled())
+	{
+		CurrentGameUserWidget->AddToViewport();
+	}
+
 
 	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
@@ -159,6 +171,12 @@ void AMultiShootGameCharacter::Destroyed()
 	CurrentSecondWeapon->Destroy();
 	CurrentThirdWeapon->Destroy();
 	CurrentFPSCamera->Destroy();
+
+	if (IsLocallyControlled())
+	{
+		CurrentGameUserWidget->RemoveFromParent();
+		CurrentSniperUserWidget->RemoveFromParent();
+	}
 
 	Super::Destroyed();
 }
@@ -862,6 +880,13 @@ void AMultiShootGameCharacter::Reborn_Server_Implementation()
 
 	AMultiShootGameCharacter* Character = GetWorld()->SpawnActor<AMultiShootGameCharacter>(CharacterClass, Transform);
 	GetController()->Possess(Character);
+
+	if (Character)
+	{
+		Character->Score = Score;
+		Character->KillCount = KillCount;
+		Character->DeathCount = DeathCount;
+	}
 
 	Destroy(true);
 }
