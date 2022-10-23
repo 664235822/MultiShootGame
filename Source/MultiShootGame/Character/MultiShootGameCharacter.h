@@ -120,8 +120,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void FillUpWeaponBullet();
 
-	UFUNCTION(BlueprintCallable)
-	void Death();
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void Death_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Death_Multicast();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USpringArmComponent* SpringArmComponent;

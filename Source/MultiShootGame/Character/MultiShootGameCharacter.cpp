@@ -1008,10 +1008,15 @@ void AMultiShootGameCharacter::StopAnimMontage_Multicast_Implementation(UAnimMon
 	StopAnimMontage(AnimMontage);
 }
 
-void AMultiShootGameCharacter::Death()
+void AMultiShootGameCharacter::Death_Server_Implementation()
 {
 	HealthComponent->bDied = true;
 
+	Death_Multicast();
+}
+
+void AMultiShootGameCharacter::Death_Multicast_Implementation()
+{
 	EndAction();
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
@@ -1043,7 +1048,7 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
 
 	if (Health <= 0.0f && !HealthComponent->bDied)
 	{
-		Death();
+		Death_Server();
 	}
 }
 

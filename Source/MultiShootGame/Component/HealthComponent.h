@@ -48,7 +48,7 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Health)
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadWrite, Category = Health)
 	bool bDied = false;
 
 	UFUNCTION(BlueprintPure, Category = Health)
