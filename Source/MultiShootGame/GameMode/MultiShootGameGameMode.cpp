@@ -1,7 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MultiShootGameGameMode.h"
+
+#include "MultiShootGameGameInstance.h"
 #include "MultiShootGameGameState.h"
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "MultiShootGame/Component/HealthComponent.h"
@@ -160,22 +163,6 @@ void AMultiShootGameGameMode::CheckNumberOfBots()
 	NumberOfBots = Count;
 }
 
-void AMultiShootGameGameMode::CheckShowSight(float DeltaSeconds)
-{
-	if (bShowSight)
-	{
-		if (CurrentShowSight < ShowSightDelay)
-		{
-			CurrentShowSight += DeltaSeconds;
-		}
-		else
-		{
-			bShowSight = false;
-			CurrentShowSight = 0.f;
-		}
-	}
-}
-
 void AMultiShootGameGameMode::SetWaveState(EWaveState NewState) const
 {
 	AMultiShootGameGameState* MyGameState = GetGameState<AMultiShootGameGameState>();
@@ -220,17 +207,4 @@ void AMultiShootGameGameMode::Tick(float DeltaSeconds)
 	CheckNumberOfBots();
 
 	CheckShowSight(DeltaSeconds);
-}
-
-void AMultiShootGameGameMode::OnEnemyKilled()
-{
-	Score += 50;
-	KillCount++;
-	bShowSight = true;
-	CurrentShowSight = 0.f;
-}
-
-void AMultiShootGameGameMode::OnHeadshot()
-{
-	Score += 25;
 }

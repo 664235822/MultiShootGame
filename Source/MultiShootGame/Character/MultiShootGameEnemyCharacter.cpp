@@ -37,6 +37,8 @@ void AMultiShootGameEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CurrentGameMode = Cast<AMultiShootGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnHealthChanged);
 	HealthComponent->OnHeadShot.AddDynamic(this, &AMultiShootGameEnemyCharacter::OnHeadShot);
 

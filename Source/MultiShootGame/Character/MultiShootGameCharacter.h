@@ -11,6 +11,7 @@
 #include "MultiShootGame/Enum//EWeaponMode.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGame/Component//HitEffectComponent.h"
+#include "MultiShootGame/GameMode/MultiShootGameServerGameMode.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
 #include "MultiShootGame/Weapon/MultiShootGameFPSCamera.h"
 #include "MultiShootGame/Weapon/MultiShootGameWeapon.h"
@@ -98,6 +99,9 @@ protected:
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void EndKnifeAttack_Server();
 
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void KnifeHit_Server();
+
 	void ToggleMainWeapon();
 
 	void ToggleSecondWeapon();
@@ -113,9 +117,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleWeaponEnd();
-
-	UFUNCTION(BlueprintCallable)
-	void Hit();
 
 	UFUNCTION(BlueprintCallable)
 	void FillUpWeaponBullet();
@@ -239,10 +240,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* KnifeAttackAnimMontage;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> GameUserWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
+	TSubclassOf<UUserWidget> ServerGameUserWidgetClass;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> SniperUserWidgetClass;
 
@@ -375,8 +379,14 @@ protected:
 	AMultiShootGameGrenade* CurrentGrenade;
 
 	UPROPERTY(BlueprintReadOnly)
-	UUserWidget* CurrentGameUserWidget;
+	AMultiShootGameGameModeBase* CurrentGameMode;
 
+	UPROPERTY(BlueprintReadOnly)
+	UMultiShootGameGameInstance* CurrentGameInstance;
+
+	UPROPERTY(BlueprintReadOnly)
+	UUserWidget* CurrentGameUserWidget;
+	
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentSniperUserWidget;
 

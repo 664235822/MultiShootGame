@@ -15,6 +15,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Net/UnrealNetwork.h"
 
@@ -75,6 +76,19 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CurrentGameMode = Cast<AMultiShootGameGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	CurrentGameInstance = Cast<UMultiShootGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
+	{
+		CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
+	}
+	else
+	{
+		CurrentGameUserWidget = CreateWidget(GetWorld(), ServerGameUserWidgetClass);
+	}
+
+	CurrentGameUserWidget->AddToViewport();
+
 	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
 	PlayerCameraManager->ViewPitchMin = -1 * CameraPitchClamp;
@@ -86,9 +100,6 @@ void AMultiShootGameCharacter::BeginPlay()
 		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
 		CurrentSniperUserWidget->AddToViewport();
 		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
-
-		CurrentGameUserWidget = CreateWidget(GetWorld(), GameUserWidgetClass);
-		CurrentGameUserWidget->AddToViewport();
 	}
 
 	FActorSpawnParameters SpawnParameters;
@@ -623,6 +634,33 @@ void AMultiShootGameCharacter::EndKnifeAttack_Server_Implementation()
 	}
 }
 
+void AMultiShootGameCharacter::KnifeHit_Server_Implementation()
+{
+	if (bKnifeAttack)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		if (PlayerController)
+		{
+			PlayerController->ClientStartCameraShake(KnifeCameraShakeClass);
+		}
+
+		const FVector HitLocation = KnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName);
+		const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
+		FHitResult HitResult;
+		const TArray<AActor*> IgnoreActors;
+		if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), HitLocation, HitLocation, 50.f, TraceType_Weapon, false,
+		                                            IgnoreActors, EDrawDebugTrace::None, HitResult, true))
+		{
+			const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
+
+			UGameplayStatics::ApplyDamage(HitResult.GetActor(), KnifeDamage, GetInstigatorController(), this,
+			                              DamageTypeClass);
+
+			HitEffectComponent->PlayHitEffect(SurfaceType, HitLocation, HitRotation);
+		}
+	}
+}
+
 void AMultiShootGameCharacter::EndReload()
 {
 	bReloading = false;
@@ -794,33 +832,6 @@ void AMultiShootGameCharacter::ToggleWeaponEnd()
 	SetThrowingGrenade_Server(false);
 	SetSpawnGrenade_Server(false);
 	SetKnifeAttack_Server(false);
-}
-
-void AMultiShootGameCharacter::Hit()
-{
-	if (bKnifeAttack)
-	{
-		APlayerController* PlayerController = Cast<APlayerController>(GetController());
-		if (PlayerController)
-		{
-			PlayerController->ClientStartCameraShake(KnifeCameraShakeClass);
-		}
-
-		const FVector HitLocation = KnifeSkeletalMeshComponent->GetSocketLocation(HitSocketName);
-		const FRotator HitRotation = KnifeSkeletalMeshComponent->GetComponentRotation();
-		FHitResult HitResult;
-		const TArray<AActor*> IgnoreActors;
-		if (UKismetSystemLibrary::SphereTraceSingle(GetWorld(), HitLocation, HitLocation, 50.f, TraceType_Weapon, false,
-		                                            IgnoreActors, EDrawDebugTrace::None, HitResult, true))
-		{
-			const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(HitResult.PhysMaterial.Get());
-
-			UGameplayStatics::ApplyDamage(HitResult.GetActor(), KnifeDamage, GetInstigatorController(), this,
-			                              DamageTypeClass);
-
-			HitEffectComponent->PlayHitEffect(SurfaceType, HitLocation, HitRotation);
-		}
-	}
 }
 
 void AMultiShootGameCharacter::FillUpWeaponBullet()

@@ -8,6 +8,8 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MultiShootGame/Component/HealthComponent.h"
+#include "MultiShootGame/GameMode/MultiShootGameGameInstance.h"
+#include "MultiShootGame/GameMode/MultiShootGameGameModeBase.h"
 #include "MultiShootGame/Weapon/MultiShootGameEnemyWeapon.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "MultiShootGameEnemyCharacter.generated.h"
@@ -62,7 +64,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Enemy)
 	FName WeaponSocketName = "WeaponSocket";
 
+	UPROPERTY(BlueprintReadOnly)
 	AMultiShootGameEnemyWeapon* CurrentWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameGameModeBase* CurrentGameMode;
+
+	UPROPERTY(BlueprintReadOnly)
+	UMultiShootGameGameInstance* CurrentGameInstance;
 
 	FTimerHandle TimerHandle;
 
