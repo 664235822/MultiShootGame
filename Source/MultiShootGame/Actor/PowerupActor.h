@@ -31,9 +31,6 @@ protected:
     UStaticMeshComponent* PowerupMeshComponent;
 
     UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = Components)
-    UPointLightComponent* PointLightComponent;
-
-    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = Components)
     URotatingMovementComponent* RotatingMovementComponent;
 
     UPROPERTY(EditDefaultsOnly, Category = PowerupActor)

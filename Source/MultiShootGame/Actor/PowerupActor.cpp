@@ -11,9 +11,6 @@ APowerupActor::APowerupActor()
 	PowerupMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PowerupMeshComponent"));
 	PowerupMeshComponent->SetupAttachment(SceneComponent);
 
-	PointLightComponent = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLightComponent"));
-	PointLightComponent->SetupAttachment(PowerupMeshComponent);
-
 	RotatingMovementComponent = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovementComponent"));
 }
 
