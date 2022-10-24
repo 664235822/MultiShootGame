@@ -22,6 +22,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		CollisionComponent1->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+		CollisionComponent1->OnComponentBeginOverlap.AddDynamic(this, &AMultiShootGameShotgun::OnBeginOverlap);
 	}
 	// set up a notification for when this component hits something blocking
 
@@ -50,6 +51,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		CollisionComponent2->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+		CollisionComponent2->OnComponentBeginOverlap.AddDynamic(this, &AMultiShootGameShotgun::OnBeginOverlap);
 	}
 	// set up a notification for when this component hits something blocking
 
@@ -78,6 +80,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		CollisionComponent3->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+		CollisionComponent3->OnComponentBeginOverlap.AddDynamic(this, &AMultiShootGameShotgun::OnBeginOverlap);
 	}
 	// set up a notification for when this component hits something blocking
 
@@ -106,6 +109,7 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		CollisionComponent4->OnComponentHit.AddDynamic(this, &AMultiShootGameShotgun::OnHit);
+		CollisionComponent4->OnComponentBeginOverlap.AddDynamic(this, &AMultiShootGameShotgun::OnBeginOverlap);
 	}
 	// set up a notification for when this component hits something blocking
 
@@ -135,7 +139,19 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 void AMultiShootGameShotgun::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                    FVector NormalImpulse, const FHitResult& Hit)
 {
-	const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+	HitComp->DestroyComponent();
+}
+
+void AMultiShootGameShotgun::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                            const FHitResult& SweepResult)
+{
+	if (OtherActor == GetOwner())
+	{
+		return;
+	}
+
+	const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(SweepResult.PhysMaterial.Get());
 
 	if (Cast<ACharacter>(OtherActor))
 	{
@@ -147,16 +163,18 @@ void AMultiShootGameShotgun::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 				Broadcast(GetOwner());
 		}
 
-		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,
+		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), SweepResult,
 		                                   GetOwner()->GetInstigatorController(), GetOwner(), DamageTypeClass);
 	}
 	else
 	{
-		UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None, Hit.Location,
-		                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition, 10.f);
+		UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None,
+		                                     SweepResult.Location,
+		                                     SweepResult.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition,
+		                                     10.f);
 	}
 
-	HitEffectComponent->PlayHitEffect(SurfaceType, Hit.Location, GetActorRotation());
+	HitEffectComponent->PlayHitEffect(SurfaceType, SweepResult.Location, GetActorRotation());
 
-	HitComp->DestroyComponent();
+	OverlappedComponent->DestroyComponent();
 }

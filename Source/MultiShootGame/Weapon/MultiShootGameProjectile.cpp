@@ -21,6 +21,7 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		CollisionComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameProjectile::OnHit);
+		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AMultiShootGameProjectile::OnBeginOverlap);
 	}
 	// set up a notification for when this component hits something blocking
 
@@ -54,7 +55,19 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                       FVector NormalImpulse, const FHitResult& Hit)
 {
-	const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+	Destroy();
+}
+
+inline void AMultiShootGameProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+                                                      bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == GetOwner())
+	{
+		return;
+	}
+
+	const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(SweepResult.PhysMaterial.Get());
 
 	if (Cast<ACharacter>(OtherActor))
 	{
@@ -66,16 +79,18 @@ void AMultiShootGameProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 				Broadcast(GetOwner());
 		}
 
-		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), Hit,
+		UGameplayStatics::ApplyPointDamage(OtherActor, BaseDamage, GetActorRotation().Vector(), SweepResult,
 		                                   GetOwner()->GetInstigatorController(), GetOwner(), DamageTypeClass);
 	}
 	else
 	{
-		UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None, Hit.Location,
-		                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition, 10.f);
+		UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None,
+		                                     SweepResult.Location,
+		                                     SweepResult.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition,
+		                                     10.f);
 	}
 
-	HitEffectComponent->PlayHitEffect(SurfaceType, Hit.Location, GetActorRotation());
+	HitEffectComponent->PlayHitEffect(SurfaceType, SweepResult.Location, GetActorRotation());
 
 	Destroy();
 }

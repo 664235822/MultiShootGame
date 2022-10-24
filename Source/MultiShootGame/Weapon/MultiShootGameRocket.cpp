@@ -60,3 +60,15 @@ void AMultiShootGameRocket::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAct
 {
 	Explode();
 }
+
+void AMultiShootGameRocket::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                           const FHitResult& SweepResult)
+{
+	if (OtherActor == GetOwner())
+	{
+		return;
+	}
+
+	Explode();
+}
