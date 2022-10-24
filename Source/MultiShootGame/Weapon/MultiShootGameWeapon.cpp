@@ -7,6 +7,7 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
 #include "MultiShootGame/SaveGame/ChooseWeaponSaveGame.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -80,7 +81,33 @@ void AMultiShootGameWeapon::Fire()
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
 
-			MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection);
+			AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
+			if (Cast<AMultiShootGameGameMode>(GameMode))
+			{
+				FActorSpawnParameters SpawnParameters;
+				SpawnParameters.Owner = GetOwner();
+				SpawnParameters.Instigator = GetInstigator();
+				SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				AMultiShootGameProjectileBase* CurrentProjectile = GetWorld()->SpawnActor<
+					AMultiShootGameProjectileBase>(WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection,
+					                               SpawnParameters);
+				CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+
+				if (WeaponInfo.FireSoundCue)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponInfo.FireSoundCue, MuzzleLocation);
+				}
+
+				if (WeaponInfo.MuzzleEffect)
+				{
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
+				}
+			}
+			else
+			{
+				MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection);
+			}
 		}
 
 		ShakeCamera();
