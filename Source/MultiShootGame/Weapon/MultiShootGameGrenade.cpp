@@ -42,13 +42,13 @@ void AMultiShootGameGrenade::Explode_Multicast_Implementation()
 void AMultiShootGameGrenade::Explode()
 {
 	Explode_Multicast();
-	
+
 	UGameplayStatics::PlayWorldCameraShake(GetWorld(), GrenadeCameraShakeClass, GetActorLocation(), 0, DamageRadius);
 
 	const TArray<AActor*> IgnoreActors;
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), BaseDamage, GetActorLocation(), DamageRadius, DamageTypeClass,
-										IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
+	                                    IgnoreActors, GetOwner(), GetOwner()->GetInstigatorController());
 
 	Destroy();
 }

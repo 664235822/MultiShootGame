@@ -289,14 +289,14 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 
 void AMultiShootGameCharacter::BeginFastRun()
 {
-	bFastRun = true;
+	SetFastRun_Server(true);
 
 	HandleWalkSpeed();
 }
 
 void AMultiShootGameCharacter::EndFastRun()
 {
-	bFastRun = false;
+	SetFastRun_Server(false);
 
 	HandleWalkSpeed();
 }
@@ -573,7 +573,7 @@ void AMultiShootGameCharacter::ThrowGrenadeOut()
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
-		ThrowGrenadeOut_Server(LookAtRotation, bFastRun || bJump);
+		ThrowGrenadeOut_Server(LookAtRotation, bFastRun || GetCharacterMovement()->IsFalling());
 
 		SetGrenadeCount_Server(FMath::Clamp(GrenadeCount - 1, 0, MaxGrenadeCount));
 	}
@@ -952,6 +952,11 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 	SetWalkSpeed_Server(Speed);
 }
 
+void AMultiShootGameCharacter::SetFastRun_Server_Implementation(bool Value)
+{
+	bFastRun = Value;
+}
+
 void AMultiShootGameCharacter::CheckShowSight(float DeltaSeconds)
 {
 	if (bShowSight)
@@ -1215,6 +1220,7 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMultiShootGameCharacter, WeaponMode);
+	DOREPLIFETIME(AMultiShootGameCharacter, bFastRun);
 	DOREPLIFETIME(AMultiShootGameCharacter, bKnifeAttack);
 	DOREPLIFETIME(AMultiShootGameCharacter, bBeginThrowGrenade);
 	DOREPLIFETIME(AMultiShootGameCharacter, bThrowingGrenade);

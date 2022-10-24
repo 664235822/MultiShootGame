@@ -301,6 +301,9 @@ protected:
 	void SetWeaponMode_Server(EWeaponMode Value);
 
 	UFUNCTION(Server, Reliable)
+	void SetFastRun_Server(bool Value);
+
+	UFUNCTION(Server, Reliable)
 	void SetBeginThrowGrenade_Server(bool Value);
 
 	UFUNCTION(Server, Reliable)
@@ -347,9 +350,8 @@ protected:
 
 	bool bFired = false;
 
+	UPROPERTY(Replicated)
 	bool bFastRun = false;
-
-	bool bJump = false;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bMoving = false;
@@ -425,7 +427,7 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int DeathCount;
-	
+
 	UFUNCTION(Server, Reliable)
 	void OnEnemyKilled_Server();
 

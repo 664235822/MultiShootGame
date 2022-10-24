@@ -41,8 +41,8 @@ AMultiShootGameProjectile::AMultiShootGameProjectile()
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComponent"));
 	ProjectileMovement->UpdatedComponent = CollisionComponent;
-	ProjectileMovement->InitialSpeed = 4000.f;
-	ProjectileMovement->MaxSpeed = 4000.f;
+	ProjectileMovement->InitialSpeed = 15000.f;
+	ProjectileMovement->MaxSpeed = 15000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = false;
 	ProjectileMovement->ProjectileGravityScale = 0;
