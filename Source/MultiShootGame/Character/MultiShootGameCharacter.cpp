@@ -631,8 +631,6 @@ void AMultiShootGameCharacter::BeginKnifeAttack_Server_Implementation()
 {
 	if (bKnifeAttack)
 	{
-		GetCharacterMovement()->SetMovementMode(MOVE_None);
-
 		KnifeSkeletalMeshComponent->SetVisibility(true);
 
 		PutBackWeapon_Server();
@@ -643,8 +641,6 @@ void AMultiShootGameCharacter::EndKnifeAttack_Server_Implementation()
 {
 	if (bKnifeAttack)
 	{
-		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-
 		bToggleWeapon = true;
 
 		KnifeSkeletalMeshComponent->SetVisibility(false);
