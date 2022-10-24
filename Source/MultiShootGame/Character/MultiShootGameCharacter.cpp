@@ -1132,7 +1132,10 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
 		OnDeath();
 
 		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
-		Character->OnEnemyKilled_Server();
+		if (Character)
+		{
+			Character->OnEnemyKilled_Server();
+		}
 		Death_Server();
 	}
 }
