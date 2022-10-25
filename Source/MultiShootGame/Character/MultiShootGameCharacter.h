@@ -223,9 +223,6 @@ protected:
 	TSubclassOf<UMatineeCameraShake> MovementCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
-	TSubclassOf<UMatineeCameraShake> FPSCameraShakeClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = Character)
 	TSubclassOf<UMatineeCameraShake> KnifeCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)

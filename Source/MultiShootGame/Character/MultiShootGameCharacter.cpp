@@ -305,15 +305,11 @@ void AMultiShootGameCharacter::EndFastRun()
 void AMultiShootGameCharacter::BeginCrouch()
 {
 	Crouch();
-
-	Cast<APlayerController>(GetController())->ClientStopCameraShake(FPSCameraShakeClass);
 }
 
 void AMultiShootGameCharacter::EndCrouch()
 {
 	UnCrouch();
-
-	Cast<APlayerController>(GetController())->ClientStartCameraShake(FPSCameraShakeClass);
 }
 
 void AMultiShootGameCharacter::ToggleCrouch()
@@ -348,11 +344,6 @@ void AMultiShootGameCharacter::BeginAim()
 	CurrentThirdWeapon->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
 
-	if (!GetCharacterMovement()->IsCrouching())
-	{
-		Cast<APlayerController>(GetController())->ClientStartCameraShake(FPSCameraShakeClass);
-	}
-
 	if (WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture)
 	{
 		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Visible);
@@ -385,11 +376,6 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentSecondWeapon->SetActorHiddenInGame(false);
 	CurrentThirdWeapon->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
-
-	if (!GetCharacterMovement()->IsCrouching())
-	{
-		Cast<APlayerController>(GetController())->ClientStopCameraShake(FPSCameraShakeClass);
-	}
 
 	if (CurrentSecondWeapon->WeaponInfo.AimTexture)
 	{
