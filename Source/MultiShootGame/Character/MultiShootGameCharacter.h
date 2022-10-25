@@ -292,7 +292,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void EndAction();
 
-	void HandleWalkSpeed();
+	void HandleWalkSpeed(bool FastRun);
 
 	UFUNCTION(Server, Reliable)
 	void SetWalkSpeed_Server(float Value);

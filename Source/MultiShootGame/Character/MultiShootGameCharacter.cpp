@@ -172,6 +172,11 @@ void AMultiShootGameCharacter::Destroyed()
 	CurrentThirdWeapon->Destroy();
 	CurrentFPSCamera->Destroy();
 
+	if (CurrentGrenade)
+	{
+		CurrentGrenade->Destroy();
+	}
+
 	if (IsLocallyControlled())
 	{
 		CurrentGameUserWidget->RemoveFromParent();
@@ -289,16 +294,12 @@ void AMultiShootGameCharacter::MoveRight(float Value)
 
 void AMultiShootGameCharacter::BeginFastRun()
 {
-	SetFastRun_Server(true);
-
-	HandleWalkSpeed();
+	HandleWalkSpeed(true);
 }
 
 void AMultiShootGameCharacter::EndFastRun()
 {
-	SetFastRun_Server(false);
-
-	HandleWalkSpeed();
+	HandleWalkSpeed(false);
 }
 
 void AMultiShootGameCharacter::BeginCrouch()
@@ -748,7 +749,7 @@ void AMultiShootGameCharacter::ToggleMainWeapon()
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
 
-	HandleWalkSpeed();
+	HandleWalkSpeed(bFastRun);
 
 	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
@@ -773,7 +774,7 @@ void AMultiShootGameCharacter::ToggleSecondWeapon()
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentSecondWeapon);
 
-	HandleWalkSpeed();
+	HandleWalkSpeed(bFastRun);
 
 	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
@@ -798,7 +799,7 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 
 	CurrentFPSCamera->SetWeaponInfo(CurrentThirdWeapon);
 
-	HandleWalkSpeed();
+	HandleWalkSpeed(bFastRun);
 
 	PlayAnimMontage_Server(WeaponOutAnimMontage);
 }
@@ -922,10 +923,10 @@ void AMultiShootGameCharacter::EndAction()
 	}
 }
 
-void AMultiShootGameCharacter::HandleWalkSpeed()
+void AMultiShootGameCharacter::HandleWalkSpeed(bool FastRun)
 {
 	float Speed = 300.f;
-	if (bFastRun)
+	if (FastRun)
 	{
 		if (WeaponMode != EWeaponMode::SecondWeapon)
 		{
@@ -944,6 +945,7 @@ void AMultiShootGameCharacter::HandleWalkSpeed()
 		}
 	}
 
+	SetFastRun_Server(FastRun);
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
 	SetWalkSpeed_Server(Speed);
 }

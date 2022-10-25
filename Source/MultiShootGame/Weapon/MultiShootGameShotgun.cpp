@@ -139,6 +139,13 @@ AMultiShootGameShotgun::AMultiShootGameShotgun()
 void AMultiShootGameShotgun::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                    FVector NormalImpulse, const FHitResult& Hit)
 {
+	const EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+
+	UGameplayStatics::SpawnDecalAttached(BulletDecalMaterial, BulletDecalSize, OtherComp, NAME_None, Hit.Location,
+	                                     Hit.ImpactNormal.Rotation(), EAttachLocation::KeepWorldPosition, 10.f);
+
+	HitEffectComponent->PlayHitEffect(SurfaceType, Hit.Location, GetActorRotation());
+
 	HitComp->DestroyComponent();
 }
 
