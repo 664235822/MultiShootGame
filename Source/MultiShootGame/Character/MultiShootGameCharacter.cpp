@@ -402,7 +402,10 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 
 	AMultiShootGameProjectileBase* CurrentProjectile = GetWorld()->SpawnActor<AMultiShootGameProjectileBase>(
 		WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection, SpawnParameters);
-	CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+	if (CurrentProjectile)
+	{
+		CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
+	}
 
 	Fire_Multicast(WeaponInfo);
 }
