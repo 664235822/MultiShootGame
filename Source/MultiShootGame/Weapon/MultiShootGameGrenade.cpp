@@ -4,6 +4,7 @@
 #include "Core/Private/Windows/WindowsRunnableThread.h"
 #include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AMultiShootGameGrenade::AMultiShootGameGrenade()

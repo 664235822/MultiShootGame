@@ -76,7 +76,6 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	CurrentGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
@@ -390,7 +389,7 @@ void AMultiShootGameCharacter::EndAim()
 }
 
 void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation,
-                                                          FRotator ShotTargetDirection)
+                                                          FRotator ShotTargetDirection, FName MuzzleSocketName)
 {
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Owner = this;
@@ -404,37 +403,54 @@ void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo
 		CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 	}
 
-	Fire_Multicast(WeaponInfo);
+	Fire_Multicast(WeaponInfo, MuzzleSocketName);
 }
 
-void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponInfo)
+void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponInfo, FName MuzzleSocketName)
 {
-	FVector MuzzleLocation;
+	USkeletalMeshComponent* WeaponMeshComponent = nullptr;
 
 	switch (WeaponMode)
 	{
 	case EWeaponMode::MainWeapon:
-		MuzzleLocation = CurrentMainWeapon->GetWeaponMeshComponent()->GetSocketLocation(MuzzleSocketName);
+		WeaponMeshComponent = CurrentMainWeapon->GetWeaponMeshComponent();
 		break;
 	case EWeaponMode::SecondWeapon:
-		MuzzleLocation = CurrentSecondWeapon->GetWeaponMeshComponent()->GetSocketLocation(MuzzleSocketName);
+		WeaponMeshComponent = CurrentSecondWeapon->GetWeaponMeshComponent();
 		break;
 	case EWeaponMode::ThirdWeapon:
-		MuzzleLocation = CurrentThirdWeapon->GetWeaponMeshComponent()->GetSocketLocation(MuzzleSocketName);
+		WeaponMeshComponent = CurrentThirdWeapon->GetWeaponMeshComponent();
 		break;
 	}
 
 	if (WeaponInfo.FireSoundCue)
 	{
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponInfo.FireSoundCue, MuzzleLocation);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponInfo.FireSoundCue,
+		                                      WeaponMeshComponent->GetSocketLocation(MuzzleSocketName));
 	}
 
 	if (WeaponInfo.MuzzleEffect)
 	{
 		if (bAimed && !IsLocallyControlled() || !bAimed)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
+			UGameplayStatics::SpawnEmitterAttached(WeaponInfo.MuzzleEffect, WeaponMeshComponent, MuzzleSocketName);
 		}
+	}
+}
+
+void AMultiShootGameCharacter::ThrowBulletShell_Server_Implementation(
+	TSubclassOf<AMultiShootGameBulletShell> BulletShellClass, FVector BulletShellLocation,FRotator BulletShellRotation)
+{
+	if (BulletShellClass)
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = this;
+		SpawnParameters.Instigator = GetInstigator();
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		
+		AMultiShootGameBulletShell* BulletShell = GetWorld()->SpawnActor<AMultiShootGameBulletShell>(
+			BulletShellClass, BulletShellLocation, BulletShellRotation, SpawnParameters);
+		BulletShell->ThrowBulletShell_Server();
 	}
 }
 

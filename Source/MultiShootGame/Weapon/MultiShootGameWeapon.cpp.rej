@@ -1,0 +1,18 @@
+diff a/Source/MultiShootGame/Weapon/MultiShootGameWeapon.cpp b/Source/MultiShootGame/Weapon/MultiShootGameWeapon.cpp	(rejected hunks)
+@@ -83,15 +83,7 @@
+ 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
+ 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
+ 
+-		if (MyOwner->GetWeaponMode() != EWeaponMode::SecondWeapon && BulletShellClass)
+-		{
+-			const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
+-			const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
+-
+-			AMultiShootGameBulletShell* BulletShell = GetWorld()->SpawnActor<AMultiShootGameBulletShell>(
+-				BulletShellClass, BulletShellLocation, BulletShellRotation);
+-			BulletShell->SetOwner(this);
+-			BulletShell->ThrowBulletShell();
++			Fire_Server(MuzzleLocation, ShotTargetDirection);
+ 		}
+ 
+ 		ShakeCamera();

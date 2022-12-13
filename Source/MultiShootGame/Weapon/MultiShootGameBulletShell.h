@@ -37,8 +37,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	FRotator ThrowDirection = FRotator(60.f, 180.f, 0);
 
-	void DestroyBulletShell();
+	UFUNCTION(Server, Reliable)
+	void DestroyBulletShell_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ThrowBulletShell_Multicast();
 
 public:
-	void ThrowBulletShell();
+
+	UFUNCTION(Server, Reliable)
+	void ThrowBulletShell_Server();
 };

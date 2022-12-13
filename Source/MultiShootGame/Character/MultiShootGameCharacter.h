@@ -54,10 +54,15 @@ protected:
 
 public:
 	UFUNCTION(Server, Unreliable)
-	void Fire_Server(FWeaponInfo WeaponInfo, FVector MuzzleLocation, FRotator ShotTargetDirection);
+	void Fire_Server(FWeaponInfo WeaponInfo, FVector MuzzleLocation, FRotator ShotTargetDirection,
+	                 FName MuzzleSocketName);
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void Fire_Multicast(FWeaponInfo WeaponInfo);
+	void Fire_Multicast(FWeaponInfo WeaponInfo, FName MuzzleSocketName);
+
+	UFUNCTION(Server, Unreliable)
+	void ThrowBulletShell_Server(TSubclassOf<AMultiShootGameBulletShell> BulletShellClass, FVector BulletShellLocation,
+	                             FRotator BulletShellRotation);
 
 	void BeginReload();
 
@@ -202,9 +207,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	FName BackThirdWeaponSocketName = "BackThirdWeaponSocket";
-
-	UPROPERTY(EditDefaultsOnly, Category = Character)
-	FName MuzzleSocketName = "Muzzle";
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	FName GrenadeSocketName = "GrenadeSocket";

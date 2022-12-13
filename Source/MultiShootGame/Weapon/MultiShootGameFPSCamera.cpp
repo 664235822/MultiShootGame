@@ -58,11 +58,6 @@ void AMultiShootGameFPSCamera::Fire()
 		{
 			const FVector MuzzleLocation = WeaponMeshComponent->GetSocketLocation(MuzzleSocketName);
 
-			if (WeaponInfo.MuzzleEffect)
-			{
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
-			}
-
 			const FRotator ShotTargetDirection = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TraceEnd);
 
 			AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
@@ -74,7 +69,8 @@ void AMultiShootGameFPSCamera::Fire()
 				SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 				AMultiShootGameProjectileBase* CurrentProjectile = GetWorld()->SpawnActor<
-					AMultiShootGameProjectileBase>(WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection, SpawnParameters);
+					AMultiShootGameProjectileBase>(WeaponInfo.ProjectileClass, MuzzleLocation, ShotTargetDirection,
+					                               SpawnParameters);
 				CurrentProjectile->ProjectileInitialize(WeaponInfo.BaseDamage);
 
 				if (WeaponInfo.FireSoundCue)
@@ -84,12 +80,31 @@ void AMultiShootGameFPSCamera::Fire()
 
 				if (WeaponInfo.MuzzleEffect)
 				{
-					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
+					UGameplayStatics::SpawnEmitterAttached(WeaponInfo.MuzzleEffect, WeaponMeshComponent,
+					                                       MuzzleSocketName);
+				}
+
+				if (BulletShellClass)
+				{
+					const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
+					const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
+
+					AMultiShootGameBulletShell* BulletShell = GetWorld()->SpawnActor<AMultiShootGameBulletShell>(
+						BulletShellClass, BulletShellLocation, BulletShellRotation, SpawnParameters);
+					BulletShell->ThrowBulletShell_Server();
 				}
 			}
 			else
 			{
-				MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection);
+				MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection, MuzzleSocketName);
+				
+				if (BulletShellClass)
+				{
+					const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
+					const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
+
+					MyOwner->ThrowBulletShell_Server(BulletShellClass, BulletShellLocation, BulletShellRotation);
+				}
 			}
 		}
 

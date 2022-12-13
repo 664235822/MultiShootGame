@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
+#include "MultiShootGame/Character/MultiShootGameEnemyCharacter.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 
 AMultiShootGameGameMode::AMultiShootGameGameMode()

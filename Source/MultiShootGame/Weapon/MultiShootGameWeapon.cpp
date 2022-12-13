@@ -21,6 +21,7 @@ AMultiShootGameWeapon::AMultiShootGameWeapon()
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponmeshComponent"));
 	WeaponMeshComponent->SetupAttachment(RootComponent);
 	WeaponMeshComponent->SetCastHiddenShadow(true);
+	WeaponMeshComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -100,12 +101,31 @@ void AMultiShootGameWeapon::Fire()
 
 				if (WeaponInfo.MuzzleEffect)
 				{
-					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponInfo.MuzzleEffect, MuzzleLocation);
+					UGameplayStatics::SpawnEmitterAttached(WeaponInfo.MuzzleEffect, WeaponMeshComponent,
+					                                       MuzzleSocketName);
+				}
+
+				if (BulletShellClass)
+				{
+					const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
+					const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
+
+					AMultiShootGameBulletShell* BulletShell = GetWorld()->SpawnActor<AMultiShootGameBulletShell>(
+						BulletShellClass, BulletShellLocation, BulletShellRotation, SpawnParameters);
+					BulletShell->ThrowBulletShell_Server();
 				}
 			}
 			else
 			{
-				MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection);
+				MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection, MuzzleSocketName);
+
+				if (BulletShellClass)
+				{
+					const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
+					const FRotator BulletShellRotation = WeaponMeshComponent->GetComponentRotation();
+
+					MyOwner->ThrowBulletShell_Server(BulletShellClass, BulletShellLocation, BulletShellRotation);
+				}
 			}
 		}
 
