@@ -7,7 +7,6 @@
 #include "MultiShootGame/ParticleSystem/ImpactParticleSystem.h"
 #include "HitEffectComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MULTISHOOTGAME_API UHitEffectComponent : public UActorComponent
 {

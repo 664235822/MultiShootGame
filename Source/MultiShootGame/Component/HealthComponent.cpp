@@ -2,7 +2,6 @@
 
 
 #include "HealthComponent.h"
-#include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties

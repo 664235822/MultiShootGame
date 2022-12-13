@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/SpotLightComponent.h"
-#include "GameFramework/Character.h"
 #include "MultiShootGameStartGameCharacter.generated.h"
 
 UCLASS()

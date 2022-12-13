@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MatineeCameraShake.h"
 #include "MultiShootGameEnemyWeapon.generated.h"
 
 UCLASS()

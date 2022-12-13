@@ -6,7 +6,6 @@
 #include "MultiShootGameProjectileBase.h"
 #include "MatineeCameraShake.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundCue.h"
 #include "MultiShootGameGrenade.generated.h"
 
