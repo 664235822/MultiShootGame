@@ -76,6 +76,8 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	RepRootMotion.bIsActive = true;
+
 	CurrentGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
@@ -439,7 +441,7 @@ void AMultiShootGameCharacter::Fire_Multicast_Implementation(FWeaponInfo WeaponI
 }
 
 void AMultiShootGameCharacter::ThrowBulletShell_Server_Implementation(
-	TSubclassOf<AMultiShootGameBulletShell> BulletShellClass, FVector BulletShellLocation,FRotator BulletShellRotation)
+	TSubclassOf<AMultiShootGameBulletShell> BulletShellClass, FVector BulletShellLocation, FRotator BulletShellRotation)
 {
 	if (BulletShellClass)
 	{
@@ -447,7 +449,7 @@ void AMultiShootGameCharacter::ThrowBulletShell_Server_Implementation(
 		SpawnParameters.Owner = this;
 		SpawnParameters.Instigator = GetInstigator();
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		
+
 		AMultiShootGameBulletShell* BulletShell = GetWorld()->SpawnActor<AMultiShootGameBulletShell>(
 			BulletShellClass, BulletShellLocation, BulletShellRotation, SpawnParameters);
 		BulletShell->ThrowBulletShell_Server();
