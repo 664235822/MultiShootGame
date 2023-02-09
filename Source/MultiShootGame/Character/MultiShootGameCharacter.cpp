@@ -1245,7 +1245,6 @@ void AMultiShootGameCharacter::OnHeadshot()
 	if (CurrentPlayerState)
 	{
 		CurrentPlayerState->AddScore_Server(25);
-		CurrentPlayerState.
 	}
 }
 
