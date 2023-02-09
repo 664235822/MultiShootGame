@@ -123,7 +123,7 @@ void AMultiShootGameEnemyCharacter::OnHeadShot(AActor* DamageCauser)
 		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
 		if (Character)
 		{
-			Character->OnHeadshot_Server();
+			Character->OnHeadshot();
 		}
 	}
 }
@@ -165,7 +165,7 @@ void AMultiShootGameEnemyCharacter::OnHealthChanged(UHealthComponent* OwningHeal
 		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
 		if (Character)
 		{
-			Character->OnEnemyKilled_Server();
+			Character->OnEnemyKilled();
 		}
 
 		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameEnemyCharacter::DeathDestroy,

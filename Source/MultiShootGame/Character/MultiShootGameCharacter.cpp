@@ -99,8 +99,6 @@ void AMultiShootGameCharacter::BeginPlay()
 		CurrentGameUserWidget->AddToViewport();
 	}
 
-	CurrentPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
-
 	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
 	PlayerCameraManager->ViewPitchMin = -1 * CameraPitchClamp;
@@ -870,7 +868,7 @@ void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
 	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
 	if (Character)
 	{
-		Character->OnHeadshot_Server();
+		Character->OnHeadshot();
 	}
 }
 
@@ -884,7 +882,7 @@ void AMultiShootGameCharacter::Reborn_Server_Implementation()
 	AMultiShootGameCharacter* Character = GetWorld()->SpawnActor<AMultiShootGameCharacter>(CharacterClass, Transform);
 	GetController()->Possess(Character);
 
-	Destroy(true);
+	Destroy();
 }
 
 bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrenade)
@@ -1130,7 +1128,7 @@ void AMultiShootGameCharacter::OnHealthChanged(UHealthComponent* OwningHealthCom
 		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
 		if (Character)
 		{
-			Character->OnEnemyKilled_Server();
+			Character->OnEnemyKilled();
 		}
 		Death_Server();
 	}
@@ -1229,20 +1227,32 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, bShowSight);
 }
 
-void AMultiShootGameCharacter::OnEnemyKilled_Server_Implementation()
+void AMultiShootGameCharacter::OnEnemyKilled()
 {
-	CurrentPlayerState->AddScore_Server(50);
-	CurrentPlayerState->AddKill_Server();
+	AMultiShootGamePlayerState* CurrentPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
+	if (CurrentPlayerState)
+	{
+		CurrentPlayerState->AddScore_Server(50);
+		CurrentPlayerState->AddKill_Server();
+	}
 	bShowSight = true;
 	CurrentShowSight = 0.f;
 }
 
-void AMultiShootGameCharacter::OnHeadshot_Server_Implementation()
+void AMultiShootGameCharacter::OnHeadshot()
 {
-	CurrentPlayerState->AddScore_Server(25);
+	AMultiShootGamePlayerState* CurrentPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
+	if (CurrentPlayerState)
+	{
+		CurrentPlayerState->AddScore_Server(25);
+	}
 }
 
 void AMultiShootGameCharacter::OnDeath()
 {
-	CurrentPlayerState->AddDeath_Server();
+	AMultiShootGamePlayerState* CurrentPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
+	if (CurrentPlayerState)
+	{
+		CurrentPlayerState->AddDeath_Server();
+	}
 }

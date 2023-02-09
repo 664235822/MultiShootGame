@@ -404,9 +404,6 @@ protected:
 	AGameModeBase* CurrentGameMode;
 
 	UPROPERTY(BlueprintReadOnly)
-	AMultiShootGamePlayerState* CurrentPlayerState;
-
-	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -420,12 +417,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	UFUNCTION(Server, Reliable)
-	void OnEnemyKilled_Server();
-
-	UFUNCTION(Server, Reliable)
-	void OnHeadshot_Server();
+	
+	void OnEnemyKilled();
+	
+	void OnHeadshot();
 
 	void OnDeath();
 
