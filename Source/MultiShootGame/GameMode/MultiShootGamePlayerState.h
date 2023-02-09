@@ -16,13 +16,13 @@ class MULTISHOOTGAME_API AMultiShootGamePlayerState : public APlayerState
 
 public:
 	UFUNCTION(Server, Reliable, Category = PlayerState)
-	void AddScore_Server(int Num);
+	void AddScore_Server(int Num=1);
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
-	void AddKill_Server(int Num);
+	void AddKill_Server(int Num=1);
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
-	void AddDeath_Server(int Num);
+	void AddDeath_Server(int Num=1);
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
 	FORCEINLINE int GetKill() const { return Kill; }

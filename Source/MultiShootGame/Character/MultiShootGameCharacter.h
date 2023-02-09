@@ -10,6 +10,7 @@
 #include "MultiShootGame/Enum//EWeaponMode.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGame/Component//HitEffectComponent.h"
+#include "MultiShootGame/Gamemode/MultiShootGamePlayerState.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
 #include "MultiShootGame/Weapon/MultiShootGameFPSCamera.h"
 #include "MultiShootGame/Weapon/MultiShootGameWeapon.h"
@@ -403,6 +404,9 @@ protected:
 	AGameModeBase* CurrentGameMode;
 
 	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGamePlayerState* CurrentPlayerState;
+
+	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -416,15 +420,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	int Score;
-
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	int KillCount;
-
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	int DeathCount;
 
 	UFUNCTION(Server, Reliable)
 	void OnEnemyKilled_Server();

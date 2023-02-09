@@ -99,6 +99,7 @@ void AMultiShootGameCharacter::BeginPlay()
 		CurrentGameUserWidget->AddToViewport();
 	}
 
+	CurrentPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
 
 	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	PlayerCameraManager->ViewPitchMax = CameraPitchClamp;
@@ -883,13 +884,6 @@ void AMultiShootGameCharacter::Reborn_Server_Implementation()
 	AMultiShootGameCharacter* Character = GetWorld()->SpawnActor<AMultiShootGameCharacter>(CharacterClass, Transform);
 	GetController()->Possess(Character);
 
-	if (Character)
-	{
-		Character->Score = Score;
-		Character->KillCount = KillCount;
-		Character->DeathCount = DeathCount;
-	}
-
 	Destroy(true);
 }
 
@@ -1233,25 +1227,22 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, GrenadeCount);
 	DOREPLIFETIME(AMultiShootGameCharacter, bDetectingClimb);
 	DOREPLIFETIME(AMultiShootGameCharacter, bShowSight);
-	DOREPLIFETIME(AMultiShootGameCharacter, Score);
-	DOREPLIFETIME(AMultiShootGameCharacter, KillCount);
-	DOREPLIFETIME(AMultiShootGameCharacter, DeathCount);
 }
 
 void AMultiShootGameCharacter::OnEnemyKilled_Server_Implementation()
 {
-	Score += 50;
-	KillCount++;
+	CurrentPlayerState->AddScore_Server(50);
+	CurrentPlayerState->AddKill_Server();
 	bShowSight = true;
 	CurrentShowSight = 0.f;
 }
 
 void AMultiShootGameCharacter::OnHeadshot_Server_Implementation()
 {
-	Score += 25;
+	CurrentPlayerState->AddScore_Server(25);
 }
 
 void AMultiShootGameCharacter::OnDeath()
 {
-	DeathCount++;
+	CurrentPlayerState->AddDeath_Server();
 }

@@ -17,13 +17,13 @@ void AMultiShootGamePlayerState::ClientInitialize(AController* C)
 
 void AMultiShootGamePlayerState::Destroyed()
 {
-	Super::Destroyed();
-
 	AMultiShootGameServerGameState* GameState = Cast<AMultiShootGameServerGameState>(GetWorld()->GetGameState());
 	if (GameState)
 	{
 		GameState->RemovePlayer_Server(this);
 	}
+
+	Super::Destroyed();
 }
 
 void AMultiShootGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
