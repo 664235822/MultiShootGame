@@ -1,30 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGamePlayerState.h"
-#include "MultiShootGame/GameMode/MultiShootGameServerGameState.h"
 #include "Net/UnrealNetwork.h"
-
-void AMultiShootGamePlayerState::ClientInitialize(AController* C)
-{
-	Super::ClientInitialize(C);
-
-	AMultiShootGameServerGameState* GameState = Cast<AMultiShootGameServerGameState>(GetWorld()->GetGameState());
-	if (GameState)
-	{
-		GameState->AddPlayer_Server(this);
-	}
-}
-
-void AMultiShootGamePlayerState::Destroyed()
-{
-	AMultiShootGameServerGameState* GameState = Cast<AMultiShootGameServerGameState>(GetWorld()->GetGameState());
-	if (GameState)
-	{
-		GameState->RemovePlayer_Server(this);
-	}
-
-	Super::Destroyed();
-}
 
 void AMultiShootGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

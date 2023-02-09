@@ -15,10 +15,6 @@ class MULTISHOOTGAME_API AMultiShootGamePlayerState : public APlayerState
 	GENERATED_BODY()
 
 protected:
-	virtual void ClientInitialize(AController* C) override;
-
-	virtual void Destroyed() override;
-
 	UPROPERTY(Replicated)
 	int Kill;
 
