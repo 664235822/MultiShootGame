@@ -197,7 +197,7 @@ void AMultiShootGameWeapon::FireOfDelay()
 void AMultiShootGameWeapon::EnablePhysicsSimulate()
 {
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	WeaponMeshComponent->SetCollisionProfileName("BlockAll");
+	WeaponMeshComponent->SetCollisionProfileName(FName("Ragdoll"));
 	WeaponMeshComponent->SetSimulatePhysics(true);
 }
 
