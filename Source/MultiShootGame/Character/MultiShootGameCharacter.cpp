@@ -78,6 +78,13 @@ void AMultiShootGameCharacter::BeginPlay()
 
 	RepRootMotion.bIsActive = true;
 
+	if (IsLocallyControlled())
+	{
+		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
+		CurrentSniperUserWidget->AddToViewport();
+		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	
 	CurrentGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
@@ -104,13 +111,6 @@ void AMultiShootGameCharacter::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = -1 * CameraPitchClamp;
 
 	GrenadeCount = MaxGrenadeCount;
-
-	if (IsLocallyControlled())
-	{
-		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
-		CurrentSniperUserWidget->AddToViewport();
-		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Owner = this;
