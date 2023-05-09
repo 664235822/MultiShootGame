@@ -97,6 +97,12 @@ void AMultiShootGameFPSCamera::Fire()
 			else
 			{
 				MyOwner->Fire_Server(WeaponInfo, MuzzleLocation, ShotTargetDirection, MuzzleSocketName);
+
+				if (WeaponInfo.MuzzleEffect)
+				{
+					UGameplayStatics::SpawnEmitterAttached(WeaponInfo.MuzzleEffect, WeaponMeshComponent,
+														   MuzzleSocketName);
+				}
 				
 				if (BulletShellClass)
 				{
