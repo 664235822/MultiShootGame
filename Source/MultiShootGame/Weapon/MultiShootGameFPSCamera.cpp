@@ -10,6 +10,9 @@ AMultiShootGameFPSCamera::AMultiShootGameFPSCamera()
 {
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(WeaponMeshComponent);
+
+	ArmsComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArmsComponent"));
+	ArmsComponent->SetupAttachment(WeaponMeshComponent);
 }
 
 void AMultiShootGameFPSCamera::BeginPlay()
