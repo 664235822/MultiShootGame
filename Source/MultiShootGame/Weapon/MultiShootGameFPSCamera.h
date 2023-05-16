@@ -27,7 +27,7 @@ protected:
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
-	USkeletalMeshComponent* ArmsComponent;
+	USkeletalMeshComponent* ArmsMeshComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	float ZoomedFOV = 40.0f;
