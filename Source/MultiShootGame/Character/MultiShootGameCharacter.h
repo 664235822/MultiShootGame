@@ -231,9 +231,6 @@ protected:
 	TSubclassOf<UMatineeCameraShake> HitCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
-	UAnimMontage* AimedAnimMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* WeaponOutAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
@@ -303,6 +300,9 @@ protected:
 	void SetFastRun_Server(bool Value);
 
 	UFUNCTION(Server, Reliable)
+	void SetAimed_Server(bool Value);
+
+	UFUNCTION(Server, Reliable)
 	void SetBeginThrowGrenade_Server(bool Value);
 
 	UFUNCTION(Server, Reliable)
@@ -345,6 +345,9 @@ protected:
 	float ShowSightDelay = 1.f;
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
+	float Pitch = 0.0f;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bShowSight = false;
 
 	bool bFired = false;
@@ -358,7 +361,7 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	bool bDetectingClimb = false;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bAimed = false;
 
 	bool bReloading = false;

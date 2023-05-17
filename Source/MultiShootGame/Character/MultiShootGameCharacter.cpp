@@ -84,7 +84,7 @@ void AMultiShootGameCharacter::BeginPlay()
 		CurrentSniperUserWidget->AddToViewport();
 		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
-	
+
 	CurrentGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
@@ -328,7 +328,7 @@ void AMultiShootGameCharacter::BeginAim()
 		return;
 	}
 
-	bAimed = true;
+	SetAimed_Server(true);
 
 	SpringArmComponent->SocketOffset = FVector::ZeroVector;
 
@@ -355,13 +355,11 @@ void AMultiShootGameCharacter::BeginAim()
 	{
 		CurrentMainWeapon->StopFire();
 	}
-
-	PlayAnimMontage_Server(AimedAnimMontage);
 }
 
 void AMultiShootGameCharacter::EndAim()
 {
-	bAimed = false;
+	SetAimed_Server(false);
 
 	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
 
@@ -385,8 +383,6 @@ void AMultiShootGameCharacter::EndAim()
 	}
 
 	CurrentFPSCamera->StopFire();
-
-	StopAnimMontage_Server(AimedAnimMontage);
 }
 
 void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation,
@@ -946,6 +942,11 @@ void AMultiShootGameCharacter::HandleWalkSpeed(bool FastRun)
 	SetWalkSpeed_Server(Speed);
 }
 
+void AMultiShootGameCharacter::SetAimed_Server_Implementation(bool Value)
+{
+	bAimed = Value;
+}
+
 void AMultiShootGameCharacter::SetFastRun_Server_Implementation(bool Value)
 {
 	bFastRun = Value;
@@ -1140,6 +1141,11 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 
 	bMoving = GetCharacterMovement()->Velocity.Size() > 0;
 
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		Pitch = FMath::ClampAngle(GetControlRotation().Pitch, -90.f, 90.f);
+	}
+
 	if (bAimed)
 	{
 		const FVector StartLocation = FPSCameraSceneComponent->GetComponentLocation();
@@ -1218,6 +1224,7 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 
 	DOREPLIFETIME(AMultiShootGameCharacter, WeaponMode);
 	DOREPLIFETIME(AMultiShootGameCharacter, bFastRun);
+	DOREPLIFETIME(AMultiShootGameCharacter, bAimed);
 	DOREPLIFETIME(AMultiShootGameCharacter, bKnifeAttack);
 	DOREPLIFETIME(AMultiShootGameCharacter, bBeginThrowGrenade);
 	DOREPLIFETIME(AMultiShootGameCharacter, bThrowingGrenade);
@@ -1225,6 +1232,7 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, GrenadeCount);
 	DOREPLIFETIME(AMultiShootGameCharacter, bDetectingClimb);
 	DOREPLIFETIME(AMultiShootGameCharacter, bShowSight);
+	DOREPLIFETIME(AMultiShootGameCharacter, Pitch);
 }
 
 void AMultiShootGameCharacter::OnEnemyKilled()
