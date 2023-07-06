@@ -20,6 +20,7 @@ void AMultiShootGameFPSCamera::BeginPlay()
 	Super::BeginPlay();
 
 	DefaultFOV = CameraComponent->FieldOfView;
+	bInitializeReady = true;
 }
 
 void AMultiShootGameFPSCamera::Tick(float DeltaTime)
@@ -104,9 +105,9 @@ void AMultiShootGameFPSCamera::Fire()
 				if (WeaponInfo.MuzzleEffect)
 				{
 					UGameplayStatics::SpawnEmitterAttached(WeaponInfo.MuzzleEffect, WeaponMeshComponent,
-														   MuzzleSocketName);
+					                                       MuzzleSocketName);
 				}
-				
+
 				if (BulletShellClass)
 				{
 					const FVector BulletShellLocation = WeaponMeshComponent->GetSocketLocation(BulletShellName);
@@ -187,14 +188,12 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 	}
 }
 
-void AMultiShootGameFPSCamera::SetWeaponInfo(const AMultiShootGameWeapon* Weapon)
+void AMultiShootGameFPSCamera::SetWeaponInfo(FWeaponInfo Info)
 {
-	WeaponInfo = Weapon->WeaponInfo;
-	WeaponMeshComponent->SetSkeletalMesh(!Weapon->WeaponInfo.AimTexture
-		                                     ? Weapon->GetWeaponMeshComponent()->SkeletalMesh
+	WeaponMeshComponent->SetSkeletalMesh(!Info.AimTexture
+		                                     ? Info.WeaponMesh
 		                                     : nullptr);
-
 	CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
-	                                                 Weapon->WeaponInfo.AimVector,
+	                                                 Info.AimVector,
 	                                                 FVector::OneVector));
 }

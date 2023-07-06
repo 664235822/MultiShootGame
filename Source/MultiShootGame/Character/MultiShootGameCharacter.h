@@ -339,6 +339,8 @@ protected:
 
 	void CheckShowSight(float DeltaSeconds);
 
+	void CheckWeaponInitialized();
+
 	float CurrentShowSight = 0.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = GameMode)
@@ -426,7 +428,7 @@ public:
 	void OnHeadshot();
 
 	void OnDeath();
-
+	
 	UFUNCTION(BlueprintPure, Category = Character)
 	FORCEINLINE AMultiShootGameWeapon* GetCurrentMainWeapon() const { return CurrentMainWeapon; }
 

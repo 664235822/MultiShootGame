@@ -15,6 +15,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Microsoft/AllowMicrosoftPlatformTypes.h"
 #include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
+#include "MultiShootGame/GameMode/MultiShootGameGameState.h"
+#include "MultiShootGame/GameMode/MultiShootGameServerGameMode.h"
+#include "MultiShootGame/GameMode/MultiShootGameServerGameState.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Net/UnrealNetwork.h"
 
@@ -117,18 +120,25 @@ void AMultiShootGameCharacter::BeginPlay()
 	SpawnParameters.Instigator = GetInstigator();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	CurrentMainWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(MainWeaponClass, FVector::ZeroVector,
-	                                                                  FRotator::ZeroRotator,
-	                                                                  SpawnParameters);
-	CurrentSecondWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(SecondWeaponClass, FVector::ZeroVector,
-	                                                                    FRotator::ZeroRotator,
-	                                                                    SpawnParameters);
-	CurrentThirdWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ThirdWeaponClass, FVector::ZeroVector,
-	                                                                   FRotator::ZeroRotator,
-	                                                                   SpawnParameters);
-	CurrentFPSCamera = GetWorld()->SpawnActor<AMultiShootGameFPSCamera>(FPSCameraClass, FVector::ZeroVector,
-	                                                                    FRotator::ZeroRotator,
-	                                                                    SpawnParameters);
+	//if (GetLocalRole() == ROLE_Authority)
+	//{
+		CurrentMainWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(MainWeaponClass, FVector::ZeroVector,
+		                                                                  FRotator::ZeroRotator,
+		                                                                  SpawnParameters);
+		CurrentSecondWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(SecondWeaponClass, FVector::ZeroVector,
+		                                                                    FRotator::ZeroRotator,
+		                                                                    SpawnParameters);
+		CurrentThirdWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ThirdWeaponClass, FVector::ZeroVector,
+		                                                                   FRotator::ZeroRotator,
+		                                                                   SpawnParameters);
+	//}
+
+	if (IsLocallyControlled())
+	{
+		CurrentFPSCamera = GetWorld()->SpawnActor<AMultiShootGameFPSCamera>(FPSCameraClass, FVector::ZeroVector,
+		                                                                    FRotator::ZeroRotator,
+		                                                                    SpawnParameters);
+	}
 
 	if (CurrentMainWeapon)
 	{
@@ -153,7 +163,6 @@ void AMultiShootGameCharacter::BeginPlay()
 		CurrentFPSCamera->AttachToComponent(FPSCameraSceneComponent,
 		                                    FAttachmentTransformRules::SnapToTargetIncludingScale);
 		CurrentFPSCamera->SetActorHiddenInGame(true);
-		CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
 	}
 }
 
@@ -746,7 +755,7 @@ void AMultiShootGameCharacter::ToggleMainWeapon()
 
 	SetWeaponMode_Server(EWeaponMode::MainWeapon);
 
-	CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon);
+	CurrentFPSCamera->SetWeaponInfo(CurrentMainWeapon->WeaponInfo);
 
 	HandleWalkSpeed(bFastRun);
 
@@ -771,7 +780,7 @@ void AMultiShootGameCharacter::ToggleSecondWeapon()
 
 	SetWeaponMode_Server(EWeaponMode::SecondWeapon);
 
-	CurrentFPSCamera->SetWeaponInfo(CurrentSecondWeapon);
+	CurrentFPSCamera->SetWeaponInfo(CurrentSecondWeapon->WeaponInfo);
 
 	HandleWalkSpeed(bFastRun);
 
@@ -796,7 +805,7 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 
 	SetWeaponMode_Server(EWeaponMode::ThirdWeapon);
 
-	CurrentFPSCamera->SetWeaponInfo(CurrentThirdWeapon);
+	CurrentFPSCamera->SetWeaponInfo(CurrentThirdWeapon->WeaponInfo);
 
 	HandleWalkSpeed(bFastRun);
 
@@ -965,6 +974,29 @@ void AMultiShootGameCharacter::CheckShowSight(float DeltaSeconds)
 			bShowSight = false;
 			CurrentShowSight = 0.f;
 		}
+	}
+}
+
+void AMultiShootGameCharacter::CheckWeaponInitialized()
+{
+	if (CurrentMainWeapon && CurrentMainWeapon->bInitializeReady &&
+		CurrentSecondWeapon && CurrentSecondWeapon->bInitializeReady &&
+		CurrentThirdWeapon && CurrentThirdWeapon->bInitializeReady &&
+		CurrentFPSCamera && CurrentFPSCamera->bInitializeReady)
+	{
+		if (Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			Cast<AMultiShootGameGameState>(GetWorld()->GetGameState())->HandleCharacterWeaponMesh();
+		}
+		else
+		{
+			Cast<AMultiShootGameServerGameState>(GetWorld()->GetGameState())->HandleCharacterWeaponMesh_Server();
+		}
+
+		CurrentMainWeapon->bInitializeReady = false;
+		CurrentSecondWeapon->bInitializeReady = false;
+		CurrentThirdWeapon->bInitializeReady = false;
+		CurrentFPSCamera->bInitializeReady = false;
 	}
 }
 
@@ -1161,6 +1193,7 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 	}
 
+	CheckWeaponInitialized();
 	CheckShowSight(DeltaTime);
 }
 

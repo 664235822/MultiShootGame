@@ -51,5 +51,5 @@ public:
 	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SetWeaponInfo(const AMultiShootGameWeapon* Weapon);
+	void SetWeaponInfo(FWeaponInfo Info);
 };

@@ -18,11 +18,14 @@ class MULTISHOOTGAME_API AMultiShootGameGameState : public AGameState
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = GameState)
 	EWaveState WaveState;
-
+	
 public:
 	UFUNCTION(BlueprintCallable, Category = GameState)
 	void SetWaveState(EWaveState NewWaveState);
 
 	UFUNCTION(BlueprintPure, Category = GameState)
 	FORCEINLINE EWaveState GetWaveState() const { return WaveState; }
+
+	UFUNCTION(BlueprintCallable, Category = GameState)
+	void HandleCharacterWeaponMesh();
 };

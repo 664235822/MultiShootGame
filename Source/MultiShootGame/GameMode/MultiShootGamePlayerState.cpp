@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGamePlayerState.h"
+
+#include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 void AMultiShootGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -9,6 +11,20 @@ void AMultiShootGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProp
 
 	DOREPLIFETIME(AMultiShootGamePlayerState, Kill);
 	DOREPLIFETIME(AMultiShootGamePlayerState, Death);
+	DOREPLIFETIME(AMultiShootGamePlayerState, MainWeaponMesh);
+	DOREPLIFETIME(AMultiShootGamePlayerState, SecondWeaponMesh);
+	DOREPLIFETIME(AMultiShootGamePlayerState, ThirdWeaponMesh);
+}
+
+void AMultiShootGamePlayerState::HandleWeaponMesh_Server_Implementation()
+{
+	const AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetPawn());
+	if (Character)
+	{
+		MainWeaponMesh = Character->GetCurrentMainWeapon()->WeaponInfo.WeaponMesh;
+		SecondWeaponMesh = Character->GetCurrentSecondWeapon()->WeaponInfo.WeaponMesh;
+		ThirdWeaponMesh = Character->GetCurrentThirdWeapon()->WeaponInfo.WeaponMesh;
+	}
 }
 
 void AMultiShootGamePlayerState::AddScore_Server_Implementation(int Num)

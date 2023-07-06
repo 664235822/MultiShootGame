@@ -15,6 +15,7 @@
 AMultiShootGameWeapon::AMultiShootGameWeapon()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = true;
 	bOnlyRelevantToOwner = true;
 
@@ -34,24 +35,25 @@ void AMultiShootGameWeapon::BeginPlay()
 	if (SaveGame)
 	{
 		TArray<FWeaponInfo> WeaponInfoList;
+		const AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
 		switch (CurrentWeaponMode)
 		{
 		case EWeaponMode::MainWeapon:
 			WeaponInfoList = SaveGame->MainWeaponList;
-			WeaponInfo = WeaponInfoList[SaveGame->MainWeaponIndex];
+			SetWeaponInfo_Server(WeaponInfoList[SaveGame->MainWeaponIndex]);
 			break;
 		case EWeaponMode::SecondWeapon:
 			WeaponInfoList = SaveGame->SecondWeaponList;
-			WeaponInfo = WeaponInfoList[SaveGame->SecondWeaponIndex];
+			SetWeaponInfo_Server(WeaponInfoList[SaveGame->SecondWeaponIndex]);
 			break;
 		case EWeaponMode::ThirdWeapon:
 			WeaponInfoList = SaveGame->ThirdWeaponList;
-			WeaponInfo = WeaponInfoList[SaveGame->ThirdWeaponIndex];
+			SetWeaponInfo_Server(WeaponInfoList[SaveGame->ThirdWeaponIndex]);
 			break;
 		}
-		WeaponMeshComponent->SetSkeletalMesh(WeaponInfo.WeaponMesh);
 	}
 
+	bInitializeReady = true;
 	TimeBetweenShots = 60.0f / WeaponInfo.RateOfFire;
 }
 
@@ -285,4 +287,9 @@ void AMultiShootGameWeapon::FillUpBullet()
 {
 	WeaponInfo.BulletNumber = WeaponInfo.FillUpBulletNumber;
 	WeaponInfo.MaxBulletNumber = WeaponInfo.FillUpMaxBulletNumber;
+}
+
+void AMultiShootGameWeapon::SetWeaponInfo_Server_Implementation(FWeaponInfo Info)
+{
+	WeaponInfo = Info;
 }

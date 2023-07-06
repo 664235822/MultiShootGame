@@ -13,5 +13,12 @@ UCLASS()
 class MULTISHOOTGAME_API AMultiShootGameServerGameState : public AGameState
 {
 	GENERATED_BODY()
-	
+
+public:
+	UFUNCTION(Server, Reliable, Category = ServerGameState)
+	void HandleCharacterWeaponMesh_Server();
+
+protected:
+	UFUNCTION(NetMulticast, Reliable, Category = ServerGameState)
+	void HandleCharacterWeaponMesh_Multicast();
 };

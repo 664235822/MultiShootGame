@@ -21,9 +21,21 @@ protected:
 	UPROPERTY(Replicated)
 	int Death;
 
+	UPROPERTY(Replicated)
+	USkeletalMesh* MainWeaponMesh;
+
+	UPROPERTY(Replicated)
+	USkeletalMesh* SecondWeaponMesh;
+
+	UPROPERTY(Replicated)
+	USkeletalMesh* ThirdWeaponMesh;
+
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
+	UFUNCTION(Server, Reliable, Category = PlayerState)
+	void HandleWeaponMesh_Server();
+
 	UFUNCTION(Server, Reliable, Category = PlayerState)
 	void AddScore_Server(int Num = 1);
 
@@ -38,4 +50,13 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
 	FORCEINLINE int GetDeath() const { return Death; }
+
+	UFUNCTION(BlueprintPure, Category = PlayerState)
+	FORCEINLINE USkeletalMesh* GetMainWeaponMesh() const { return MainWeaponMesh; }
+
+	UFUNCTION(BlueprintPure, Category = PlayerState)
+	FORCEINLINE USkeletalMesh* GetSecondWeaponMesh() const { return SecondWeaponMesh; }
+
+	UFUNCTION(BlueprintPure, Category = PlayerState)
+	FORCEINLINE USkeletalMesh* GetThirdWeaponMesh() const { return ThirdWeaponMesh; }
 };

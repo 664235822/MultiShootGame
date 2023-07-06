@@ -55,6 +55,9 @@ protected:
 
 	FTimerHandle TimerHandle;
 
+	UFUNCTION(Server, Reliable, Category = Weapon)
+	void SetWeaponInfo_Server(FWeaponInfo Info);
+
 	float LastFireTime;
 
 	float TimeBetweenShots;
@@ -81,6 +84,8 @@ public:
 	void BulletReload();
 
 	void FillUpBullet();
+
+	bool bInitializeReady = false;
 
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FWeaponInfo WeaponInfo;
