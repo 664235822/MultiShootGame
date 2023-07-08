@@ -337,6 +337,12 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void StopAnimMontage_Multicast(UAnimMontage* AnimMontage);
 
+	UFUNCTION(Server, Reliable)
+	void HandleWeaponMesh_Server();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void HandleWeaponMesh_Multicast();
+
 	void CheckShowSight(float DeltaSeconds);
 
 	void CheckWeaponInitialized();
@@ -422,13 +428,13 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
 	void OnEnemyKilled();
-	
+
 	void OnHeadshot();
 
 	void OnDeath();
-	
+
 	UFUNCTION(BlueprintPure, Category = Character)
 	FORCEINLINE AMultiShootGameWeapon* GetCurrentMainWeapon() const { return CurrentMainWeapon; }
 

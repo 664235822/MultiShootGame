@@ -190,6 +190,7 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 
 void AMultiShootGameFPSCamera::SetWeaponInfo(FWeaponInfo Info)
 {
+	WeaponInfo = Info;
 	WeaponMeshComponent->SetSkeletalMesh(!Info.AimTexture
 		                                     ? Info.WeaponMesh
 		                                     : nullptr);

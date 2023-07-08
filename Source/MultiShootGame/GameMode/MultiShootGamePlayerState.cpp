@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGamePlayerState.h"
-#include "GameFramework/GameStateBase.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Net/UnrealNetwork.h"
 

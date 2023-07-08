@@ -25,7 +25,4 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = GameState)
 	FORCEINLINE EWaveState GetWaveState() const { return WaveState; }
-
-	UFUNCTION(BlueprintCallable, Category = GameState)
-	void HandleCharacterWeaponMesh();
 };

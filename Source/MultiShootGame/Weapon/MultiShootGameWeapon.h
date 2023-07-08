@@ -84,6 +84,8 @@ public:
 
 	bool bInitializeReady = false;
 
+	bool bSetWeapon = false;
+
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FWeaponInfo WeaponInfo;
 
