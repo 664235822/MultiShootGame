@@ -55,9 +55,6 @@ protected:
 
 	FTimerHandle TimerHandle;
 
-	UFUNCTION(Server, Reliable, Category = Weapon)
-	void SetWeaponInfo_Server(FWeaponInfo Info);
-
 	float LastFireTime;
 
 	float TimeBetweenShots;

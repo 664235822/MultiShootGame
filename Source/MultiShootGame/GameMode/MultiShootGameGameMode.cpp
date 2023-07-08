@@ -1,10 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MultiShootGameGameMode.h"
-
-#include "MultiShootGameGameInstance.h"
 #include "MultiShootGameGameState.h"
-#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "MultiShootGame/Character/MultiShootGameEnemyCharacter.h"

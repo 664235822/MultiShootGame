@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGamePlayerState.h"
-
+#include "GameFramework/GameStateBase.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Net/UnrealNetwork.h"
 
@@ -11,20 +11,24 @@ void AMultiShootGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProp
 
 	DOREPLIFETIME(AMultiShootGamePlayerState, Kill);
 	DOREPLIFETIME(AMultiShootGamePlayerState, Death);
-	DOREPLIFETIME(AMultiShootGamePlayerState, MainWeaponMesh);
-	DOREPLIFETIME(AMultiShootGamePlayerState, SecondWeaponMesh);
-	DOREPLIFETIME(AMultiShootGamePlayerState, ThirdWeaponMesh);
+	DOREPLIFETIME(AMultiShootGamePlayerState, MainWeaponInfo);
+	DOREPLIFETIME(AMultiShootGamePlayerState, SecondWeaponInfo);
+	DOREPLIFETIME(AMultiShootGamePlayerState, ThirdWeaponInfo);
 }
 
-void AMultiShootGamePlayerState::HandleWeaponMesh_Server_Implementation()
+void AMultiShootGamePlayerState::SetMainWeaponInfo_Server_Implementation(FWeaponInfo WeaponInfo)
 {
-	const AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetPawn());
-	if (Character)
-	{
-		MainWeaponMesh = Character->GetCurrentMainWeapon()->WeaponInfo.WeaponMesh;
-		SecondWeaponMesh = Character->GetCurrentSecondWeapon()->WeaponInfo.WeaponMesh;
-		ThirdWeaponMesh = Character->GetCurrentThirdWeapon()->WeaponInfo.WeaponMesh;
-	}
+	MainWeaponInfo = WeaponInfo;
+}
+
+void AMultiShootGamePlayerState::SetSecondWeaponInfo_Server_Implementation(FWeaponInfo WeaponInfo)
+{
+	SecondWeaponInfo = WeaponInfo;
+}
+
+void AMultiShootGamePlayerState::SetThirdWeaponInfo_Server_Implementation(FWeaponInfo WeaponInfo)
+{
+	ThirdWeaponInfo = WeaponInfo;
 }
 
 void AMultiShootGamePlayerState::AddScore_Server_Implementation(int Num)

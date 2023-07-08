@@ -10,9 +10,9 @@ void AMultiShootGameGameState::HandleCharacterWeaponMesh()
 	AMultiShootGamePlayerState* PlayerState = Cast<AMultiShootGamePlayerState>(PlayerArray[0]);
 	const AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(PlayerState->GetPawn());
 	
-	Character->GetCurrentMainWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(PlayerState->GetMainWeaponMesh());
-	Character->GetCurrentSecondWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(PlayerState->GetSecondWeaponMesh());
-	Character->GetCurrentThirdWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(PlayerState->GetThirdWeaponMesh());
+	Character->GetCurrentMainWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(PlayerState->GetMainWeaponInfo().WeaponMesh);
+	Character->GetCurrentSecondWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(PlayerState->GetSecondWeaponInfo().WeaponMesh);
+	Character->GetCurrentThirdWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(PlayerState->GetThirdWeaponInfo().WeaponMesh);
 	FWeaponInfo WeaponInfo;
 	switch (Character->GetWeaponMode())
 	{

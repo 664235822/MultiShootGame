@@ -120,25 +120,18 @@ void AMultiShootGameCharacter::BeginPlay()
 	SpawnParameters.Instigator = GetInstigator();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	//if (GetLocalRole() == ROLE_Authority)
-	//{
-		CurrentMainWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(MainWeaponClass, FVector::ZeroVector,
-		                                                                  FRotator::ZeroRotator,
-		                                                                  SpawnParameters);
-		CurrentSecondWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(SecondWeaponClass, FVector::ZeroVector,
-		                                                                    FRotator::ZeroRotator,
-		                                                                    SpawnParameters);
-		CurrentThirdWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ThirdWeaponClass, FVector::ZeroVector,
-		                                                                   FRotator::ZeroRotator,
-		                                                                   SpawnParameters);
-	//}
-
-	if (IsLocallyControlled())
-	{
-		CurrentFPSCamera = GetWorld()->SpawnActor<AMultiShootGameFPSCamera>(FPSCameraClass, FVector::ZeroVector,
-		                                                                    FRotator::ZeroRotator,
-		                                                                    SpawnParameters);
-	}
+	CurrentMainWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(MainWeaponClass, FVector::ZeroVector,
+	                                                                  FRotator::ZeroRotator,
+	                                                                  SpawnParameters);
+	CurrentSecondWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(SecondWeaponClass, FVector::ZeroVector,
+	                                                                    FRotator::ZeroRotator,
+	                                                                    SpawnParameters);
+	CurrentThirdWeapon = GetWorld()->SpawnActor<AMultiShootGameWeapon>(ThirdWeaponClass, FVector::ZeroVector,
+	                                                                   FRotator::ZeroRotator,
+	                                                                   SpawnParameters);
+	CurrentFPSCamera = GetWorld()->SpawnActor<AMultiShootGameFPSCamera>(FPSCameraClass, FVector::ZeroVector,
+	                                                                    FRotator::ZeroRotator,
+	                                                                    SpawnParameters);
 
 	if (CurrentMainWeapon)
 	{
@@ -982,8 +975,13 @@ void AMultiShootGameCharacter::CheckWeaponInitialized()
 	if (CurrentMainWeapon && CurrentMainWeapon->bInitializeReady &&
 		CurrentSecondWeapon && CurrentSecondWeapon->bInitializeReady &&
 		CurrentThirdWeapon && CurrentThirdWeapon->bInitializeReady &&
-		CurrentFPSCamera && CurrentFPSCamera->bInitializeReady)
+		CurrentFPSCamera && CurrentFPSCamera->bInitializeReady &&
+		GetPlayerState())
 	{
+		AMultiShootGamePlayerState* TempPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
+		TempPlayerState->SetMainWeaponInfo_Server(CurrentMainWeapon->WeaponInfo);
+		TempPlayerState->SetSecondWeaponInfo_Server(CurrentSecondWeapon->WeaponInfo);
+		TempPlayerState->SetThirdWeaponInfo_Server(CurrentThirdWeapon->WeaponInfo);
 		if (Cast<AMultiShootGameGameMode>(GetWorld()->GetAuthGameMode()))
 		{
 			Cast<AMultiShootGameGameState>(GetWorld()->GetGameState())->HandleCharacterWeaponMesh();

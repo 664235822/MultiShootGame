@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGameServerGameState.h"
-
 #include "MultiShootGamePlayerState.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 
@@ -17,11 +16,11 @@ void AMultiShootGameServerGameState::HandleCharacterWeaponMesh_Multicast_Impleme
 		AMultiShootGamePlayerState* CharacterPlayerState = Cast<AMultiShootGamePlayerState>(PlayerState);
 		AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(CharacterPlayerState->GetOwner());
 		Character->GetCurrentMainWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
-			CharacterPlayerState->GetMainWeaponMesh());
+			CharacterPlayerState->GetMainWeaponInfo().WeaponMesh);
 		Character->GetCurrentSecondWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
-			CharacterPlayerState->GetSecondWeaponMesh());
+			CharacterPlayerState->GetSecondWeaponInfo().WeaponMesh);
 		Character->GetCurrentThirdWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
-			CharacterPlayerState->GetThirdWeaponMesh());
+			CharacterPlayerState->GetThirdWeaponInfo().WeaponMesh);
 		FWeaponInfo WeaponInfo;
 		switch (Character->GetWeaponMode())
 		{

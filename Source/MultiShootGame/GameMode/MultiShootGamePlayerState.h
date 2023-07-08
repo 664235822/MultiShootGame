@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "MultiShootGame/Struct/WeaponInfo.h"
 #include "MultiShootGamePlayerState.generated.h"
 
 /**
@@ -22,19 +23,25 @@ protected:
 	int Death;
 
 	UPROPERTY(Replicated)
-	USkeletalMesh* MainWeaponMesh;
+	FWeaponInfo MainWeaponInfo;
 
 	UPROPERTY(Replicated)
-	USkeletalMesh* SecondWeaponMesh;
+	FWeaponInfo SecondWeaponInfo;
 
 	UPROPERTY(Replicated)
-	USkeletalMesh* ThirdWeaponMesh;
+	FWeaponInfo ThirdWeaponInfo;
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
-	void HandleWeaponMesh_Server();
+	void SetMainWeaponInfo_Server(FWeaponInfo WeaponInfo);
+
+	UFUNCTION(Server, Reliable, Category = PlayerState)
+	void SetSecondWeaponInfo_Server(FWeaponInfo WeaponInfo);
+
+	UFUNCTION(Server, Reliable, Category = PlayerState)
+	void SetThirdWeaponInfo_Server(FWeaponInfo WeaponInfo);
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
 	void AddScore_Server(int Num = 1);
@@ -52,11 +59,11 @@ public:
 	FORCEINLINE int GetDeath() const { return Death; }
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
-	FORCEINLINE USkeletalMesh* GetMainWeaponMesh() const { return MainWeaponMesh; }
+	FORCEINLINE FWeaponInfo GetMainWeaponInfo() const { return MainWeaponInfo; }
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
-	FORCEINLINE USkeletalMesh* GetSecondWeaponMesh() const { return SecondWeaponMesh; }
+	FORCEINLINE FWeaponInfo GetSecondWeaponInfo() const { return SecondWeaponInfo; }
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
-	FORCEINLINE USkeletalMesh* GetThirdWeaponMesh() const { return ThirdWeaponMesh; }
+	FORCEINLINE FWeaponInfo GetThirdWeaponInfo() const { return ThirdWeaponInfo; }
 };

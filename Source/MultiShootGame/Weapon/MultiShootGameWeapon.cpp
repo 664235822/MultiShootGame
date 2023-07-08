@@ -40,15 +40,15 @@ void AMultiShootGameWeapon::BeginPlay()
 		{
 		case EWeaponMode::MainWeapon:
 			WeaponInfoList = SaveGame->MainWeaponList;
-			SetWeaponInfo_Server(WeaponInfoList[SaveGame->MainWeaponIndex]);
+			WeaponInfo = WeaponInfoList[SaveGame->MainWeaponIndex];
 			break;
 		case EWeaponMode::SecondWeapon:
 			WeaponInfoList = SaveGame->SecondWeaponList;
-			SetWeaponInfo_Server(WeaponInfoList[SaveGame->SecondWeaponIndex]);
+			WeaponInfo = WeaponInfoList[SaveGame->SecondWeaponIndex];
 			break;
 		case EWeaponMode::ThirdWeapon:
 			WeaponInfoList = SaveGame->ThirdWeaponList;
-			SetWeaponInfo_Server(WeaponInfoList[SaveGame->ThirdWeaponIndex]);
+			WeaponInfo = WeaponInfoList[SaveGame->ThirdWeaponIndex];
 			break;
 		}
 	}
@@ -287,9 +287,4 @@ void AMultiShootGameWeapon::FillUpBullet()
 {
 	WeaponInfo.BulletNumber = WeaponInfo.FillUpBulletNumber;
 	WeaponInfo.MaxBulletNumber = WeaponInfo.FillUpMaxBulletNumber;
-}
-
-void AMultiShootGameWeapon::SetWeaponInfo_Server_Implementation(FWeaponInfo Info)
-{
-	WeaponInfo = Info;
 }
