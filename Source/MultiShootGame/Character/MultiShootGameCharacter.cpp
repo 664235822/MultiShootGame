@@ -965,41 +965,23 @@ void AMultiShootGameCharacter::HandleWeaponMesh_Multicast_Implementation()
 	{
 		AMultiShootGamePlayerState* CurrentPlayerState = Cast<AMultiShootGamePlayerState>(TempPlayerState);
 		AMultiShootGameCharacter* CurrentCharacter = Cast<AMultiShootGameCharacter>(CurrentPlayerState->GetPawn());
-		if (!CurrentCharacter->GetCurrentMainWeapon()->bSetWeapon)
+		AMultiShootGameWeapon* MainWeapon = CurrentCharacter->GetCurrentMainWeapon();
+		AMultiShootGameWeapon* SecondWeapon = CurrentCharacter->GetCurrentSecondWeapon();
+		AMultiShootGameWeapon* ThirdWeapon = CurrentCharacter->GetCurrentThirdWeapon();
+		if (!MainWeapon->bSetWeapon)
 		{
-			CurrentCharacter->GetCurrentMainWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
-				CurrentPlayerState->GetMainWeaponInfo().WeaponMesh);
-			CurrentCharacter->GetCurrentMainWeapon()->bSetWeapon = true;
+			MainWeapon->GetWeaponMeshComponent()->SetSkeletalMesh(CurrentPlayerState->GetMainWeaponMesh());
+			MainWeapon->bSetWeapon = true;
 		}
-		if (!CurrentCharacter->GetCurrentSecondWeapon()->bSetWeapon)
+		if (!SecondWeapon->bSetWeapon)
 		{
-			CurrentCharacter->GetCurrentSecondWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
-				CurrentPlayerState->GetSecondWeaponInfo().WeaponMesh);
-			CurrentCharacter->GetCurrentSecondWeapon()->bSetWeapon = true;
+			SecondWeapon->GetWeaponMeshComponent()->SetSkeletalMesh(CurrentPlayerState->GetSecondWeaponMesh());
+			SecondWeapon->bSetWeapon = true;
 		}
-		if (!CurrentCharacter->GetCurrentThirdWeapon()->bSetWeapon)
+		if (!ThirdWeapon->bSetWeapon)
 		{
-			CurrentCharacter->GetCurrentThirdWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
-				CurrentPlayerState->GetThirdWeaponInfo().WeaponMesh);
-			CurrentCharacter->GetCurrentThirdWeapon()->bSetWeapon = true;
-		}
-		if (!CurrentCharacter->GetCurrentFPSCamera()->bSetWeapon)
-		{
-			FWeaponInfo WeaponInfo;
-			switch (CurrentCharacter->GetWeaponMode())
-			{
-			case EWeaponMode::MainWeapon:
-				WeaponInfo = CurrentCharacter->GetCurrentMainWeapon()->WeaponInfo;
-				break;
-			case EWeaponMode::SecondWeapon:
-				WeaponInfo = CurrentCharacter->GetCurrentSecondWeapon()->WeaponInfo;
-				break;
-			case EWeaponMode::ThirdWeapon:
-				WeaponInfo = CurrentCharacter->GetCurrentThirdWeapon()->WeaponInfo;
-				break;
-			}
-			CurrentCharacter->GetCurrentFPSCamera()->SetWeaponInfo(WeaponInfo);
-			CurrentCharacter->GetCurrentFPSCamera()->bSetWeapon = true;
+			ThirdWeapon->GetWeaponMeshComponent()->SetSkeletalMesh(CurrentPlayerState->GetThirdWeaponMesh());
+			ThirdWeapon->bSetWeapon = true;
 		}
 	}
 }
@@ -1029,11 +1011,26 @@ void AMultiShootGameCharacter::CheckWeaponInitialized()
 		GetPlayerState())
 	{
 		AMultiShootGamePlayerState* TempPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
-		TempPlayerState->SetMainWeaponInfo_Server(CurrentMainWeapon->WeaponInfo);
-		TempPlayerState->SetSecondWeaponInfo_Server(CurrentSecondWeapon->WeaponInfo);
-		TempPlayerState->SetThirdWeaponInfo_Server(CurrentThirdWeapon->WeaponInfo);
+		TempPlayerState->SetMainWeaponMesh_Server(CurrentMainWeapon->WeaponMesh);
+		TempPlayerState->SetSecondWeaponMesh_Server(CurrentSecondWeapon->WeaponMesh);
+		TempPlayerState->SetThirdWeaponMesh_Server(CurrentThirdWeapon->WeaponMesh);
 
 		HandleWeaponMesh_Server();
+		
+		FWeaponInfo WeaponInfo;
+		switch (GetWeaponMode())
+		{
+		case EWeaponMode::MainWeapon:
+			WeaponInfo = CurrentMainWeapon->WeaponInfo;
+			break;
+		case EWeaponMode::SecondWeapon:
+			WeaponInfo = CurrentSecondWeapon->WeaponInfo;
+			break;
+		case EWeaponMode::ThirdWeapon:
+			WeaponInfo = CurrentThirdWeapon->WeaponInfo;
+			break;
+		}
+		CurrentFPSCamera->SetWeaponInfo(WeaponInfo);
 
 		CurrentMainWeapon->bInitializeReady = false;
 		CurrentSecondWeapon->bInitializeReady = false;

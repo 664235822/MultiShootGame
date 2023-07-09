@@ -89,6 +89,9 @@ public:
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	FWeaponInfo WeaponInfo;
 
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	USkeletalMesh* WeaponMesh;
+
 	UFUNCTION(BlueprintPure, Category = Weapon)
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMeshComponent() const { return WeaponMeshComponent; }
 };

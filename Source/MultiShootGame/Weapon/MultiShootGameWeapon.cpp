@@ -35,7 +35,6 @@ void AMultiShootGameWeapon::BeginPlay()
 	if (SaveGame)
 	{
 		TArray<FWeaponInfo> WeaponInfoList;
-		const AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
 		switch (CurrentWeaponMode)
 		{
 		case EWeaponMode::MainWeapon:
@@ -51,6 +50,8 @@ void AMultiShootGameWeapon::BeginPlay()
 			WeaponInfo = WeaponInfoList[SaveGame->ThirdWeaponIndex];
 			break;
 		}
+
+		WeaponMesh = WeaponInfo.WeaponMesh;
 	}
 
 	bInitializeReady = true;
@@ -164,6 +165,7 @@ void AMultiShootGameWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMultiShootGameWeapon, WeaponInfo);
+	DOREPLIFETIME(AMultiShootGameWeapon, WeaponMesh);
 }
 
 void AMultiShootGameWeapon::StartFire()

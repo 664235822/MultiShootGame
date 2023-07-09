@@ -23,25 +23,25 @@ protected:
 	int Death;
 
 	UPROPERTY(Replicated)
-	FWeaponInfo MainWeaponInfo;
+	USkeletalMesh* MainWeaponMesh;
 
 	UPROPERTY(Replicated)
-	FWeaponInfo SecondWeaponInfo;
+	USkeletalMesh* SecondWeaponMesh;
 
 	UPROPERTY(Replicated)
-	FWeaponInfo ThirdWeaponInfo;
+	USkeletalMesh* ThirdWeaponMesh;
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
-	void SetMainWeaponInfo_Server(FWeaponInfo WeaponInfo);
+	void SetMainWeaponMesh_Server(USkeletalMesh* WeaponMesh);
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
-	void SetSecondWeaponInfo_Server(FWeaponInfo WeaponInfo);
+	void SetSecondWeaponMesh_Server(USkeletalMesh* WeaponMesh);
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
-	void SetThirdWeaponInfo_Server(FWeaponInfo WeaponInfo);
+	void SetThirdWeaponMesh_Server(USkeletalMesh* WeaponMesh);
 
 	UFUNCTION(Server, Reliable, Category = PlayerState)
 	void AddScore_Server(int Num = 1);
@@ -59,11 +59,11 @@ public:
 	FORCEINLINE int GetDeath() const { return Death; }
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
-	FORCEINLINE FWeaponInfo GetMainWeaponInfo() const { return MainWeaponInfo; }
+	FORCEINLINE USkeletalMesh* GetMainWeaponMesh() const { return MainWeaponMesh; }
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
-	FORCEINLINE FWeaponInfo GetSecondWeaponInfo() const { return SecondWeaponInfo; }
+	FORCEINLINE USkeletalMesh* GetSecondWeaponMesh() const { return SecondWeaponMesh; }
 
 	UFUNCTION(BlueprintPure, Category = PlayerState)
-	FORCEINLINE FWeaponInfo GetThirdWeaponInfo() const { return ThirdWeaponInfo; }
+	FORCEINLINE USkeletalMesh* GetThirdWeaponMesh() const { return ThirdWeaponMesh; }
 };
