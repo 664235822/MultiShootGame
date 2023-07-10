@@ -1008,7 +1008,7 @@ void AMultiShootGameCharacter::CheckWeaponInitialized()
 		CurrentSecondWeapon && CurrentSecondWeapon->bInitializeReady &&
 		CurrentThirdWeapon && CurrentThirdWeapon->bInitializeReady &&
 		CurrentFPSCamera && CurrentFPSCamera->bInitializeReady &&
-		GetPlayerState())
+		GetPlayerState() && IsLocallyControlled())
 	{
 		AMultiShootGamePlayerState* TempPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
 		TempPlayerState->SetMainWeaponMesh_Server(CurrentMainWeapon->WeaponMesh);
@@ -1016,7 +1016,7 @@ void AMultiShootGameCharacter::CheckWeaponInitialized()
 		TempPlayerState->SetThirdWeaponMesh_Server(CurrentThirdWeapon->WeaponMesh);
 
 		HandleWeaponMesh_Server();
-		
+
 		FWeaponInfo WeaponInfo;
 		switch (GetWeaponMode())
 		{
@@ -1072,6 +1072,16 @@ void AMultiShootGameCharacter::SetKnifeAttack_Server_Implementation(bool Value)
 void AMultiShootGameCharacter::SetGrenadeCount_Server_Implementation(int Value)
 {
 	GrenadeCount = Value;
+}
+
+void AMultiShootGameCharacter::SetWeaponInfo_Server_Implementation(AMultiShootGameWeapon* Weapon, FWeaponInfo Value)
+{
+	Weapon->WeaponInfo = Value;
+}
+
+void AMultiShootGameCharacter::SetWeaponMesh_Server_Implementation(AMultiShootGameWeapon* Weapon, USkeletalMesh* Value)
+{
+	Weapon->WeaponMesh = Value;
 }
 
 void AMultiShootGameCharacter::AttachWeapon_Server_Implementation()
@@ -1305,6 +1315,10 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, bDetectingClimb);
 	DOREPLIFETIME(AMultiShootGameCharacter, bShowSight);
 	DOREPLIFETIME(AMultiShootGameCharacter, Pitch);
+	DOREPLIFETIME(AMultiShootGameCharacter, CurrentMainWeapon);
+	DOREPLIFETIME(AMultiShootGameCharacter, CurrentSecondWeapon);
+	DOREPLIFETIME(AMultiShootGameCharacter, CurrentThirdWeapon);
+	
 }
 
 void AMultiShootGameCharacter::OnEnemyKilled()

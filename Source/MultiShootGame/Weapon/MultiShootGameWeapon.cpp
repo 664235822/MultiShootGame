@@ -30,31 +30,35 @@ void AMultiShootGameWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const UChooseWeaponSaveGame* SaveGame = Cast<UChooseWeaponSaveGame>(
-		UGameplayStatics::LoadGameFromSlot(TEXT("ChooseWeapon"), 0));
-	if (SaveGame)
+	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
+	if (Character->IsLocallyControlled())
 	{
-		TArray<FWeaponInfo> WeaponInfoList;
-		switch (CurrentWeaponMode)
+		const UChooseWeaponSaveGame* SaveGame = Cast<UChooseWeaponSaveGame>(
+			UGameplayStatics::LoadGameFromSlot(TEXT("ChooseWeapon"), 0));
+		if (SaveGame)
 		{
-		case EWeaponMode::MainWeapon:
-			WeaponInfoList = SaveGame->MainWeaponList;
-			WeaponInfo = WeaponInfoList[SaveGame->MainWeaponIndex];
-			break;
-		case EWeaponMode::SecondWeapon:
-			WeaponInfoList = SaveGame->SecondWeaponList;
-			WeaponInfo = WeaponInfoList[SaveGame->SecondWeaponIndex];
-			break;
-		case EWeaponMode::ThirdWeapon:
-			WeaponInfoList = SaveGame->ThirdWeaponList;
-			WeaponInfo = WeaponInfoList[SaveGame->ThirdWeaponIndex];
-			break;
+			TArray<FWeaponInfo> WeaponInfoList;
+			switch (CurrentWeaponMode)
+			{
+			case EWeaponMode::MainWeapon:
+				WeaponInfoList = SaveGame->MainWeaponList;
+				Character->SetWeaponInfo_Server(this, WeaponInfoList[SaveGame->MainWeaponIndex]);
+				break;
+			case EWeaponMode::SecondWeapon:
+				WeaponInfoList = SaveGame->SecondWeaponList;
+				Character->SetWeaponInfo_Server(this, WeaponInfoList[SaveGame->SecondWeaponIndex]);
+				break;
+			case EWeaponMode::ThirdWeapon:
+				WeaponInfoList = SaveGame->ThirdWeaponList;
+				Character->SetWeaponInfo_Server(this, WeaponInfoList[SaveGame->ThirdWeaponIndex]);
+				break;
+			}
+			Character->SetWeaponMesh_Server(this, WeaponInfo.WeaponMesh);
 		}
 
-		WeaponMesh = WeaponInfo.WeaponMesh;
+		bInitializeReady = true;
 	}
 
-	bInitializeReady = true;
 	TimeBetweenShots = 60.0f / WeaponInfo.RateOfFire;
 }
 
