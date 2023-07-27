@@ -396,6 +396,8 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int GrenadeCount;
 
+	FTimerHandle TimerHandle;
+
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	AMultiShootGameWeapon* CurrentMainWeapon;
 
@@ -434,12 +436,6 @@ public:
 	void OnHeadshot();
 
 	void OnDeath();
-
-	UFUNCTION(Server, Reliable)
-	void SetWeaponInfo_Server(AMultiShootGameWeapon* Weapon, FWeaponInfo Value);
-
-	UFUNCTION(Server,Reliable)
-	void SetWeaponMesh_Server(AMultiShootGameWeapon* Weapon, USkeletalMesh* Value);
 
 	UFUNCTION(BlueprintPure, Category = Character)
 	FORCEINLINE AMultiShootGameWeapon* GetCurrentMainWeapon() const { return CurrentMainWeapon; }

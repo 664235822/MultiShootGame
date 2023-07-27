@@ -42,18 +42,17 @@ void AMultiShootGameWeapon::BeginPlay()
 			{
 			case EWeaponMode::MainWeapon:
 				WeaponInfoList = SaveGame->MainWeaponList;
-				Character->SetWeaponInfo_Server(this, WeaponInfoList[SaveGame->MainWeaponIndex]);
+				WeaponInfo = WeaponInfoList[SaveGame->MainWeaponIndex];
 				break;
 			case EWeaponMode::SecondWeapon:
 				WeaponInfoList = SaveGame->SecondWeaponList;
-				Character->SetWeaponInfo_Server(this, WeaponInfoList[SaveGame->SecondWeaponIndex]);
+				WeaponInfo = WeaponInfoList[SaveGame->SecondWeaponIndex];
 				break;
 			case EWeaponMode::ThirdWeapon:
 				WeaponInfoList = SaveGame->ThirdWeaponList;
-				Character->SetWeaponInfo_Server(this, WeaponInfoList[SaveGame->ThirdWeaponIndex]);
+				WeaponInfo = WeaponInfoList[SaveGame->ThirdWeaponIndex];
 				break;
 			}
-			Character->SetWeaponMesh_Server(this, WeaponInfo.WeaponMesh);
 		}
 
 		bInitializeReady = true;
@@ -168,8 +167,7 @@ void AMultiShootGameWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AMultiShootGameWeapon, WeaponInfo);
-	DOREPLIFETIME(AMultiShootGameWeapon, WeaponMesh);
+	//DOREPLIFETIME(AMultiShootGameWeapon, WeaponInfo);
 }
 
 void AMultiShootGameWeapon::StartFire()

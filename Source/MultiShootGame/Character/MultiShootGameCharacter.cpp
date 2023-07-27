@@ -956,33 +956,23 @@ void AMultiShootGameCharacter::SetFastRun_Server_Implementation(bool Value)
 
 void AMultiShootGameCharacter::HandleWeaponMesh_Server_Implementation()
 {
-	HandleWeaponMesh_Multicast();
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameCharacter::HandleWeaponMesh_Multicast, 1.f,
+	                                false);;
 }
 
 void AMultiShootGameCharacter::HandleWeaponMesh_Multicast_Implementation()
 {
 	for (APlayerState* TempPlayerState : GetWorld()->GetGameState()->PlayerArray)
 	{
-		AMultiShootGamePlayerState* CurrentPlayerState = Cast<AMultiShootGamePlayerState>(TempPlayerState);
-		AMultiShootGameCharacter* CurrentCharacter = Cast<AMultiShootGameCharacter>(CurrentPlayerState->GetPawn());
-		AMultiShootGameWeapon* MainWeapon = CurrentCharacter->GetCurrentMainWeapon();
-		AMultiShootGameWeapon* SecondWeapon = CurrentCharacter->GetCurrentSecondWeapon();
-		AMultiShootGameWeapon* ThirdWeapon = CurrentCharacter->GetCurrentThirdWeapon();
-		if (!MainWeapon->bSetWeapon)
-		{
-			MainWeapon->GetWeaponMeshComponent()->SetSkeletalMesh(CurrentPlayerState->GetMainWeaponMesh());
-			MainWeapon->bSetWeapon = true;
-		}
-		if (!SecondWeapon->bSetWeapon)
-		{
-			SecondWeapon->GetWeaponMeshComponent()->SetSkeletalMesh(CurrentPlayerState->GetSecondWeaponMesh());
-			SecondWeapon->bSetWeapon = true;
-		}
-		if (!ThirdWeapon->bSetWeapon)
-		{
-			ThirdWeapon->GetWeaponMeshComponent()->SetSkeletalMesh(CurrentPlayerState->GetThirdWeaponMesh());
-			ThirdWeapon->bSetWeapon = true;
-		}
+		const AMultiShootGamePlayerState* CurrentPlayerState = Cast<AMultiShootGamePlayerState>(TempPlayerState);
+		const AMultiShootGameCharacter* CurrentCharacter = Cast<
+			AMultiShootGameCharacter>(CurrentPlayerState->GetPawn());
+		CurrentCharacter->GetCurrentMainWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
+			CurrentPlayerState->GetMainWeaponMesh());
+		CurrentCharacter->GetCurrentSecondWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
+			CurrentPlayerState->GetSecondWeaponMesh());
+		CurrentCharacter->GetCurrentThirdWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
+			CurrentPlayerState->GetThirdWeaponMesh());
 	}
 }
 
@@ -1011,9 +1001,9 @@ void AMultiShootGameCharacter::CheckWeaponInitialized()
 		GetPlayerState() && IsLocallyControlled())
 	{
 		AMultiShootGamePlayerState* TempPlayerState = Cast<AMultiShootGamePlayerState>(GetPlayerState());
-		TempPlayerState->SetMainWeaponMesh_Server(CurrentMainWeapon->WeaponMesh);
-		TempPlayerState->SetSecondWeaponMesh_Server(CurrentSecondWeapon->WeaponMesh);
-		TempPlayerState->SetThirdWeaponMesh_Server(CurrentThirdWeapon->WeaponMesh);
+		TempPlayerState->SetMainWeaponMesh_Server(CurrentMainWeapon->WeaponInfo.WeaponMesh);
+		TempPlayerState->SetSecondWeaponMesh_Server(CurrentSecondWeapon->WeaponInfo.WeaponMesh);
+		TempPlayerState->SetThirdWeaponMesh_Server(CurrentThirdWeapon->WeaponInfo.WeaponMesh);
 
 		HandleWeaponMesh_Server();
 
@@ -1072,16 +1062,6 @@ void AMultiShootGameCharacter::SetKnifeAttack_Server_Implementation(bool Value)
 void AMultiShootGameCharacter::SetGrenadeCount_Server_Implementation(int Value)
 {
 	GrenadeCount = Value;
-}
-
-void AMultiShootGameCharacter::SetWeaponInfo_Server_Implementation(AMultiShootGameWeapon* Weapon, FWeaponInfo Value)
-{
-	Weapon->WeaponInfo = Value;
-}
-
-void AMultiShootGameCharacter::SetWeaponMesh_Server_Implementation(AMultiShootGameWeapon* Weapon, USkeletalMesh* Value)
-{
-	Weapon->WeaponMesh = Value;
 }
 
 void AMultiShootGameCharacter::AttachWeapon_Server_Implementation()
@@ -1318,7 +1298,6 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, CurrentMainWeapon);
 	DOREPLIFETIME(AMultiShootGameCharacter, CurrentSecondWeapon);
 	DOREPLIFETIME(AMultiShootGameCharacter, CurrentThirdWeapon);
-	
 }
 
 void AMultiShootGameCharacter::OnEnemyKilled()
