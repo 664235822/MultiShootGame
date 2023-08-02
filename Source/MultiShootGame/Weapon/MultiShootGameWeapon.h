@@ -63,6 +63,12 @@ protected:
 
 	void ShakeCamera();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartFireCurve();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StopFireCurve();
+
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

@@ -36,11 +36,6 @@ void AMultiShootGameFPSCamera::Fire()
 {
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
 
-	if (BulletCheck(MyOwner))
-	{
-		return;
-	}
-
 	if (MyOwner)
 	{
 		FVector EyeLocation = MyOwner->GetCurrentFPSCamera()->GetCameraComponent()->GetComponentLocation();

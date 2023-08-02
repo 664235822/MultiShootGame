@@ -67,6 +67,8 @@ void AMultiShootGameWeapon::Fire()
 
 	if (BulletCheck(MyOwner))
 	{
+		StopFireCurve();
+		
 		return;
 	}
 
@@ -148,13 +150,6 @@ void AMultiShootGameWeapon::ShakeCamera()
 	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
 	if (MyOwner)
 	{
-		if (MyOwner->GetWeaponMode() == EWeaponMode::MainWeapon)
-		{
-			MyOwner->AddControllerYawInput(FMath::RandRange(-1 * WeaponInfo.CameraSpread, WeaponInfo.CameraSpread));
-			MyOwner->AddControllerPitchInput(
-				-1 * FMath::RandRange(-1 * WeaponInfo.CameraSpreadDown, WeaponInfo.CameraSpread));
-		}
-
 		APlayerController* PlayerController = Cast<APlayerController>(MyOwner->GetController());
 		if (PlayerController)
 		{
@@ -174,13 +169,25 @@ void AMultiShootGameWeapon::StartFire()
 {
 	const float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
 
+	AMultiShootGameCharacter* MyOwner = Cast<AMultiShootGameCharacter>(GetOwner());
+
+	if (BulletCheck(MyOwner))
+	{
+		StopFireCurve();
+
+		return;
+	}
+	
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameWeapon::Fire, TimeBetweenShots, true,
 	                                FirstDelay);
+	StartFireCurve();
 }
 
 void AMultiShootGameWeapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle);
+
+	StopFireCurve();
 }
 
 void AMultiShootGameWeapon::FireOfDelay()
