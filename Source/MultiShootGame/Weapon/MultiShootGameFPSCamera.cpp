@@ -27,7 +27,7 @@ void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const float TargetFOV = WeaponInfo.AimTexture ? ZoomedFOV : DefaultFOV;
+	const float TargetFOV = WeaponInfo.SniperAim ? ZoomedFOV : DefaultFOV;
 	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
 	CameraComponent->SetFieldOfView(CurrentFOV);
 }
@@ -186,10 +186,31 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 void AMultiShootGameFPSCamera::SetWeaponInfo(FWeaponInfo Info)
 {
 	WeaponInfo = Info;
-	WeaponMeshComponent->SetSkeletalMesh(!Info.AimTexture
-		                                     ? Info.WeaponMesh
-		                                     : nullptr);
+	WeaponMeshComponent->SetSkeletalMesh(!Info.SniperAim ? Info.WeaponMesh : nullptr);
 	CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
 	                                                 Info.AimVector,
 	                                                 FVector::OneVector));
+}
+
+void AMultiShootGameFPSCamera::SniperScopeBeginAim()
+{
+	if (WeaponInfo.SniperAim)
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = this;
+		SpawnParameters.Instigator = GetInstigator();
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		CurrentSniperScope = GetWorld()->SpawnActor<AActor>(WeaponInfo.SniperScope, FVector::ZeroVector,
+		                                                    FRotator::ZeroRotator, SpawnParameters);
+		CurrentSniperScope->AttachToComponent(WeaponMeshComponent,
+		                                      FAttachmentTransformRules::SnapToTargetIncludingScale);
+	}
+}
+
+void AMultiShootGameFPSCamera::SniperScopeEndAim()
+{
+	if (CurrentSniperScope)
+	{
+		GetWorld()->DestroyActor(CurrentSniperScope);
+	}
 }

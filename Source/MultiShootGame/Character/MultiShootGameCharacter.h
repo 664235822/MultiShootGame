@@ -254,9 +254,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> ServerGameUserWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
-	TSubclassOf<UUserWidget> SniperUserWidgetClass;
-
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = Character)
 	EWeaponMode WeaponMode = EWeaponMode::MainWeapon;
 
@@ -418,9 +415,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
-
-	UPROPERTY(BlueprintReadOnly)
-	UUserWidget* CurrentSniperUserWidget;
 
 public:
 	// Called every frame

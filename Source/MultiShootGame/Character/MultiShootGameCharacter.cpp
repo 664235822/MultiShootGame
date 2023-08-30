@@ -81,13 +81,6 @@ void AMultiShootGameCharacter::BeginPlay()
 
 	RepRootMotion.bIsActive = true;
 
-	if (IsLocallyControlled())
-	{
-		CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
-		CurrentSniperUserWidget->AddToViewport();
-		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
-
 	CurrentGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
@@ -179,7 +172,6 @@ void AMultiShootGameCharacter::Destroyed()
 	if (IsLocallyControlled())
 	{
 		CurrentGameUserWidget->RemoveFromParent();
-		CurrentSniperUserWidget->RemoveFromParent();
 	}
 
 	Super::Destroyed();
@@ -343,14 +335,14 @@ void AMultiShootGameCharacter::BeginAim()
 	CurrentThirdWeapon->SetActorHiddenInGame(true);
 	GetMesh()->SetHiddenInGame(true);
 
-	if (WeaponMode == EWeaponMode::SecondWeapon && CurrentSecondWeapon->WeaponInfo.AimTexture)
-	{
-		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Visible);
-	}
-
 	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
 	{
 		CurrentFPSCamera->StartFire();
+	}
+
+	if (WeaponMode == EWeaponMode::SecondWeapon)
+	{
+		CurrentFPSCamera->SniperScopeBeginAim();
 	}
 
 	if (IsLocallyControlled())
@@ -374,17 +366,13 @@ void AMultiShootGameCharacter::EndAim()
 	CurrentThirdWeapon->SetActorHiddenInGame(false);
 	GetMesh()->SetHiddenInGame(false);
 
-	if (CurrentSecondWeapon->WeaponInfo.AimTexture)
-	{
-		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
-
 	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
 	{
 		CurrentMainWeapon->StartFire();
 	}
 
 	CurrentFPSCamera->StopFire();
+	CurrentFPSCamera->SniperScopeEndAim();
 }
 
 void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation,

@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0.1f, ClampMax = 100.0f))
 	float ZoomInterpSpeed = 20.0f;
 
+	UPROPERTY(BlueprintReadOnly)
+	AActor* CurrentSniperScope;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -52,4 +55,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetWeaponInfo(FWeaponInfo Info);
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void SniperScopeBeginAim();
+	
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void SniperScopeEndAim();
 };

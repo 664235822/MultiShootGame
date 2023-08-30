@@ -60,7 +60,10 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	FVector AimVector;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
-	bool AimTexture;
+	bool SniperAim;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
+	TSubclassOf<AActor> SniperScope;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	int BulletNumber;
