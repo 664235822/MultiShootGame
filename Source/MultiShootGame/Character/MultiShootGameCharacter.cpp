@@ -5,7 +5,6 @@
 #include "MultiShootGame/MultiShootGame.h"
 #include "MultiShootGame/Weapon/MultiShootGameProjectile.h"
 #include "Blueprint/UserWidget.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -13,10 +12,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Microsoft/AllowMicrosoftPlatformTypes.h"
 #include "MultiShootGame/GameMode/MultiShootGameGameMode.h"
-#include "MultiShootGame/GameMode/MultiShootGameGameState.h"
-#include "MultiShootGame/GameMode/MultiShootGameServerGameMode.h"
+#include "MultiShootGame/Gamemode/MultiShootGamePlayerState.h"
 #include "MultiShootGame/GameMode/MultiShootGameServerGameState.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Net/UnrealNetwork.h"
@@ -100,6 +97,12 @@ void AMultiShootGameCharacter::BeginPlay()
 	if (IsLocallyControlled())
 	{
 		CurrentGameUserWidget->AddToViewport();
+	}
+
+	if (bShowMobileJoystick && IsLocallyControlled())
+	{
+		CurrentMobileJoystickUserWidget = CreateWidget(GetWorld(), MobileJoystickUserWidgetClass);
+		CurrentMobileJoystickUserWidget->AddToViewport();
 	}
 
 	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);

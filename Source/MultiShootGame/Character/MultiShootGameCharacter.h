@@ -10,7 +10,6 @@
 #include "MultiShootGame/Enum//EWeaponMode.h"
 #include "MultiShootGame/Component/HealthComponent.h"
 #include "MultiShootGame/Component//HitEffectComponent.h"
-#include "MultiShootGame/Gamemode/MultiShootGamePlayerState.h"
 #include "MultiShootGame/Weapon/MultiShootGameGrenade.h"
 #include "MultiShootGame/Weapon/MultiShootGameFPSCamera.h"
 #include "MultiShootGame/Weapon/MultiShootGameWeapon.h"
@@ -31,26 +30,34 @@ protected:
 
 	virtual void Destroyed() override;
 
+	UFUNCTION(BlueprintCallable)
 	void StartFire();
 
+	UFUNCTION(BlueprintCallable)
 	void StopFire();
 
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
 
+	UFUNCTION(BlueprintCallable)
 	void BeginFastRun();
 
+	UFUNCTION(BlueprintCallable)
 	void EndFastRun();
 
+	UFUNCTION(BlueprintCallable)
 	void BeginCrouch();
 
+	UFUNCTION(BlueprintCallable)
 	void EndCrouch();
 
 	void ToggleCrouch();
 
+	UFUNCTION(BlueprintCallable)
 	void BeginAim();
 
+	UFUNCTION(BlueprintCallable)
 	void EndAim();
 
 public:
@@ -65,6 +72,7 @@ public:
 	void ThrowBulletShell_Server(TSubclassOf<AMultiShootGameBulletShell> BulletShellClass, FVector BulletShellLocation,
 	                             FRotator BulletShellRotation);
 
+	UFUNCTION(BlueprintCallable)
 	void BeginReload();
 
 protected:
@@ -76,11 +84,13 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ReloadShowClip(bool Enabled);
 
+	UFUNCTION(BlueprintCallable)
 	void BeginThrowGrenade();
 
 	UFUNCTION(BlueprintCallable)
 	void EndThrowGrenade();
 
+	UFUNCTION(BlueprintCallable)
 	void ThrowGrenade();
 
 	UFUNCTION(BlueprintCallable)
@@ -95,6 +105,7 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void SpawnGrenade_Server();
 
+	UFUNCTION(BlueprintCallable)
 	void KnifeAttack();
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
@@ -106,10 +117,13 @@ protected:
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void KnifeHit_Server();
 
+	UFUNCTION(BlueprintCallable)
 	void ToggleMainWeapon();
 
+	UFUNCTION(BlueprintCallable)
 	void ToggleSecondWeapon();
 
+	UFUNCTION(BlueprintCallable)
 	void ToggleThirdWeapon();
 
 	void ToggleWeaponUp();
@@ -254,6 +268,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	TSubclassOf<UUserWidget> ServerGameUserWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
+	TSubclassOf<UUserWidget> MobileJoystickUserWidgetClass;
+
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = Character)
 	EWeaponMode WeaponMode = EWeaponMode::MainWeapon;
 
@@ -274,6 +291,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Character)
 	float DeathRagdollWeight = 0.3;
+
+	UPROPERTY(EditDefaultsOnly, Category = Character)
+	bool bShowMobileJoystick = false;
 
 	UFUNCTION()
 	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta,
@@ -357,7 +377,7 @@ protected:
 
 	bool bFired = false;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bFastRun = false;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -415,6 +435,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentGameUserWidget;
+
+	UPROPERTY(BlueprintReadOnly)
+	UUserWidget* CurrentMobileJoystickUserWidget;
 
 public:
 	// Called every frame

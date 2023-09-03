@@ -87,9 +87,11 @@ void AMultiShootGameGameMode::CheckWaveState()
 
 	bool bIsAnyBotAlive = false;
 
-	for (FConstPawnIterator Iterator = GetWorld()->GetPawnIterator(); Iterator; ++Iterator)
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), Actors);
+	for (AActor* Iterator : Actors)
 	{
-		APawn* TestPawn = Iterator->Get();
+		APawn* TestPawn = Cast<APawn>(Iterator);
 		if (TestPawn == nullptr || TestPawn->IsPlayerControlled())
 		{
 			continue;

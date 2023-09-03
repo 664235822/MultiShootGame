@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGameGrenade.h"
-#include "Core/Private/Windows/WindowsRunnableThread.h"
 #include "Kismet/GameplayStatics.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
 #include "Particles/ParticleSystemComponent.h"
