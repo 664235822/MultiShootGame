@@ -225,17 +225,18 @@ void AMultiShootGameWeapon::ReloadShowMagazineClip(bool Enabled)
 		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
 		if (WeaponInfo.MagazineClipMesh)
 		{
-			FActorSpawnParameters SpawnParameters;
-			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-			AMultiShootGameMagazineClip* CurrentMagazineClip = GetWorld()->SpawnActor<AMultiShootGameMagazineClip>(
-				MagazineClipClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
-			CurrentMagazineClip->SetOwner(this);
-			CurrentMagazineClip->AttachToComponent(WeaponMeshComponent,
-			                                       FAttachmentTransformRules::SnapToTargetIncludingScale,
-			                                       FName("Magazine"));
-
-			CurrentMagazineClip->ThrowMagazineClip(WeaponInfo.MagazineClipMesh);
+			if(!Cast<AMultiShootGameCharacter>(GetOwner())->GetToggleViewed())
+			{
+				FActorSpawnParameters SpawnParameters;
+				SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				AMultiShootGameMagazineClip* CurrentMagazineClip = GetWorld()->SpawnActor<AMultiShootGameMagazineClip>(
+					MagazineClipClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+				CurrentMagazineClip->SetOwner(this);
+				CurrentMagazineClip->AttachToComponent(WeaponMeshComponent,
+														   FAttachmentTransformRules::SnapToTargetIncludingScale,
+														   FName("Magazine"));
+				CurrentMagazineClip->ThrowMagazineClip(WeaponInfo.MagazineClipMesh);
+			}
 		}
 	}
 }

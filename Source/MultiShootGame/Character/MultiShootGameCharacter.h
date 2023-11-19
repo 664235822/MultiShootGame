@@ -138,13 +138,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FillUpWeaponBullet();
-
-	UFUNCTION()
+	
 	void ToggleView();
 
 	void ToggleFirstPersonView();
 
 	void ToggleThirdPersonView();
+
+	void Inspect();
 
 	UFUNCTION()
 	void HeadShot(AActor* DamageCauser);
@@ -489,7 +490,19 @@ public:
 	FORCEINLINE UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
 	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE bool GetFired() const { return bFired; }
+	
+	UFUNCTION(BlueprintPure, Category = Character)
 	FORCEINLINE bool GetAimed() const { return bAimed; }
+
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE bool GetReloading() const { return bReloading; }
+
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE bool GetToggleWeapon() const { return bToggleWeapon; }
+
+	UFUNCTION(BlueprintPure, Category = Character)
+	FORCEINLINE bool GetToggleViewed() const { return bToggleView; }
 
 	UFUNCTION(BlueprintPure, Category = Character)
 	FORCEINLINE EWeaponMode GetWeaponMode() const { return WeaponMode; }

@@ -42,7 +42,10 @@ void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 	if (Character)
 	{
 		Speed = Character->GetCharacterMovement()->Velocity.Size();
+		bFired = Character->GetFired();
 		bAimed = Character->GetAimed();
+		bReloading = Character->GetReloading();
+		bToggleWeapon = Character->GetToggleWeapon();
 	}
 
 	const float TargetFOV = WeaponInfo.SniperAim && bAimed ? ZoomedFOV : DefaultFOV;
@@ -67,7 +70,7 @@ void AMultiShootGameFPSCamera::Fire()
 		const FVector TraceEnd = EyeLocation + (ShotDirection * 3000.f);
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(EyeLocation, TraceEnd);
-		const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
+		const FRotator TargetRotation = FRotator(LookAtRotation.Pitch, LookAtRotation.Yaw, 0);
 
 		MyOwner->GetFPSCameraSceneComponent()->SetWorldRotation(TargetRotation);
 
@@ -201,13 +204,59 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 	}
 }
 
+void AMultiShootGameFPSCamera::ReloadShowMagazineClip(bool Enabled)
+{
+	if (Enabled)
+	{
+		WeaponMeshComponent->UnHideBoneByName(ClipBoneName);
+		if (CurrentMagazineClip)
+		{
+			CurrentMagazineClip->Destroy();
+		}
+	}
+	else
+	{
+		WeaponMeshComponent->HideBoneByName(ClipBoneName, PBO_None);
+		if (WeaponInfo.MagazineClipMesh)
+		{
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			CurrentMagazineClip = GetWorld()->SpawnActor<AMultiShootGameMagazineClip>(
+				MagazineClipClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+			CurrentMagazineClip->SetOwner(this);
+			CurrentMagazineClip->AttachToComponent(ArmsMeshComponent,
+			                                       FAttachmentTransformRules::SnapToTargetIncludingScale,
+			                                       FName("Magazine"));
+		}
+	}
+}
+
+void AMultiShootGameFPSCamera::InspectBegin()
+{
+	bInspect = true;
+}
+
+void AMultiShootGameFPSCamera::InspectEnd()
+{
+	bInspect = false;
+}
+
+void AMultiShootGameFPSCamera::SetWeaponMesh()
+{
+	WeaponMeshComponent->SetSkeletalMesh(WeaponInfo.WeaponMesh);
+}
+
 void AMultiShootGameFPSCamera::SetWeaponInfo(FWeaponInfo Info)
 {
 	WeaponInfo = Info;
-	WeaponMeshComponent->SetSkeletalMesh(Info.WeaponMesh);
-	CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
-	                                                 Info.AimVector,
-	                                                 FVector::OneVector));
+	if (!Cast<AMultiShootGameCharacter>(GetOwner())->GetToggleViewed() && !bAimed)
+	{
+		WeaponMeshComponent->SetSkeletalMesh(Info.WeaponMesh);
+	}
+	ArmsMeshComponent->SetRelativeTransform(FTransform(FQuat(FRotator::ZeroRotator),
+	                                                   Info.AimVector + FVector(0, 0, -165),
+	                                                   FVector::OneVector));
 }
 
 void AMultiShootGameFPSCamera::BeginAim(EWeaponMode WeaponMode)

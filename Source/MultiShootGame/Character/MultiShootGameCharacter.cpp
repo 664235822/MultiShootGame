@@ -189,6 +189,8 @@ void AMultiShootGameCharacter::StartFire()
 
 	bFired = true;
 
+	CurrentFPSCamera->InspectEnd();
+
 	if (!bAimed && !bToggleView)
 	{
 		switch (WeaponMode)
@@ -329,13 +331,15 @@ void AMultiShootGameCharacter::BeginAim()
 
 	CurrentFPSCamera->BeginAim(WeaponMode);
 
+	CurrentFPSCamera->InspectEnd();
+
 	if (bToggleView) return;
 
 	SpringArmComponent->SocketOffset = FVector::ZeroVector;
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
-	
+
 	CurrentMainWeapon->SetActorHiddenInGame(true);
 	CurrentSecondWeapon->SetActorHiddenInGame(true);
 	CurrentThirdWeapon->SetActorHiddenInGame(true);
@@ -362,6 +366,7 @@ void AMultiShootGameCharacter::EndAim()
 	SetAimed_Server(false);
 
 	CurrentFPSCamera->EndAim();
+	CurrentFPSCamera->InspectEnd();
 
 	if (bToggleView) return;
 
@@ -865,6 +870,8 @@ void AMultiShootGameCharacter::ToggleView()
 		return;
 	}
 
+	CurrentFPSCamera->InspectEnd();
+
 	if (!bToggleView)
 	{
 		ToggleFirstPersonView();
@@ -877,7 +884,7 @@ void AMultiShootGameCharacter::ToggleView()
 
 void AMultiShootGameCharacter::ToggleFirstPersonView()
 {
-	if (bAimed)return;
+	if (bAimed) return;
 
 	SetToggleView_Server(true);
 
@@ -885,7 +892,7 @@ void AMultiShootGameCharacter::ToggleFirstPersonView()
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
-	
+
 	CurrentFPSCamera->SetActorHiddenInGame(false);
 	CurrentMainWeapon->SetActorHiddenInGame(true);
 	CurrentSecondWeapon->SetActorHiddenInGame(true);
@@ -908,7 +915,7 @@ void AMultiShootGameCharacter::ToggleThirdPersonView()
 	if (bAimed) return;
 
 	SetToggleView_Server(false);
-	
+
 	CurrentFPSCamera->EndAim();
 
 	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
@@ -928,6 +935,23 @@ void AMultiShootGameCharacter::ToggleThirdPersonView()
 	}
 
 	CurrentFPSCamera->StopFire();
+}
+
+void AMultiShootGameCharacter::Inspect()
+{
+	if (!CheckStatus(true, true))
+	{
+		return;
+	}
+
+	if (!bToggleView)
+	{
+		return;
+	}
+	
+	CurrentFPSCamera->StopFire();
+
+	CurrentFPSCamera->InspectBegin();
 }
 
 void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
@@ -975,15 +999,22 @@ bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrena
 
 void AMultiShootGameCharacter::EndAction(bool CheckToggleView)
 {
-	if (bAimed && !bSecondWeaponReloading && (CheckToggleView && bToggleView))
+	if (bAimed && !bSecondWeaponReloading)
 	{
 		EndAim();
+	}
+
+	if (CheckToggleView && bToggleView)
+	{
+		ToggleThirdPersonView();
 	}
 
 	if (bFired)
 	{
 		StopFire();
 	}
+
+	CurrentFPSCamera->InspectEnd();
 }
 
 void AMultiShootGameCharacter::HandleWalkSpeed(bool FastRun)
@@ -1291,7 +1322,7 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
-		const FRotator TargetRotation = FRotator(0, LookAtRotation.Yaw - 90.f, LookAtRotation.Pitch * -1.f);
+		const FRotator TargetRotation = FRotator(LookAtRotation.Pitch, LookAtRotation.Yaw, 0);
 
 		FPSCameraSceneComponent->SetWorldRotation(TargetRotation);
 	}
@@ -1355,6 +1386,9 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	// Bind toggle view events
 	PlayerInputComponent->BindAction("ToggleView", IE_Pressed, this, &AMultiShootGameCharacter::ToggleView);
+
+	// Bind Inspect events
+	PlayerInputComponent->BindAction("Inspect", IE_Pressed, this, &AMultiShootGameCharacter::Inspect);
 }
 
 void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

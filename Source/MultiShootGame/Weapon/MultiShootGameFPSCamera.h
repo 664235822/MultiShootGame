@@ -47,11 +47,26 @@ protected:
 	float Speed;
 
 	UPROPERTY(BlueprintReadOnly)
+	bool bFired;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool bAimed;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bReloading;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bToggleWeapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bInspect;
 
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentSniperUserWidget;
 
+	UPROPERTY(BlueprintReadOnly)
+	AMultiShootGameMagazineClip* CurrentMagazineClip;
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -62,8 +77,16 @@ public:
 
 	virtual void BulletFire(AMultiShootGameCharacter* MyOwner) override;
 
-	UFUNCTION(BlueprintPure, Category = Weapon)
-	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
+	UFUNCTION(BlueprintCallable)
+	virtual void ReloadShowMagazineClip(bool Enabled) override;
+
+	void InspectBegin();
+
+	UFUNCTION(BlueprintCallable)
+	void InspectEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponMesh();
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetWeaponInfo(FWeaponInfo Info);
@@ -73,4 +96,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void EndAim();
+
+	UFUNCTION(BlueprintPure, Category = Weapon)
+	FORCEINLINE UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 };

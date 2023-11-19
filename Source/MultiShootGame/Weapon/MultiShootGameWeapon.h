@@ -42,7 +42,7 @@ protected:
 	FName BulletShellName = "BulletShell";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
-	FName ClipBoneName;
+	FName ClipBoneName = "b_gun_mag";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	EWeaponMode CurrentWeaponMode;
@@ -82,7 +82,7 @@ public:
 
 	void EnablePhysicsSimulate();
 
-	void ReloadShowMagazineClip(bool Enabled);
+	virtual void ReloadShowMagazineClip(bool Enabled);
 
 	void BulletReload();
 
