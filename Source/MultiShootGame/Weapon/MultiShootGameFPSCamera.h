@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USkeletalMeshComponent* ArmsMeshComponent;
 
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	FName WeaponSocketName = FName("Weapon");
+
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	float ZoomedFOV = 40.0f;
 
@@ -58,7 +61,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SniperScopeBeginAim();
-	
+
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SniperScopeEndAim();
 };

@@ -9,10 +9,14 @@
 AMultiShootGameFPSCamera::AMultiShootGameFPSCamera()
 {
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	CameraComponent->SetupAttachment(WeaponMeshComponent);
+	RootComponent = CameraComponent;
 
 	ArmsMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArmsMeshComponent"));
-	ArmsMeshComponent->SetupAttachment(WeaponMeshComponent);
+	ArmsMeshComponent->SetupAttachment(CameraComponent);
+	ArmsMeshComponent->SetCastHiddenShadow(true);
+	ArmsMeshComponent->SetIsReplicated(true);
+
+	WeaponMeshComponent->SetupAttachment(ArmsMeshComponent, WeaponSocketName);
 }
 
 void AMultiShootGameFPSCamera::BeginPlay()
