@@ -41,6 +41,12 @@ protected:
 	float ZoomInterpSpeed = 20.0f;
 
 	UPROPERTY(BlueprintReadOnly)
+	float Speed;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bAimed;
+
+	UPROPERTY(BlueprintReadOnly)
 	AActor* CurrentSniperScope;
 
 public:

@@ -140,6 +140,13 @@ protected:
 	void FillUpWeaponBullet();
 
 	UFUNCTION()
+	void ToggleView();
+
+	void ToggleFirstPersonView();
+
+	void ToggleThirdPersonView();
+
+	UFUNCTION()
 	void HeadShot(AActor* DamageCauser);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
@@ -303,7 +310,7 @@ protected:
 	bool CheckStatus(bool CheckAimed, bool CheckThrowGrenade);
 
 	UFUNCTION(BlueprintCallable)
-	void EndAction();
+	void EndAction(bool CheckToggleView);
 
 	void HandleWalkSpeed(bool FastRun);
 
@@ -333,6 +340,9 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void SetGrenadeCount_Server(int Value);
+
+	UFUNCTION(Server, Reliable)
+	void SetToggleView_Server(bool Value);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void AttachWeapon_Server();
@@ -392,7 +402,7 @@ protected:
 	bool bReloading = false;
 
 	bool bSecondWeaponReloading = false;
-
+	
 	bool bToggleWeapon = false;
 
 	UPROPERTY(Replicated)
@@ -406,6 +416,9 @@ protected:
 
 	UPROPERTY(Replicated)
 	bool bKnifeAttack = false;
+
+	UPROPERTY(Replicated)
+	bool bToggleView = false;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bEnableMovement = true;

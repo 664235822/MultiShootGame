@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MultiShootGameFPSCamera.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MultiShootGame/Character/MultiShootGameCharacter.h"
@@ -30,6 +32,13 @@ void AMultiShootGameFPSCamera::BeginPlay()
 void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(GetOwner());
+	if (Character)
+	{
+		Speed = Character->GetCharacterMovement()->Velocity.Size();
+		bAimed = Character->GetAimed();
+	}
 
 	const float TargetFOV = WeaponInfo.SniperAim ? ZoomedFOV : DefaultFOV;
 	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);

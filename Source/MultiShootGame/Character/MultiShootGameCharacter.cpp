@@ -327,6 +327,8 @@ void AMultiShootGameCharacter::BeginAim()
 
 	SetAimed_Server(true);
 
+	if (bToggleView) return;
+
 	SpringArmComponent->SocketOffset = FVector::ZeroVector;
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
@@ -356,7 +358,14 @@ void AMultiShootGameCharacter::BeginAim()
 
 void AMultiShootGameCharacter::EndAim()
 {
+	if (!CheckStatus(false, true))
+	{
+		return;
+	}
+
 	SetAimed_Server(false);
+
+	if (bToggleView) return;
 
 	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
 
@@ -453,7 +462,7 @@ void AMultiShootGameCharacter::BeginReload()
 
 	bReloading = true;
 
-	EndAction();
+	EndAction(false);
 
 	switch (WeaponMode)
 	{
@@ -486,7 +495,7 @@ void AMultiShootGameCharacter::BeginSecondWeaponReload()
 
 	bSecondWeaponReloading = true;
 
-	EndAction();
+	EndAction(false);
 
 	const FLatentActionInfo LatentActionInfo;
 	UKismetSystemLibrary::Delay(GetWorld(), 0.5f, LatentActionInfo);
@@ -506,7 +515,7 @@ void AMultiShootGameCharacter::BeginThrowGrenade()
 		return;
 	}
 
-	EndAction();
+	EndAction(true);
 
 	SetBeginThrowGrenade_Server(true);
 
@@ -537,7 +546,7 @@ void AMultiShootGameCharacter::ThrowGrenade()
 		return;
 	}
 
-	EndAction();
+	EndAction(true);
 
 	SetThrowingGrenade_Server(true);
 
@@ -613,7 +622,7 @@ void AMultiShootGameCharacter::KnifeAttack()
 		return;
 	}
 
-	EndAction();
+	EndAction(true);
 
 	SetKnifeAttack_Server(true);
 
@@ -735,7 +744,7 @@ void AMultiShootGameCharacter::ToggleMainWeapon()
 
 	bToggleWeapon = true;
 
-	EndAction();
+	EndAction(false);
 
 	SetWeaponMode_Server(EWeaponMode::MainWeapon);
 
@@ -760,7 +769,7 @@ void AMultiShootGameCharacter::ToggleSecondWeapon()
 
 	bToggleWeapon = true;
 
-	EndAction();
+	EndAction(false);
 
 	SetWeaponMode_Server(EWeaponMode::SecondWeapon);
 
@@ -785,7 +794,7 @@ void AMultiShootGameCharacter::ToggleThirdWeapon()
 
 	bToggleWeapon = true;
 
-	EndAction();
+	EndAction(false);
 
 	SetWeaponMode_Server(EWeaponMode::ThirdWeapon);
 
@@ -852,6 +861,82 @@ void AMultiShootGameCharacter::FillUpWeaponBullet()
 	GrenadeCount = MaxGrenadeCount;
 }
 
+void AMultiShootGameCharacter::ToggleView()
+{
+	if (!CheckStatus(true, true))
+	{
+		return;
+	}
+
+	if (!bToggleView)
+	{
+		ToggleFirstPersonView();
+	}
+	else
+	{
+		ToggleThirdPersonView();
+	}
+}
+
+void AMultiShootGameCharacter::ToggleFirstPersonView()
+{
+	if (bAimed)return;
+
+	SetToggleView_Server(true);
+
+	SpringArmComponent->SocketOffset = FVector::ZeroVector;
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
+
+	CurrentFPSCamera->SetActorHiddenInGame(false);
+	CurrentMainWeapon->SetActorHiddenInGame(true);
+	CurrentSecondWeapon->SetActorHiddenInGame(true);
+	CurrentThirdWeapon->SetActorHiddenInGame(true);
+	GetMesh()->SetHiddenInGame(true);
+
+	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
+	{
+		CurrentFPSCamera->StartFire();
+	}
+
+	if (WeaponMode == EWeaponMode::SecondWeapon)
+	{
+		CurrentFPSCamera->SniperScopeBeginAim();
+	}
+
+	if (IsLocallyControlled())
+	{
+		CurrentMainWeapon->StopFire();
+	}
+}
+
+void AMultiShootGameCharacter::ToggleThirdPersonView()
+{
+	if (bAimed) return;
+
+	SetToggleView_Server(false);
+
+	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	PlayerController->SetViewTargetWithBlend(this, 0.1f);
+
+	CurrentFPSCamera->SetActorHiddenInGame(true);
+	CurrentMainWeapon->SetActorHiddenInGame(false);
+	CurrentSecondWeapon->SetActorHiddenInGame(false);
+	CurrentThirdWeapon->SetActorHiddenInGame(false);
+	GetMesh()->SetHiddenInGame(false);
+
+	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
+	{
+		CurrentMainWeapon->StartFire();
+	}
+
+	CurrentFPSCamera->StopFire();
+	CurrentFPSCamera->SniperScopeEndAim();
+}
+
 void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
 {
 	AMultiShootGameCharacter* Character = Cast<AMultiShootGameCharacter>(DamageCauser);
@@ -895,9 +980,9 @@ bool AMultiShootGameCharacter::CheckStatus(bool CheckAimed, bool CheckThrowGrena
 	return true;
 }
 
-void AMultiShootGameCharacter::EndAction()
+void AMultiShootGameCharacter::EndAction(bool CheckToggleView)
 {
-	if (bAimed && !bSecondWeaponReloading)
+	if (bAimed && !bSecondWeaponReloading && (CheckToggleView && bToggleView))
 	{
 		EndAim();
 	}
@@ -965,6 +1050,11 @@ void AMultiShootGameCharacter::HandleWeaponMesh_Multicast_Implementation()
 		CurrentCharacter->GetCurrentThirdWeapon()->GetWeaponMeshComponent()->SetSkeletalMesh(
 			CurrentPlayerState->GetThirdWeaponMesh());
 	}
+}
+
+void AMultiShootGameCharacter::SetToggleView_Server_Implementation(bool Value)
+{
+	bToggleView = Value;
 }
 
 void AMultiShootGameCharacter::CheckShowSight(float DeltaSeconds)
@@ -1145,7 +1235,7 @@ void AMultiShootGameCharacter::Death_Server_Implementation()
 
 void AMultiShootGameCharacter::Death_Multicast_Implementation()
 {
-	EndAction();
+	EndAction(true);
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -1198,7 +1288,7 @@ void AMultiShootGameCharacter::Tick(float DeltaTime)
 		Pitch = FMath::ClampAngle(GetControlRotation().Pitch, -90.f, 90.f);
 	}
 
-	if (bAimed)
+	if (bAimed || bToggleView)
 	{
 		const FVector StartLocation = FPSCameraSceneComponent->GetComponentLocation();
 
@@ -1263,12 +1353,15 @@ void AMultiShootGameCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("ToggleWeaponUp", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeaponUp);
 	PlayerInputComponent->BindAction("ToggleWeaponDown", IE_Pressed, this, &AMultiShootGameCharacter::ToggleWeaponDown);
 
-	// Bind throw grenade
+	// Bind throw grenade events
 	PlayerInputComponent->BindAction("ThrowGrenade", IE_Pressed, this, &AMultiShootGameCharacter::BeginThrowGrenade);
 	PlayerInputComponent->BindAction("ThrowGrenade", IE_Released, this, &AMultiShootGameCharacter::ThrowGrenade);
 
-	// Bind knife attack
+	// Bind knife attack events
 	PlayerInputComponent->BindAction("KnifeAttack", IE_Pressed, this, &AMultiShootGameCharacter::KnifeAttack);
+
+	// Bind toggle view events
+	PlayerInputComponent->BindAction("ToggleView", IE_Pressed, this, &AMultiShootGameCharacter::ToggleView);
 }
 
 void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -1289,6 +1382,7 @@ void AMultiShootGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMultiShootGameCharacter, CurrentMainWeapon);
 	DOREPLIFETIME(AMultiShootGameCharacter, CurrentSecondWeapon);
 	DOREPLIFETIME(AMultiShootGameCharacter, CurrentThirdWeapon);
+	DOREPLIFETIME(AMultiShootGameCharacter, bToggleView);
 }
 
 void AMultiShootGameCharacter::OnEnemyKilled()
