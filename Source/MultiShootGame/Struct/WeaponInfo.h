@@ -63,9 +63,6 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	bool SniperAim;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
-	TSubclassOf<AActor> SniperScope;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	int BulletNumber;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)

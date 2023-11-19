@@ -2,6 +2,7 @@
 
 #include "MultiShootGameFPSCamera.h"
 
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -27,6 +28,10 @@ void AMultiShootGameFPSCamera::BeginPlay()
 
 	DefaultFOV = CameraComponent->FieldOfView;
 	bInitializeReady = true;
+
+	CurrentSniperUserWidget = CreateWidget(GetWorld(), SniperUserWidgetClass);
+	CurrentSniperUserWidget->AddToViewport();
+	CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void AMultiShootGameFPSCamera::Tick(float DeltaTime)
@@ -40,7 +45,7 @@ void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 		bAimed = Character->GetAimed();
 	}
 
-	const float TargetFOV = WeaponInfo.SniperAim ? ZoomedFOV : DefaultFOV;
+	const float TargetFOV = WeaponInfo.SniperAim && bAimed ? ZoomedFOV : DefaultFOV;
 	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
 	CameraComponent->SetFieldOfView(CurrentFOV);
 }
@@ -199,31 +204,30 @@ void AMultiShootGameFPSCamera::BulletFire(AMultiShootGameCharacter* MyOwner)
 void AMultiShootGameFPSCamera::SetWeaponInfo(FWeaponInfo Info)
 {
 	WeaponInfo = Info;
-	WeaponMeshComponent->SetSkeletalMesh(!Info.SniperAim ? Info.WeaponMesh : nullptr);
+	WeaponMeshComponent->SetSkeletalMesh(Info.WeaponMesh);
 	CameraComponent->SetRelativeTransform(FTransform(FQuat(FRotator(0, 90.f, 0)),
 	                                                 Info.AimVector,
 	                                                 FVector::OneVector));
 }
 
-void AMultiShootGameFPSCamera::SniperScopeBeginAim()
+void AMultiShootGameFPSCamera::BeginAim(EWeaponMode WeaponMode)
 {
-	if (WeaponInfo.SniperAim)
+	if (WeaponInfo.SniperAim && WeaponMode == EWeaponMode::SecondWeapon)
 	{
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.Owner = this;
-		SpawnParameters.Instigator = GetInstigator();
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		CurrentSniperScope = GetWorld()->SpawnActor<AActor>(WeaponInfo.SniperScope, FVector::ZeroVector,
-		                                                    FRotator::ZeroRotator, SpawnParameters);
-		CurrentSniperScope->AttachToComponent(WeaponMeshComponent,
-		                                      FAttachmentTransformRules::SnapToTargetIncludingScale);
+		this->SetActorHiddenInGame(true);
+		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		this->SetActorHiddenInGame(false);
 	}
 }
 
-void AMultiShootGameFPSCamera::SniperScopeEndAim()
+void AMultiShootGameFPSCamera::EndAim()
 {
-	if (CurrentSniperScope)
+	if (WeaponInfo.SniperAim)
 	{
-		GetWorld()->DestroyActor(CurrentSniperScope);
+		this->SetActorHiddenInGame(false);
+		CurrentSniperUserWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

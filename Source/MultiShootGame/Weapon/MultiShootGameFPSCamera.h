@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USkeletalMeshComponent* ArmsMeshComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	TSubclassOf<UUserWidget> SniperUserWidgetClass;
+
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	FName WeaponSocketName = FName("Weapon");
 
@@ -47,7 +50,7 @@ protected:
 	bool bAimed;
 
 	UPROPERTY(BlueprintReadOnly)
-	AActor* CurrentSniperScope;
+	UUserWidget* CurrentSniperUserWidget;
 
 public:
 	// Called every frame
@@ -66,8 +69,8 @@ public:
 	void SetWeaponInfo(FWeaponInfo Info);
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SniperScopeBeginAim();
+	void BeginAim(EWeaponMode WeaponMode);
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SniperScopeEndAim();
+	void EndAim();
 };

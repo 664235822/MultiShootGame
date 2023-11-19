@@ -189,7 +189,7 @@ void AMultiShootGameCharacter::StartFire()
 
 	bFired = true;
 
-	if (!bAimed)
+	if (!bAimed && !bToggleView)
 	{
 		switch (WeaponMode)
 		{
@@ -327,14 +327,15 @@ void AMultiShootGameCharacter::BeginAim()
 
 	SetAimed_Server(true);
 
+	CurrentFPSCamera->BeginAim(WeaponMode);
+
 	if (bToggleView) return;
 
 	SpringArmComponent->SocketOffset = FVector::ZeroVector;
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
-
-	CurrentFPSCamera->SetActorHiddenInGame(false);
+	
 	CurrentMainWeapon->SetActorHiddenInGame(true);
 	CurrentSecondWeapon->SetActorHiddenInGame(true);
 	CurrentThirdWeapon->SetActorHiddenInGame(true);
@@ -343,11 +344,6 @@ void AMultiShootGameCharacter::BeginAim()
 	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
 	{
 		CurrentFPSCamera->StartFire();
-	}
-
-	if (WeaponMode == EWeaponMode::SecondWeapon)
-	{
-		CurrentFPSCamera->SniperScopeBeginAim();
 	}
 
 	if (IsLocallyControlled())
@@ -364,6 +360,8 @@ void AMultiShootGameCharacter::EndAim()
 	}
 
 	SetAimed_Server(false);
+
+	CurrentFPSCamera->EndAim();
 
 	if (bToggleView) return;
 
@@ -384,7 +382,6 @@ void AMultiShootGameCharacter::EndAim()
 	}
 
 	CurrentFPSCamera->StopFire();
-	CurrentFPSCamera->SniperScopeEndAim();
 }
 
 void AMultiShootGameCharacter::Fire_Server_Implementation(FWeaponInfo WeaponInfo, FVector MuzzleLocation,
@@ -888,7 +885,7 @@ void AMultiShootGameCharacter::ToggleFirstPersonView()
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	PlayerController->SetViewTargetWithBlend(CurrentFPSCamera, 0.1f);
-
+	
 	CurrentFPSCamera->SetActorHiddenInGame(false);
 	CurrentMainWeapon->SetActorHiddenInGame(true);
 	CurrentSecondWeapon->SetActorHiddenInGame(true);
@@ -898,11 +895,6 @@ void AMultiShootGameCharacter::ToggleFirstPersonView()
 	if (WeaponMode == EWeaponMode::MainWeapon && bFired)
 	{
 		CurrentFPSCamera->StartFire();
-	}
-
-	if (WeaponMode == EWeaponMode::SecondWeapon)
-	{
-		CurrentFPSCamera->SniperScopeBeginAim();
 	}
 
 	if (IsLocallyControlled())
@@ -916,6 +908,8 @@ void AMultiShootGameCharacter::ToggleThirdPersonView()
 	if (bAimed) return;
 
 	SetToggleView_Server(false);
+	
+	CurrentFPSCamera->EndAim();
 
 	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
 
@@ -934,7 +928,6 @@ void AMultiShootGameCharacter::ToggleThirdPersonView()
 	}
 
 	CurrentFPSCamera->StopFire();
-	CurrentFPSCamera->SniperScopeEndAim();
 }
 
 void AMultiShootGameCharacter::HeadShot(AActor* DamageCauser)
