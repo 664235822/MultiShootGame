@@ -5,7 +5,7 @@
 * 使用Adobe Mixamo人物和动画。
 * 支持多种主武器和副武器切换，每个武器有相应的数值比如伤害、精准度、后坐力、射速等，副武器每把类型不同，有狙击枪、榴弹发射器、火箭筒、散弹枪，额外还有手枪、匕首和手榴弹可使用。
 * 可更改游戏画质，沙漠小镇地图支持白天、黑夜和晴天、雨天切换。
-* 默认第三人称，瞄准时切换到第一人称，显示当前武器和手臂模型，未瞄准和已瞄准时分别有主武器和手枪的不同瞄准偏移效果。
+* 默认第三人称，可切换到第一人称，未瞄准和已瞄准时第三人称分别有主武器和手枪的不同瞄准偏移效果。
 * 在不同的情况下有画面抖动的效果，如站立、行走、跑步、下蹲、受到伤害、在手榴弹范围内等幅度不同。
 * 脚步会跟随地面环境自动调整高度，跳跃时前面有障碍物会进行攀爬。
 * 子弹打到不同的物体有不同的粒子效果，如金属、木材、石头和角色，特别是打到角色会溅血以外血液还会染红地面，并且子弹会留下弹孔，换弹时弹夹会掉落地面。
@@ -28,6 +28,8 @@
 <img src="https://github.com/664235822/MultiShootGame/blob/main/img/8.png">
 <img src="https://github.com/664235822/MultiShootGame/blob/main/img/9.png">
 <img src="https://github.com/664235822/MultiShootGame/blob/main/img/10.png">
+<img src="https://github.com/664235822/MultiShootGame/blob/main/img/11.png">
+<img src="https://github.com/664235822/MultiShootGame/blob/main/img/12.png">
 
 ## 引擎版本 
 * 4.27.2
