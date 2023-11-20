@@ -138,13 +138,15 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FillUpWeaponBullet();
-	
+
+	UFUNCTION(BlueprintCallable)
 	void ToggleView();
 
 	void ToggleFirstPersonView();
 
 	void ToggleThirdPersonView();
 
+	UFUNCTION(BlueprintCallable)
 	void Inspect();
 
 	UFUNCTION()
