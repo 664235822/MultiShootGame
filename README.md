@@ -16,6 +16,7 @@
 * (https://www.bilibili.com/video/BV1jF411K79N)
 * (https://www.bilibili.com/video/BV1rP411A7Wt)
 * (https://www.bilibili.com/video/BV1fP411R785)
+* (https://www.bilibili.com/video/BV1qa4y1U769)
 
 ## 项目截图
 <img src="https://github.com/664235822/MultiShootGame/blob/main/img/1.png">
