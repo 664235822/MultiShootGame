@@ -22,11 +22,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Components)
 	UStaticMeshComponent* MagazineClipMeshComponent;
 
-	FTimerHandle TimerHandle;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
-	float DestroyDelay = 2.0f;
-
 	void DestroyMagazineClip();
 
 public:
@@ -34,6 +29,4 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SetMagazineClipMesh(UStaticMesh* MagazineClipMesh);
-
-	void ThrowMagazineClip(UStaticMesh* MagazineClipMesh);
 };

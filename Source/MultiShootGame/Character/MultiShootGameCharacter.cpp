@@ -1259,7 +1259,22 @@ void AMultiShootGameCharacter::Death_Server_Implementation()
 
 void AMultiShootGameCharacter::Death_Multicast_Implementation()
 {
-	EndAction(true);
+	CurrentFPSCamera->EndAim();
+	CurrentFPSCamera->InspectEnd();
+
+	SpringArmComponent->SocketOffset = FVector(0, 90.f, 0);
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	PlayerController->SetViewTargetWithBlend(this, 0.1f);
+
+	CurrentFPSCamera->SetActorHiddenInGame(true);
+	CurrentMainWeapon->SetActorHiddenInGame(false);
+	CurrentSecondWeapon->SetActorHiddenInGame(false);
+	CurrentThirdWeapon->SetActorHiddenInGame(false);
+	GetMesh()->SetHiddenInGame(false);
+
+	CurrentMainWeapon->StopFire();
+	CurrentFPSCamera->StopFire();
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);

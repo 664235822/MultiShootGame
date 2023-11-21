@@ -31,16 +31,6 @@ void AMultiShootGameMagazineClip::SetMagazineClipMesh(UStaticMesh* MagazineClipM
 	MagazineClipMeshComponent->SetStaticMesh(MagazineClipMesh);
 }
 
-void AMultiShootGameMagazineClip::ThrowMagazineClip(UStaticMesh* MagazineClipMesh)
-{
-	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-
-	MagazineClipMeshComponent->SetStaticMesh(MagazineClipMesh);
-	MagazineClipMeshComponent->SetSimulatePhysics(true);
-
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMultiShootGameMagazineClip::DestroyMagazineClip, DestroyDelay);
-}
-
 void AMultiShootGameMagazineClip::DestroyMagazineClip()
 {
 	Destroy();
