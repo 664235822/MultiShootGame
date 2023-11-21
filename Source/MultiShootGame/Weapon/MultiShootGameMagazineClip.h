@@ -33,5 +33,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetMagazineClipMesh(UStaticMesh* MagazineClipMesh);
+
 	void ThrowMagazineClip(UStaticMesh* MagazineClipMesh);
 };

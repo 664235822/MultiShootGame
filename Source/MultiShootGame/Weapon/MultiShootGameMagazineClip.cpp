@@ -26,6 +26,11 @@ void AMultiShootGameMagazineClip::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AMultiShootGameMagazineClip::SetMagazineClipMesh(UStaticMesh* MagazineClipMesh)
+{
+	MagazineClipMeshComponent->SetStaticMesh(MagazineClipMesh);
+}
+
 void AMultiShootGameMagazineClip::ThrowMagazineClip(UStaticMesh* MagazineClipMesh)
 {
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);

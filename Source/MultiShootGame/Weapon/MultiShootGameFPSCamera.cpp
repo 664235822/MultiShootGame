@@ -228,6 +228,7 @@ void AMultiShootGameFPSCamera::ReloadShowMagazineClip(bool Enabled)
 			CurrentMagazineClip->AttachToComponent(ArmsMeshComponent,
 			                                       FAttachmentTransformRules::SnapToTargetIncludingScale,
 			                                       FName("Magazine"));
+			CurrentMagazineClip->SetMagazineClipMesh(WeaponInfo.MagazineClipMesh);
 		}
 	}
 }
