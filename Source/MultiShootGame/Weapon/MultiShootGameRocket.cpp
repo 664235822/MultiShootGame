@@ -12,6 +12,7 @@ AMultiShootGameRocket::AMultiShootGameRocket()
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		RocketComponent->OnComponentHit.AddDynamic(this, &AMultiShootGameRocket::OnHit);
+		RocketComponent->OnComponentBeginOverlap.AddDynamic(this, &AMultiShootGameRocket::OnBeginOverlap);
 	}
 	RootComponent = RocketComponent;
 
