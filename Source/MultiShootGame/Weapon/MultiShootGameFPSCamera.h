@@ -35,9 +35,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	FName WeaponSocketName = FName("Weapon");
 
-	UPROPERTY(EditDefaultsOnly, Category = Weapon)
-	float ZoomedFOV = 40.0f;
-
 	float DefaultFOV;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon, meta = (ClampMin = 0.1f, ClampMax = 100.0f))

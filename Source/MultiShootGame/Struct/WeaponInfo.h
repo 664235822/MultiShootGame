@@ -57,6 +57,9 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	float CameraSpread;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
+	float ZoomedFOV;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	FVector AimVector;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)

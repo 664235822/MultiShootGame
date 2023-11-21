@@ -48,7 +48,7 @@ void AMultiShootGameFPSCamera::Tick(float DeltaTime)
 		bToggleWeapon = Character->GetToggleWeapon();
 	}
 
-	const float TargetFOV = WeaponInfo.SniperAim && bAimed ? ZoomedFOV : DefaultFOV;
+	const float TargetFOV = bAimed ? WeaponInfo.ZoomedFOV : DefaultFOV;
 	const float CurrentFOV = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, ZoomInterpSpeed);
 	CameraComponent->SetFieldOfView(CurrentFOV);
 }
