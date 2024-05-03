@@ -40,7 +40,7 @@ protected:
 	TSubclassOf<UDamageType> DamageTypeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<UMatineeCameraShake> RocketCameraShakeClass;
+	TSubclassOf<UCameraShakeBase> RocketCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	float DamageRadius = 1000.f;

@@ -41,7 +41,7 @@ protected:
 	TSubclassOf<UDamageType> DamageTypeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<UMatineeCameraShake> GrenadeCameraShakeClass;
+	TSubclassOf<UCameraShakeBase> GrenadeCameraShakeClass;
 
 	FTimerHandle TimerHandle;
 

@@ -246,13 +246,13 @@ protected:
 	TSubclassOf<AMultiShootGameFPSCamera> FPSCameraClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
-	TSubclassOf<UMatineeCameraShake> MovementCameraShakeClass;
+	TSubclassOf<UCameraShakeBase> MovementCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
-	TSubclassOf<UMatineeCameraShake> KnifeCameraShakeClass;
+	TSubclassOf<UCameraShakeBase> KnifeCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
-	TSubclassOf<UMatineeCameraShake> HitCameraShakeClass;
+	TSubclassOf<UCameraShakeBase> HitCameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Character)
 	UAnimMontage* WeaponOutAnimMontage;

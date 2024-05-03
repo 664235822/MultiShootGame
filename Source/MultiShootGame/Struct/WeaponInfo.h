@@ -39,7 +39,7 @@ struct MULTISHOOTGAME_API FWeaponInfo : public FTableRowBase
 	TSubclassOf<AMultiShootGameProjectileBase> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
-	TSubclassOf<UMatineeCameraShake> FireCameraShake;
+	TSubclassOf<UCameraShakeBase> FireCameraShake;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponInfo)
 	float BaseDamage;

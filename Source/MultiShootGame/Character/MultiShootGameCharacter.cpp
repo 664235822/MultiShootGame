@@ -76,8 +76,6 @@ void AMultiShootGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RepRootMotion.bIsActive = true;
-
 	CurrentGameMode = UGameplayStatics::GetGameMode(GetWorld());
 	if (Cast<AMultiShootGameGameMode>(CurrentGameMode))
 	{
@@ -301,11 +299,13 @@ void AMultiShootGameCharacter::EndFastRun()
 void AMultiShootGameCharacter::BeginCrouch()
 {
 	Crouch();
+	GetCapsuleComponent()->SetCapsuleHalfHeight(40.f);
 }
 
 void AMultiShootGameCharacter::EndCrouch()
 {
 	UnCrouch();
+	GetCapsuleComponent()->SetCapsuleHalfHeight(80.f);
 }
 
 void AMultiShootGameCharacter::ToggleCrouch()
@@ -948,7 +948,7 @@ void AMultiShootGameCharacter::Inspect()
 	{
 		return;
 	}
-	
+
 	CurrentFPSCamera->StopFire();
 
 	CurrentFPSCamera->InspectBegin();
