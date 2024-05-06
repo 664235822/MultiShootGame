@@ -17,8 +17,11 @@
 	],
 	"Plugins": [
 		{
-			"Name": "GamePlayCameras",
-			"Enabled": true
+			"Name": "OnlineSubsystemGooglePlay",
+			"Enabled": false,
+			"SupportedTargetPlatforms": [
+				"Android"
+			]
 		}
 	]
 }
