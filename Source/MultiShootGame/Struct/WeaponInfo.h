@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MatineeCameraShake.h"
 #include "../Weapon/MultiShootGameProjectileBase.h"
 #include "Engine/DataTable.h"
 #include "Sound/SoundCue.h"
